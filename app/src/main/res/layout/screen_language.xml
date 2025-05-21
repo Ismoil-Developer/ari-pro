@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainBgColor">
+
+    <LinearLayout
+        android:id="@+id/containerLang"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:background="@color/language_back"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="222dp"
+            android:layout_height="222dp"
+            android:scaleType="center"
+            android:src="@drawable/language_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/chooseLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_21sdp"
+        android:fontFamily="@font/font_family"
+        android:gravity="center"
+        android:text="Tilni tanlang"
+        android:textColor="@color/text_color_bold"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/containerLang" />
+
+    <TextView
+        android:id="@+id/changeLanguage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:fontFamily="@font/font_family_medium"
+        android:gravity="center"
+        android:text="Tilni keyinchalik o’zgartirishingiz ham mumkin"
+        android:textColor="@color/gray500"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chooseLanguage" />
+
+    <ScrollView
+        android:id="@+id/languageRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        app:layout_constraintBottom_toTopOf="@id/btnContinueLn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/changeLanguage">
+
+        <RadioGroup
+            android:id="@+id/languageRadioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Uzbek -->
+            <RadioButton
+                android:id="@+id/rbUz"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_unselected"
+                android:button="@android:color/transparent"
+                android:drawableStart="@drawable/ic_flag_uz"
+                android:drawableEnd="@drawable/ic_unselected_lan"
+                android:drawablePadding="12dp"
+                android:padding="16dp"
+                android:text="Uzbek"
+                android:textColor="@color/text_color_bold"
+                android:textSize="16sp" />
+
+            <!-- Russian -->
+            <RadioButton
+                android:id="@+id/rbRus"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_unselected"
+                android:button="@android:color/transparent"
+                android:drawableStart="@drawable/ic_flag_ru"
+                android:drawableEnd="@drawable/ic_unselected_lan"
+                android:drawablePadding="12dp"
+                android:padding="16dp"
+                android:text="Русский"
+                android:textColor="@color/text_color_bold"
+                android:textSize="16sp" />
+
+        </RadioGroup>
+
+    </ScrollView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnContinueLn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/back_style_button"
+        android:fontFamily="@font/font_family_medium"
+        android:text="Davom etish"
+        android:textAllCaps="false"
+        android:textColor="@color/btnTextColor"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

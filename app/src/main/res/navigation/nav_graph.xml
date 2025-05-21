@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/splashScreen">
+
+    <fragment
+        android:id="@+id/splashScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.splash.SplashScreen"
+        android:label="SplashScreen" >
+        <action
+            android:id="@+id/action_splashScreen_to_languageScreen"
+            app:destination="@id/languageScreen" />
+        <action
+            android:id="@+id/action_splashScreen_to_screenMain"
+            app:destination="@id/screenMain" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/languageScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.language.LanguageScreen"
+        android:label="LanguageScreen" >
+        <action
+            android:id="@+id/action_languageScreen_to_introScreen"
+            app:destination="@id/introScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/introScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.intro.IntroScreen"
+        android:label="IntroScreen" >
+
+        <action
+            android:id="@+id/action_introScreen_to_loginScreen"
+            app:destination="@id/loginScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/screenMain"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.main.MainScreen"
+        android:label="ScreenMain" >
+        <action
+            android:id="@+id/action_screenMain_to_orderDetailScreen"
+            app:destination="@id/orderDetailScreen" />
+        <action
+            android:id="@+id/action_screenMain_to_profileInfoScreen"
+            app:destination="@id/profileInfoScreen" />
+        <action
+            android:id="@+id/action_screenMain_to_orderDeliveryScreen"
+            app:destination="@id/orderDeliveryScreen" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.auth.login.LoginScreen"
+        android:label="LoginScreen" >
+
+        <action
+            android:id="@+id/action_loginScreen_to_confirmScreen"
+            app:destination="@id/confirmScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.auth.confirm.ConfirmScreen"
+        android:label="ConfirmScreen" >
+        <action
+            android:id="@+id/action_confirmScreen_to_screenMain"
+            app:destination="@id/screenMain" />
+        <argument
+            android:name="phone_number"
+            app:argType="string" />
+        <argument
+            android:name="code"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderDetailScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.OrderDetailScreen"
+        android:label="OrderDetailScreen" />
+    <fragment
+        android:id="@+id/profileInfoScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.profile.ProfileInfoScreen"
+        android:label="ProfileInfoScreen" />
+    <fragment
+        android:id="@+id/orderDeliveryScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.OrderDeliveryScreen"
+        android:label="OrderDeliveryScreen" />
+
+
+</navigation>

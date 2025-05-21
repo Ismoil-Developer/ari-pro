@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:map="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainBgColor">
+
+
+    <ImageView
+        android:id="@+id/imageTimerRes"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="20dp"
+        android:src="@drawable/ic_time_det"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/workTimerRes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="Ish vaqti"
+        android:textColor="@color/gray500"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/workTimerTxt"
+        app:layout_constraintStart_toEndOf="@id/imageTimerRes"
+        app:layout_constraintTop_toTopOf="@id/imageTimerRes" />
+
+    <TextView
+        android:id="@+id/workTimerTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="10:00 - 23:00"
+        android:textColor="@color/text_color_bold"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/imageTimerRes"
+        app:layout_constraintStart_toEndOf="@id/imageTimerRes"
+        app:layout_constraintTop_toBottomOf="@id/workTimerRes" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="23dp"
+        android:background="@color/line_back"
+        app:layout_constraintTop_toBottomOf="@id/imageTimerRes" />
+
+
+    <ImageView
+        android:id="@+id/imageLocationRes"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="23dp"
+        android:src="@drawable/ic_location_det"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line"
+
+        />
+
+    <TextView
+        android:id="@+id/workLocationRes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="Manzil"
+        android:textColor="@color/gray500"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/workLocationTxt"
+        app:layout_constraintStart_toEndOf="@id/imageLocationRes"
+        app:layout_constraintTop_toTopOf="@id/imageLocationRes" />
+
+    <TextView
+        android:id="@+id/workLocationTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="Yunusobod, yugnakiy ko’cha"
+        android:textColor="@color/text_color_bold"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/imageLocationRes"
+        app:layout_constraintStart_toEndOf="@id/imageLocationRes"
+        app:layout_constraintTop_toBottomOf="@id/workLocationRes" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="23dp"
+        android:background="@color/line_back"
+        app:layout_constraintTop_toBottomOf="@id/imageLocationRes" />
+
+    <ImageView
+        android:id="@+id/imagePhoneRes"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="23dp"
+        android:src="@drawable/ic_phone_num"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line2"
+
+        />
+
+    <TextView
+        android:id="@+id/workPhoneRes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="Telefon raqam"
+        android:textColor="@color/gray500"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/workPhoneTxt"
+        app:layout_constraintStart_toEndOf="@id/imagePhoneRes"
+        app:layout_constraintTop_toTopOf="@id/imagePhoneRes" />
+
+    <TextView
+        android:id="@+id/workPhoneTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="+998 (99) 123 44 55"
+        android:textColor="@color/text_color_bold"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/imagePhoneRes"
+        app:layout_constraintStart_toEndOf="@id/imagePhoneRes"
+        app:layout_constraintTop_toBottomOf="@id/workPhoneRes" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="23dp"
+        android:background="@color/line_back"
+        app:layout_constraintTop_toBottomOf="@id/imagePhoneRes" />
+
+
+    <TextView
+        android:id="@+id/resAbout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/font_family"
+        android:text="Market haqida"
+        android:textColor="@color/text_color_bold"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line3" />
+
+    <TextView
+        android:id="@+id/resAboutTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:ellipsize="end"
+        android:fontFamily="@font/font_family_medium"
+        android:maxLines="3"
+        android:text="Bizning restoranimiz O'zbekiston milliy taomlarini taklif etadi. Siz bu yerda palov, shashlik va somsa kabi an'anaviy taomlardan bahramand bo'lishingiz mumkin. Zamonaviy interyer va qulay muhit sizga yoqadi. Mehmondo'st xodimlarimiz sizga a'lo darajadagi xizmat ko'rsatishadi."
+        android:textColor="@color/text_color_bold"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/resAbout" />
+
+    <TextView
+        android:id="@+id/resAllAbout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="Ko'proq o'qish"
+        android:textColor="@color/buttonBgColor"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/resAboutTxt" />
+
+
+    <View
+        android:id="@+id/line4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="15dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/line_back"
+        app:layout_constraintTop_toBottomOf="@id/resAllAbout" />
+
+    <TextView
+        android:id="@+id/addressTxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/font_family"
+        android:text="Manzil"
+        android:textColor="@color/text_color_bold"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line4" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/addressTxt">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginHorizontal="20dp"
+            app:cardCornerRadius="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <fragment
+                android:id="@+id/map_fragment_one"
+                class="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                map:mapId="c616a67fb2ac6a32" />
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

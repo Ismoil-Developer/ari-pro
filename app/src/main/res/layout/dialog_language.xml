@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginHorizontal="11dp"
+        android:background="@drawable/back_dialog"
+        >
+
+        <TextView
+            android:id="@+id/contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/font_family"
+            android:gravity="center"
+            android:text="Platforma tilini o’zgaritirishni hohlaysizmi?"
+            android:textColor="@color/text_color_bold"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RadioGroup
+            android:id="@+id/languageRadioGroupDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/contact"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginHorizontal="15dp"
+            android:layout_marginTop="15dp"
+            android:orientation="vertical"
+            >
+
+            <RadioButton
+                android:id="@+id/rbUz"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_unselected"
+                android:button="@android:color/transparent"
+                android:drawableStart="@drawable/ic_flag_uz"
+                android:drawableEnd="@drawable/ic_unselected_lan"
+                android:drawablePadding="12dp"
+                android:padding="16dp"
+                android:text="Uzbek"
+                android:textColor="@color/text_color_bold"
+                android:textSize="16sp" />
+
+            <!-- Russian -->
+            <RadioButton
+                android:id="@+id/rbRus"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/shape_unselected"
+                android:button="@android:color/transparent"
+                android:drawableStart="@drawable/ic_flag_ru"
+                android:drawableEnd="@drawable/ic_unselected_lan"
+                android:drawablePadding="12dp"
+                android:padding="16dp"
+                android:text="Русский"
+                android:textColor="@color/text_color_bold"
+                android:textSize="16sp" />
+
+
+        </RadioGroup>
+
+
+        <TextView
+            android:id="@+id/yes"
+            android:layout_width="0dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/radio_button_unchecked_background"
+            android:fontFamily="@font/font_family_medium"
+            android:gravity="center"
+            android:text="Bekor qilish"
+            android:textAllCaps="false"
+            android:textColor="#1D2939"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintEnd_toStartOf="@id/no"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/languageRadioGroupDialog" />
+
+        <TextView
+            android:id="@+id/no"
+            android:layout_width="0dp"
+            android:layout_height="43dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:fontFamily="@font/font_family_medium"
+            android:gravity="center"
+            android:background="@drawable/back_style_button"
+            android:text="Saqlash"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/yes"
+            app:layout_constraintTop_toBottomOf="@id/languageRadioGroupDialog" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

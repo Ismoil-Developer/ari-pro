@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph_bottom.xml"
+    app:startDestination="@id/homePage">
+
+
+    <fragment
+        android:id="@+id/homePage"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.main.page.HomePage"
+        android:label="HomePage" />
+
+    <fragment
+        android:id="@+id/confirmPage"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.main.page.ConfirmPage"
+        android:label="HistoryPage" />
+
+    <fragment
+        android:id="@+id/orderPage"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.main.page.OrderPage"
+        android:label="OrderPage" />
+
+    <fragment
+        android:id="@+id/profilePage"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.main.page.ProfilePage"
+        android:label="ProfilePage" />
+
+</navigation>

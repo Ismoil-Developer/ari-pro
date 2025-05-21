@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginEnd="11dp"
+        app:cardCornerRadius="25dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/mainBgColor">
+
+            <ImageView
+                android:id="@+id/escImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_clear_black_24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="24dp"
+                android:fontFamily="@font/font_family"
+                android:gravity="center"
+                android:text="Biz bilan aloqa"
+                android:textColor="@color/text_color_bold"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/problem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/font_family_medium"
+                android:gravity="center"
+                android:text="Agar ilova bilan ishlashda muammoga duch kelsangiz, bizga murojaat qiling"
+                android:textColor="@color/gray500"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/contact" />
+
+            <ImageButton
+                android:id="@+id/contactCall"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/back_contacts"
+                android:src="@drawable/icon_dialog_phone"
+                app:layout_constraintEnd_toStartOf="@id/chatCall"
+                app:layout_constraintHorizontal_bias="0.27"
+                app:layout_constraintStart_toStartOf="@+id/problem"
+                app:layout_constraintTop_toBottomOf="@id/problem" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Qo'ng'iroq"
+                android:textColor="#1D2939"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/contactCall"
+                app:layout_constraintStart_toStartOf="@id/contactCall"
+                app:layout_constraintTop_toBottomOf="@id/contactCall" />
+
+
+            <ImageButton
+                android:id="@+id/chatCall"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/back_contacts"
+                android:src="@drawable/icon_dialog_chat"
+                app:layout_constraintEnd_toStartOf="@id/contactTelegram"
+                app:layout_constraintHorizontal_bias="0.27"
+                app:layout_constraintStart_toEndOf="@+id/contactCall"
+                app:layout_constraintTop_toBottomOf="@id/problem" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Chat"
+                android:textColor="#1D2939"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/chatCall"
+                app:layout_constraintStart_toStartOf="@id/chatCall"
+                app:layout_constraintTop_toBottomOf="@id/chatCall" />
+
+            <ImageButton
+                android:id="@+id/contactTelegram"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/back_object"
+                android:src="@drawable/icon_dialog_telegram"
+                app:layout_constraintEnd_toEndOf="@+id/problem"
+                app:layout_constraintStart_toEndOf="@+id/chatCall"
+                app:layout_constraintTop_toBottomOf="@id/problem" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Telegram"
+                android:textColor="#1D2939"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/contactTelegram"
+                app:layout_constraintStart_toStartOf="@id/contactTelegram"
+                app:layout_constraintTop_toBottomOf="@id/contactTelegram" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

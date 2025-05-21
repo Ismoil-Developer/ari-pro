@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="mainBgColor">#FFFFFF</color>
+    <color name="buttonBgColor">#F37828</color>
+    <color name="buttonBgColorFalse">#B3F37828</color>
+    <color name="buttonBgColorLogOut">#1FE83E32</color>
+    <color name="languageSolid">#0A78280A</color>
+    <color name="gray500">#667085</color>
+    <color name="language_back">#0AF37828</color>
+    <color name="text_color_bold">#1D2939</color>
+    <color name="text_color_medium">#B8B8B8</color>
+    <color name="btnTextColor">#FFFFFF</color>
+    <color name="line_back">#E2E4E7</color>
+    <color name="back_edt_google">#F2F4F7</color>
+    <color name="bottom_nav_color">#FF9431</color>
+    <color name="bottom_nav_color_unselected">#999999</color>
+    <color name="back_search">#EFF1F3</color>
+    <color name="back_search_text">#7D8FAB</color>
+    <color name="magazine_txt">#2B2B2B</color>
+    <color name="see_all">#65656580</color>
+    <color name="stroke">#F6F6F6</color>
+    <color name="textProfile">#3B3B3B</color>
+    <color name="red">#E83E32</color>
+    <color name="blurBack">#33FFFFFF</color>
+    <color name="line">#66E7E7E7</color>
+    <color name="mcv_parent_time">#F4FBFF</color>
+    <color name="new_green">#02C65C</color>
+    <color name="active_green">#4CAF50</color>
+    <color name="inactive_red">#F44336</color>
+    <color name="buttonBgColorActive">#F2F4F7</color>
+
+
+</resources>
