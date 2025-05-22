@@ -28,8 +28,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.btnContinue.setOnClickListener {
+
             val defaultLat = 41.311081
             val defaultLong = 69.240562
 
@@ -43,9 +43,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             if (intent.resolveActivity(requireActivity().packageManager) != null) {
                 startActivity(chooser)
             }
+
         }
-
-
 
         binding.call.setOnClickListener {
             phone?.let { number ->
@@ -57,7 +56,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 }
             }
         }
-
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.orderActiveResponse.collectLatest {
@@ -72,7 +70,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
                     binding.courierName.text = info.full_name
                 }
-
 
 
             }
