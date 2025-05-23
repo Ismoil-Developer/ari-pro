@@ -41,7 +41,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/icBack" />
 
-
     <com.google.android.material.card.MaterialCardView
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -144,7 +143,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
             <ImageView
                 android:id="@+id/message"
                 android:layout_width="42dp"
@@ -157,9 +155,7 @@
                 app:layout_constraintEnd_toStartOf="@id/call"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
         <LinearLayout
             android:id="@+id/stepContainer"

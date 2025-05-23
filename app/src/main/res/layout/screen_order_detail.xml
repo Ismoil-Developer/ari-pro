@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/mainBgColor"
     android:fitsSystemWindows="true"
     android:paddingTop="16dp"
     >
@@ -16,7 +16,9 @@
         android:layout_marginTop="4dp"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_color_bold"
+        />
 
     <TextView
         android:id="@+id/title"
@@ -50,7 +52,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/back_item_order">
 
             <ImageView
                 android:id="@+id/icOrder"
@@ -71,7 +73,9 @@
                 android:src="@drawable/ic_arrow_right"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/text_color_bold"
+                />
 
             <TextView
                 android:id="@+id/textView"
@@ -79,6 +83,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="15dp"
                 android:text="J002576877423000"
+                android:textColor="@color/text_color_bold"
                 app:layout_constraintBottom_toTopOf="@id/textView2"
                 app:layout_constraintEnd_toStartOf="@id/icNext"
                 app:layout_constraintStart_toEndOf="@id/icOrder"
@@ -90,6 +95,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="15dp"
                 android:text="Yangi Buyurtma"
+                android:textColor="@color/text_color_medium"
                 app:layout_constraintBottom_toBottomOf="@id/icOrder"
                 app:layout_constraintEnd_toStartOf="@id/icNext"
                 app:layout_constraintStart_toEndOf="@id/icOrder"
@@ -117,7 +123,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/font_family_medium"
         android:text="Royhat"
-        android:textColor="@color/gray500"
+        android:textColor="@color/text_color_medium"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/imageList"
         app:layout_constraintEnd_toEndOf="parent"
@@ -172,7 +178,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/back_item_order">
 
             <TextView
                 android:layout_width="0dp"
@@ -223,7 +229,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/white"
+                    android:background="@color/back_item_order"
                     android:orientation="horizontal"
                     >
 
@@ -256,7 +262,7 @@
                             android:layout_weight="1"
                             android:padding="5dp"
                             android:textSize="18sp"
-                            android:textColor="#5B5B5B"
+                            android:textColor="@color/text_color_bold"
                             android:fontFamily="@font/font_family_medium"
                             android:textStyle="bold"
                             android:text="City name or user"
@@ -270,7 +276,7 @@
                             android:drawablePadding="10dp"
                             android:drawableStart="@drawable/ic_entypo_location"
                             android:padding="5dp"
-                            android:textColor="#8D8D8D"
+                            android:textColor="@color/text_color_medium"
                             />
 
                     </LinearLayout>

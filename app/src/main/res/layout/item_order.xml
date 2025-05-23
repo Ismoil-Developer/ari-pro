@@ -21,7 +21,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white"
+            android:background="@color/back_item_order"
             >
 
             <ImageView
@@ -53,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="15dp"
                 android:text="J002576877423000"
+                android:textColor="@color/text_color_bold"
                 app:layout_constraintBottom_toTopOf="@id/textView2"
                 app:layout_constraintEnd_toStartOf="@id/icNext"
                 app:layout_constraintStart_toEndOf="@id/icOrder"
@@ -64,6 +65,7 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="15dp"
                 android:text="Yangi Buyurtma"
+                android:textColor="@color/text_color_medium"
                 app:layout_constraintTop_toBottomOf="@id/textView"
                 app:layout_constraintBottom_toBottomOf="@id/icOrder"
                 app:layout_constraintEnd_toStartOf="@id/icNext"

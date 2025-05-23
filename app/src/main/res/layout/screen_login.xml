@@ -131,43 +131,13 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="20dp"
                     android:background="@drawable/back_style_button_all"
                     android:fontFamily="@font/font_family_medium"
                     android:text="Davom etish"
                     android:textAllCaps="false"
                     android:textColor="@color/white" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="17dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="5dp"
-                        android:fontFamily="@font/font_family_medium"
-                        android:gravity="end|center_vertical"
-                        android:text="Akkauntingiz yoqmi?"
-                        android:textColor="@color/gray500" />
-
-
-                    <TextView
-                        android:id="@+id/loginTxt"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/font_family_medium"
-                        android:gravity="start|center_vertical"
-                        android:text="Ro’yxatdan o’tish"
-                        android:textColor="@color/buttonBgColor" />
-
-
-                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>

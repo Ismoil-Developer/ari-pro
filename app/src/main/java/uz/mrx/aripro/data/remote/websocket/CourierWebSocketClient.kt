@@ -37,6 +37,7 @@ class CourierWebSocketClient @Inject constructor() {
     private var currentToken: String? = null
 
     fun connect(url: String, token: String) {
+
         if (webSocket != null) return // already connected
 
         currentUrl = url
