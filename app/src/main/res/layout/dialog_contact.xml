@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="200dp"
@@ -29,7 +28,9 @@
                 android:layout_marginEnd="12dp"
                 android:src="@drawable/ic_clear_black_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/text_color_bold"
+                />
 
             <TextView
                 android:id="@+id/contact"
@@ -55,7 +56,7 @@
                 android:fontFamily="@font/font_family_medium"
                 android:gravity="center"
                 android:text="Agar ilova bilan ishlashda muammoga duch kelsangiz, bizga murojaat qiling"
-                android:textColor="@color/gray500"
+                android:textColor="@color/text_color_medium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/contact" />
@@ -78,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Qo'ng'iroq"
-                android:textColor="#1D2939"
+                android:textColor="@color/text_color_medium"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@id/contactCall"
                 app:layout_constraintStart_toStartOf="@id/contactCall"
@@ -102,7 +103,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Chat"
-                android:textColor="#1D2939"
+                android:textColor="@color/text_color_medium"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@id/chatCall"
                 app:layout_constraintStart_toStartOf="@id/chatCall"
@@ -125,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="Telegram"
-                android:textColor="#1D2939"
+                android:textColor="@color/text_color_medium"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="@id/contactTelegram"
                 app:layout_constraintStart_toStartOf="@id/contactTelegram"

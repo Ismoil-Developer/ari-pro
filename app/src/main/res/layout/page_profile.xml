@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/mainBgColor"
     android:paddingTop="@dimen/_16sdp">
 
     <ImageView
@@ -14,7 +14,9 @@
         android:layout_marginTop="4dp"
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_color_bold"
+        />
 
     <TextView
         android:id="@+id/title"
@@ -72,7 +74,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/mainBgColor">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,7 +84,7 @@
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
                 android:text="Your name"
-                android:textColor="@color/textProfile"
+                android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -95,7 +97,7 @@
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
                 android:text="Your name"
-                android:textColor="@color/textProfile"
+                android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -109,7 +111,7 @@
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
                 android:text=""
-                android:textColor="@color/black"
+                android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -123,7 +125,7 @@
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
                 android:text="Phone number"
-                android:textColor="@color/textProfile"
+                android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/profileName" />
@@ -137,7 +139,7 @@
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
                 android:text=""
-                android:textColor="@color/black"
+                android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -152,7 +154,7 @@
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
                 android:text="Ish vaqti"
-                android:textColor="@color/textProfile"
+                android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -262,13 +264,37 @@
         </LinearLayout>
 
 
-        <ImageView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="15dp"
+            android:layout_height="20dp"
             android:layout_marginTop="15dp"
-            android:fontFamily="@font/font_family_medium"
-            android:scaleType="centerCrop"
-            android:src="@drawable/or" />
+            android:gravity="center"
+            >
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/line_back"
+                android:layout_weight="2"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:text="Or"
+                android:layout_weight="0.8"
+                android:textColor="@color/line_back"
+                android:gravity="center"
+                />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="@color/line_back"
+                android:layout_weight="2"
+                />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
