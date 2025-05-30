@@ -2,15 +2,16 @@ package uz.mrx.aripro.presentation.ui.screen.fragment.main.page
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uz.mrx.aripro.R
@@ -23,6 +24,7 @@ import uz.mrx.aripro.presentation.ui.dialog.OrderTimeDialog
 import uz.mrx.aripro.presentation.ui.viewmodel.homepage.HomePageViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.homepage.impl.HomePageViewModelImpl
 import javax.inject.Inject
+import kotlin.math.log
 
 @AndroidEntryPoint
 class HomePage : Fragment(R.layout.page_home) {
@@ -92,12 +94,14 @@ class HomePage : Fragment(R.layout.page_home) {
     private fun observeIncomingOrders() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.incomingOrders.collectLatest { newOrder ->
+                Log.d("EEEEEEE", "observeIncomingOrders: ${newOrder.orderItems}")
                 showNewOrderDialog(newOrder)
             }
         }
     }
 
     private fun showNewOrderDialog(newOrder: WebSocketOrderEvent.NewOrder) {
+
         val orderDesc = newOrder.orderItems
         val orderPrice = newOrder.price.toString()
 
@@ -116,6 +120,7 @@ class HomePage : Fragment(R.layout.page_home) {
         )
 
         orderTimeDialog.show()
+
     }
 
     // Faqat UI holatini yangilaydi
