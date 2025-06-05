@@ -29,5 +29,4 @@ interface HomePageViewModel {
 
     val deliveryActiveResponse:Flow<WorkActiveResponse>
 
-
 }

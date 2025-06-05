@@ -49,6 +49,9 @@ class HomePage : Fragment(R.layout.page_home) {
         // Orderni kuzatish
         observeIncomingOrders()
 
+
+        Log.d("TTTTTT", "onViewCreated: ${sharedPref.token}")
+
         // Adapter setup
         val loadAdapter = LoadAdapter {
             viewModel.openOrderDetailScreen()
