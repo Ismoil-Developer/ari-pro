@@ -4,8 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/mainBgColor"
     android:fitsSystemWindows="true"
-    android:paddingTop="16dp"
-    >
+    android:paddingTop="16dp">
 
     <ImageView
         android:id="@+id/icBack"
@@ -16,8 +15,7 @@
         android:src="@drawable/ic_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_color_bold"
-        />
+        app:tint="@color/text_color_bold" />
 
     <TextView
         android:id="@+id/title"
@@ -182,15 +180,18 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/arrivedAtStore"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:src="@drawable/ic_shop_filled"
-                    app:tint="@color/buttonBgColor" />
+                    app:tint="#DDDDDD" />
 
                 <View
+                    android:id="@+id/line"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="@color/buttonBgColor" />
+                    android:background="#DDDDDD" />
+
             </LinearLayout>
 
             <!-- Step 2 -->
@@ -202,12 +203,14 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/pickedUp"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:src="@drawable/ic_box_filled"
                     app:tint="#DDDDDD" />
 
                 <View
+                    android:id="@+id/line2"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#DDDDDD" />
@@ -222,25 +225,27 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/enRouteToCustomer"
                     android:layout_width="28dp"
                     android:layout_height="28dp"
                     android:src="@drawable/ic_bike"
                     app:tint="#DDDDDD" />
 
                 <View
+                    android:id="@+id/arrivedToCustomer"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="#DDDDDD" />
+
             </LinearLayout>
-            <!-- Step 3 -->
+
             <ImageView
-                android:id="@+id/step4Icon"
+                android:id="@+id/handedOver"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_check_circle"
                 app:tint="#DDDDDD" />
 
-            <!-- Step 4 (Checkmark) -->
 
         </LinearLayout>
 
@@ -323,6 +328,7 @@
         android:id="@+id/swipeView"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginHorizontal="20dp"
         android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@id/orderContainer" />
 

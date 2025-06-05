@@ -17,13 +17,13 @@ class SwipeToRevealView @JvmOverloads constructor(
     private var swipeText: String = "Yetib keldim"
     private lateinit var swipeButton: View
     private lateinit var swipeLabel: TextView
+    private var onSwipeListener: (() -> Unit)? = null
 
     init {
         initView()
     }
 
     private fun initView() {
-
         LayoutInflater.from(context).inflate(R.layout.view_swipe_to_reveal, this, true)
         swipeButton = findViewById(R.id.swipeButton)
         swipeLabel = findViewById(R.id.swipeLabel)
@@ -49,7 +49,9 @@ class SwipeToRevealView @JvmOverloads constructor(
                         if (view.x >= width * 0.6) {
                             swipeLabel.text = "✔ Yetib keldim"
                             view.animate().x(width.toFloat()).withEndAction {
-                                visibility = View.GONE // o‘chadi
+                                onSwipeListener?.invoke()
+                                // Optional: hide the view
+                                visibility = View.GONE
                             }.start()
                         } else {
                             view.animate().x(0f).start()
@@ -65,5 +67,16 @@ class SwipeToRevealView @JvmOverloads constructor(
         swipeText = text
         swipeLabel.text = text
     }
+
+    fun setOnSwipeListener(listener: () -> Unit) {
+        onSwipeListener = listener
+    }
+
+    fun reset() {
+        swipeButton.x = 0f
+        swipeLabel.text = swipeText
+        visibility = View.VISIBLE
+    }
+
 
 }

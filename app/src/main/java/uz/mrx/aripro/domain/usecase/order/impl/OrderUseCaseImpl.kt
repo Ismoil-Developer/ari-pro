@@ -1,6 +1,8 @@
 package uz.mrx.aripro.domain.usecase.order.impl
 
 import kotlinx.coroutines.flow.Flow
+import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -24,5 +26,10 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
     override suspend fun getOrderActive(): Flow<ResultData<OrderActiveResponse>> = repository.getOrderActive()
 
     override suspend fun postDeliveryActive(): Flow<ResultData<WorkActiveResponse>> = repository.postDeliveryActive()
+
+    override suspend fun postDirection(
+        id: Int,
+        request: DirectionRequest
+    ): Flow<ResultData<DirectionResponse>> = repository.postDirection(id, request)
 
 }

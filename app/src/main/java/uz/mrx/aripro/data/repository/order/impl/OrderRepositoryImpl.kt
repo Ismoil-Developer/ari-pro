@@ -2,10 +2,13 @@ package uz.mrx.aripro.data.repository.order.impl
 
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import uz.mrx.aripro.data.remote.api.OrderApi
+import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
@@ -112,5 +115,30 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun postDirection(
+        id: Int,
+        request: DirectionRequest
+    ) = channelFlow<ResultData<DirectionResponse>> {
+        try {
+
+            val response = api.postDirection(id, request)
+
+            if (response.isSuccessful){
+
+                val registerResponse = response.body()
+
+                if (registerResponse != null){
+                    trySend(ResultData.success(registerResponse))
+                }else{
+                    trySend(ResultData.messageText("Something went wrong"))
+                }
+            }else {
+                val errorBody = response.errorBody()?.string()
+                send(ResultData.error(Exception(errorBody)))
+            }
+        } catch (e: Exception) {
+            send(ResultData.error(e))
+        }
+    }.catch { emit(ResultData.error(it)) }
 
 }

@@ -1,6 +1,8 @@
 package uz.mrx.aripro.domain.usecase.order
 
 import kotlinx.coroutines.flow.Flow
+import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -21,5 +23,8 @@ interface OrderUseCase {
     suspend fun getOrderActive():Flow<ResultData<OrderActiveResponse>>
 
     suspend fun postDeliveryActive():Flow<ResultData<WorkActiveResponse>>
+
+    suspend fun postDirection(id:Int, request: DirectionRequest):Flow<ResultData<DirectionResponse>>
+
 
 }
