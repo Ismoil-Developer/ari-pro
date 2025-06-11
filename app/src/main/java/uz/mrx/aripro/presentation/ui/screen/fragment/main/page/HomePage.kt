@@ -19,6 +19,7 @@ import uz.mrx.aripro.data.local.shp.MySharedPreference
 import uz.mrx.aripro.data.model.LoadData
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
 import uz.mrx.aripro.databinding.PageHomeBinding
+import uz.mrx.aripro.presentation.adapter.AssignedAdapter
 import uz.mrx.aripro.presentation.adapter.LoadAdapter
 import uz.mrx.aripro.presentation.ui.dialog.OrderTimeDialog
 import uz.mrx.aripro.presentation.ui.viewmodel.homepage.HomePageViewModel
@@ -49,6 +50,20 @@ class HomePage : Fragment(R.layout.page_home) {
         // Orderni kuzatish
         observeIncomingOrders()
 
+        val adapterAssigned = AssignedAdapter {
+            viewModel.openOrderDeliveryScreen(it.id)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.assignedResponse.collectLatest {
+
+                adapterAssigned.submitList(it)
+//                viewModel.getActiveOrder()
+                Log.d("RRRRRRRR", "onViewCreated: ${it.map { it.items }}")
+            }
+        }
+
+        binding.orderContainer.adapter = adapterAssigned
 
         Log.d("TTTTTT", "onViewCreated: ${sharedPref.token}")
 
@@ -56,6 +71,7 @@ class HomePage : Fragment(R.layout.page_home) {
         val loadAdapter = LoadAdapter {
             viewModel.openOrderDetailScreen()
         }
+
         loadAdapter.submitList(loadList)
         binding.rv.adapter = loadAdapter
 
@@ -75,7 +91,7 @@ class HomePage : Fragment(R.layout.page_home) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.orderTaken.collectLatest {
                 if (it.orderId != -1) {
-                    viewModel.openOrderDeliveryScreen()
+                    viewModel.openOrderDeliveryScreen(it.orderId)
                 }
             }
         }

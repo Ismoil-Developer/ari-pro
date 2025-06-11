@@ -6,6 +6,6 @@ interface MainScreenDirection {
 
     suspend fun openOrderDetailScreen()
 
-    suspend fun openOrderDeliveryScreen()
+    suspend fun openOrderDeliveryScreen(id:Int)
 
 }

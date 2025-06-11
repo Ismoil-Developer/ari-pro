@@ -16,8 +16,8 @@ class MainScreenDirectionImpl @Inject constructor(private val navigator: Navigat
         navigator.navigateTo(MainScreenDirections.actionScreenMainToProfileInfoScreen())
     }
 
-    override suspend fun openOrderDeliveryScreen() {
-        navigator.navigateTo(MainScreenDirections.actionScreenMainToOrderDeliveryScreen())
+    override suspend fun openOrderDeliveryScreen(id:Int) {
+        navigator.navigateTo(MainScreenDirections.actionScreenMainToOrderDeliveryScreen(id))
     }
 
 }

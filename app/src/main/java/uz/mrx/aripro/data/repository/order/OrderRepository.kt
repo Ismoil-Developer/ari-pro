@@ -2,6 +2,7 @@ package uz.mrx.aripro.data.repository.order
 
 import kotlinx.coroutines.flow.Flow
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
@@ -25,5 +26,8 @@ interface OrderRepository {
     suspend fun postDeliveryActive():Flow<ResultData<WorkActiveResponse>>
 
     suspend fun postDirection(id:Int, request: DirectionRequest):Flow<ResultData<DirectionResponse>>
+
+    suspend fun getAssignedOrder():Flow<ResultData<List<AssignedResponse>>>
+
 
 }

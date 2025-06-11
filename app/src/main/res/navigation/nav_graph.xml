@@ -82,7 +82,12 @@
     <fragment
         android:id="@+id/orderDeliveryScreen"
         android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.OrderDeliveryScreen"
-        android:label="OrderDeliveryScreen" />
+        android:label="OrderDeliveryScreen" >
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
 
 </navigation>

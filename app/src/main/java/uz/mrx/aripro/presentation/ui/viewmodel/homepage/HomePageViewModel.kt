@@ -2,6 +2,7 @@ package uz.mrx.aripro.presentation.ui.viewmodel.homepage
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.response.profile.DeliveryHomeResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -23,10 +24,13 @@ interface HomePageViewModel {
 
     fun openOrderDetailScreen()
 
-    fun openOrderDeliveryScreen()
+    fun openOrderDeliveryScreen(id:Int)
 
     fun postDeliveryActive()
 
     val deliveryActiveResponse:Flow<WorkActiveResponse>
+
+    val assignedResponse:Flow<List<AssignedResponse>>
+
 
 }

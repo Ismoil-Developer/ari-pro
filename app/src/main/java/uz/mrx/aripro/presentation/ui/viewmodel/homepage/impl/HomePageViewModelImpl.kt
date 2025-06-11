@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.response.profile.DeliveryHomeResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -113,9 +114,9 @@ class HomePageViewModelImpl @Inject constructor(
         }
     }
 
-    override fun openOrderDeliveryScreen() {
+    override fun openOrderDeliveryScreen(id:Int) {
         viewModelScope.launch(Dispatchers.Main) {
-            direction.openOrderDeliveryScreen()
+            direction.openOrderDeliveryScreen(id)
         }
 
     }
@@ -149,6 +150,20 @@ class HomePageViewModelImpl @Inject constructor(
         }
     }
 
+    override val assignedResponse = flow<List<AssignedResponse>>()
+
+    init {
+        viewModelScope.launch {
+            useCase.getAssignedOrder().collectLatest {
+                it.onSuccess {
+                    assignedResponse.tryEmit(it)
+                }
+                it.onError {
+
+                }
+            }
+        }
+    }
 
     override val deliveryActiveResponse = flow<WorkActiveResponse>()
 

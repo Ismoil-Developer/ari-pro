@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import uz.mrx.aripro.data.remote.api.OrderApi
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
@@ -138,6 +139,22 @@ class OrderRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             send(ResultData.error(e))
+        }
+    }.catch { emit(ResultData.error(it)) }
+
+    override suspend fun getAssignedOrder() = channelFlow<ResultData<List<AssignedResponse>>> {
+        try {
+            val response = api.getAssigned()
+            if (response.isSuccessful) {
+                val newsResponse = response.body() as List<AssignedResponse>
+
+                trySend(ResultData.success(newsResponse))
+
+            } else {
+                trySend(ResultData.messageText(response.message()))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.messageText(e.message.toString()))
         }
     }.catch { emit(ResultData.error(it)) }
 

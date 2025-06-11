@@ -32,7 +32,6 @@ class CourierWebSocketClient @Inject constructor() {
     private val _orderTakens = flow<WebSocketOrderEvent.OrderTaken>()
     val orderTakens = _orderTakens.asSharedFlow()
 
-
     private var currentUrl: String? = null
     private var currentToken: String? = null
 
