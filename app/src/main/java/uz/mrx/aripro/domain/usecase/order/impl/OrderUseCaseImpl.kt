@@ -1,10 +1,14 @@
 package uz.mrx.aripro.domain.usecase.order.impl
 
 import kotlinx.coroutines.flow.Flow
+import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
+import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
+import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
+import uz.mrx.aripro.data.remote.response.order.OrderFeedBackResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
 import uz.mrx.aripro.data.repository.order.OrderRepository
@@ -24,7 +28,9 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
 
     override fun disconnectWebSocket() = repository.disconnectWebSocket()
 
-    override suspend fun getOrderActive(): Flow<ResultData<OrderActiveResponse>> = repository.getOrderActive()
+    override suspend fun getOrderActive(id: Int): Flow<ResultData<OrderActiveResponse>> = repository.getOrderActive(id)
+
+    override suspend fun getOrderActiveToken(): Flow<ResultData<OrderActiveResponse>> = repository.getOrderActiveToken()
 
     override suspend fun postDeliveryActive(): Flow<ResultData<WorkActiveResponse>> = repository.postDeliveryActive()
 
@@ -34,5 +40,15 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
     ): Flow<ResultData<DirectionResponse>> = repository.postDirection(id, request)
 
     override suspend fun getAssignedOrder(): Flow<ResultData<List<AssignedResponse>>> = repository.getAssignedOrder()
+
+    override suspend fun cancelOrder(
+        id: Int,
+        request: OrderCancelRequest
+    ): Flow<ResultData<OrderCancelResponse>> = repository.cancelOrder(id, request)
+
+    override suspend fun postFeedBack(
+        id: Int,
+        request: OrderFeedBackRequest
+    ): Flow<ResultData<OrderFeedBackResponse>> = repository.postFeedBack(id, request)
 
 }

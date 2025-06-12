@@ -32,5 +32,7 @@
     <color name="active_green">#4CAF50</color>
     <color name="inactive_red">#F44336</color>
     <color name="buttonBgColorActive">#F2F4F7</color>
+    <color name="send_chat_icon">#FFDFDF</color>
+
 
 </resources>

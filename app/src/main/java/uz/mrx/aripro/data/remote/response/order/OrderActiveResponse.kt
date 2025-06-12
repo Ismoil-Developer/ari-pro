@@ -7,7 +7,7 @@ data class OrderActiveResponse(
     val direction: String,
     val delivery_duration_min: Double,
     val customer_info: CustomerInfo,
-    val customer_location: CustomerLocation,
+    val customer_location: LocationInfo,
     val shop_location: ShopLocation,
     val courier_location: CourierLocation
 )
@@ -20,7 +20,7 @@ data class CustomerInfo(
     val rating: Double
 )
 
-data class CustomerLocation(
+data class LocationInfo(
     val latitude: Double,
     val longitude: Double,
     val address: String

@@ -218,7 +218,7 @@
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/back_style_button_false"
+            android:background="@drawable/back_style_button"
             android:gravity="center">
 
             <ImageView
@@ -243,7 +243,7 @@
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/back_style_button_false"
+            android:background="@drawable/back_style_button"
             android:gravity="center">
 
             <ImageView
@@ -297,6 +297,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/logOut"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginTop="15dp"

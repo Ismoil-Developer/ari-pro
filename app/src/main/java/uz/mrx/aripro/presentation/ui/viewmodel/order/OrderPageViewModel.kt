@@ -1,4 +1,4 @@
-package uz.mrx.aripro.presentation.ui.viewmodel.orderpage
+package uz.mrx.aripro.presentation.ui.viewmodel.order
 
 interface OrderPageViewModel {
 

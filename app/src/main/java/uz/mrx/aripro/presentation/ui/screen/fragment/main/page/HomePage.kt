@@ -10,6 +10,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import by.kirich1409.viewbindingdelegate.viewBinding
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -81,6 +84,16 @@ class HomePage : Fragment(R.layout.page_home) {
                 binding.prfName.text = profile.full_name
                 binding.prfDate.text = profile.deliver_id
                 active = profile.work_active
+
+                profile.avatar?.let { uri ->
+                    Glide.with(requireContext())
+                        .load(uri)
+                        .apply(
+                            RequestOptions().skipMemoryCache(true)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        )
+                        .into(binding.prfImage)
+                }
 
                 updateActiveUI(active)
                 setupActiveInactiveToggle()

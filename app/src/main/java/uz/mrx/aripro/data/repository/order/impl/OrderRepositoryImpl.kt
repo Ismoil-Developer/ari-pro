@@ -7,10 +7,14 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
 import uz.mrx.aripro.data.remote.api.OrderApi
+import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
+import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
+import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
+import uz.mrx.aripro.data.remote.response.order.OrderFeedBackResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -69,10 +73,10 @@ class OrderRepositoryImpl @Inject constructor(
         webSocketClient.disconnect()
     }
 
-    override suspend fun getOrderActive() = channelFlow<ResultData<OrderActiveResponse>> {
+    override suspend fun getOrderActive(id: Int) = channelFlow<ResultData<OrderActiveResponse>> {
         try {
 
-            val response = api.getOrderActive()
+            val response = api.getOrderActive(id)
 
             if (response.isSuccessful) {
 
@@ -92,6 +96,31 @@ class OrderRepositoryImpl @Inject constructor(
             close(e)
         }
     }
+
+    override suspend fun getOrderActiveToken() = channelFlow<ResultData<OrderActiveResponse>> {
+        try {
+
+            val response = api.getOrderActiveToken()
+
+            if (response.isSuccessful) {
+
+                val profileResponse = response.body()
+                if (profileResponse != null) {
+                    trySend(ResultData.success(profileResponse))
+                } else {
+                    close(Exception("No data found for the provided ID"))
+                }
+            } else {
+                val errorMessage = "Error ${response.code()}: ${response.message()}"
+                Log.e("API_ERROR", errorMessage)
+                close(Exception(errorMessage))
+            }
+        } catch (e: Exception) {
+            Log.e("API_EXCEPTION", "Exception while fetching data by ID: ${e.message}")
+            close(e)
+        }
+    }
+
 
 
     override suspend fun postDeliveryActive(): Flow<ResultData<WorkActiveResponse>> = channelFlow {
@@ -157,5 +186,49 @@ class OrderRepositoryImpl @Inject constructor(
             trySend(ResultData.messageText(e.message.toString()))
         }
     }.catch { emit(ResultData.error(it)) }
+
+    override suspend fun cancelOrder(
+        id: Int,
+        request: OrderCancelRequest
+    ) = channelFlow<ResultData<OrderCancelResponse>> {
+        try {
+            val response = api.cancelOrder(id, request)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    trySend(ResultData.success(body))
+                } else {
+                    trySend(ResultData.messageText("Response body is null"))
+                }
+            } else {
+                trySend(ResultData.messageText("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.error(e))
+        }
+    }
+
+    override suspend fun postFeedBack(
+        id: Int,
+        request: OrderFeedBackRequest
+    ) = channelFlow<ResultData<OrderFeedBackResponse>> {
+        try {
+            val response = api.postFeedBack(id, request)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    trySend(ResultData.success(body))
+                } else {
+                    trySend(ResultData.messageText("Response body is null"))
+                }
+            } else {
+                trySend(ResultData.messageText("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.error(e))
+        }
+    }
+
+
 
 }

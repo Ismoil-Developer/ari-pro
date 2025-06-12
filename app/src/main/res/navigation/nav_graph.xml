@@ -24,6 +24,7 @@
             android:id="@+id/action_languageScreen_to_introScreen"
             app:destination="@id/introScreen" />
     </fragment>
+
     <fragment
         android:id="@+id/introScreen"
         android:name="uz.mrx.aripro.presentation.ui.screen.fragment.intro.IntroScreen"
@@ -74,7 +75,12 @@
     <fragment
         android:id="@+id/orderDetailScreen"
         android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.OrderDetailScreen"
-        android:label="OrderDetailScreen" />
+        android:label="OrderDetailScreen" >
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
     <fragment
         android:id="@+id/profileInfoScreen"
         android:name="uz.mrx.aripro.presentation.ui.screen.fragment.profile.ProfileInfoScreen"
@@ -83,6 +89,46 @@
         android:id="@+id/orderDeliveryScreen"
         android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.OrderDeliveryScreen"
         android:label="OrderDeliveryScreen" >
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_orderDeliveryScreen_to_orderDetailScreen"
+            app:destination="@id/orderDetailScreen" />
+        <action
+            android:id="@+id/action_orderDeliveryScreen_to_chatScreen"
+            app:destination="@id/chatScreen" />
+        <action
+            android:id="@+id/action_orderDeliveryScreen_to_orderCancelScreen"
+            app:destination="@id/orderCancelScreen" />
+        <action
+            android:id="@+id/action_orderDeliveryScreen_to_orderCompletedScreen"
+            app:destination="@id/orderCompletedScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.ChatScreen"
+        android:label="ChatScreen" />
+    <fragment
+        android:id="@+id/orderCancelScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.OrderCancelScreen"
+        android:label="OrderCancelScreen" >
+        <action
+            android:id="@+id/action_orderCancelScreen_to_screenMain"
+            app:destination="@id/screenMain" />
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
+    <fragment
+        android:id="@+id/orderCompletedScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.OrderCompletedScreen"
+        android:label="OrderCompletedScreen" >
+        <action
+            android:id="@+id/action_orderCompletedScreen_to_screenMain"
+            app:destination="@id/screenMain" />
         <argument
             android:name="id"
             app:argType="integer"

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainBgColor"
+    android:paddingTop="16dp">
+
+    <ImageView
+        android:id="@+id/imvCompleted"
+        android:layout_width="match_parent"
+        android:layout_height="370dp"
+        android:layout_marginTop="-70dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/back_order_completed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imv"
+        android:layout_width="172dp"
+        android:layout_height="162dp"
+        android:layout_marginTop="179dp"
+        android:src="@drawable/order_cancelled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/thankTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="80dp"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/font_family"
+        android:gravity="center"
+        android:text="Thank You!
+Order Completed"
+        android:textColor="@color/text_color_bold"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imv" />
+
+    <TextView
+        android:id="@+id/writeRating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="56dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/font_family_medium"
+        android:gravity="center"
+        android:text="Please rate your last Driver"
+        android:textColor="@color/gray500"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/thankTxt" />
+
+
+    <RatingBar
+        android:id="@+id/ratingBar"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
+        android:numStars="5"
+        android:stepSize="1"
+        android:progressDrawable="@drawable/rating_star_layer"
+        android:isIndicator="false"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/writeRating"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+
+
+    <EditText
+        android:id="@+id/edtNumber"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="Izoh qoldiring"
+        android:textColor="@color/textProfile"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:drawableStart="@drawable/feedback_edt"
+        android:drawablePadding="10dp"
+        app:layout_constraintBottom_toTopOf="@id/containerBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@drawable/edt_bg"
+        />
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/containerBtn"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/back_style_button"
+            android:fontFamily="@font/font_family_medium"
+            android:text="Davom etish"
+            android:textAllCaps="false"
+            android:textColor="@color/white" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_skip"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginStart="10dp"
+            android:layout_weight="3"
+            android:background="@drawable/back_style_button_white"
+            android:fontFamily="@font/font_family_medium"
+            android:text="Skip"
+            android:textAllCaps="false"
+            android:textColor="@color/buttonBgColor" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

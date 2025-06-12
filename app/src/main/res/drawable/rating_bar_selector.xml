@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Tanlanmagan yulduzlar -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <solid android:color="#FEE6BC"/>
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+    <!-- Tanlangan qismi (yarim to'lgan yulduzlar uchun) -->
+    <item android:id="@android:id/secondaryProgress">
+        <shape android:shape="rectangle">
+            <solid android:color="#FEE6BC"/>
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+    <!-- To'liq tanlangan qismi -->
+    <item android:id="@android:id/progress">
+        <shape android:shape="rectangle">
+            <solid android:color="#FEAD1D"/>
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+</layer-list>

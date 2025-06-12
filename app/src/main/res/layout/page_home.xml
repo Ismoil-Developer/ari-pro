@@ -9,7 +9,7 @@
     android:paddingTop="16dp">
 
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/prfImage"
         android:layout_width="50dp"
         android:layout_height="50dp"

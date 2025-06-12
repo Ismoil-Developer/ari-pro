@@ -10,10 +10,6 @@
         android:name="uz.mrx.aripro.presentation.ui.screen.fragment.main.page.HomePage"
         android:label="HomePage" />
 
-    <fragment
-        android:id="@+id/confirmPage"
-        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.main.page.ConfirmPage"
-        android:label="HistoryPage" />
 
     <fragment
         android:id="@+id/orderPage"
