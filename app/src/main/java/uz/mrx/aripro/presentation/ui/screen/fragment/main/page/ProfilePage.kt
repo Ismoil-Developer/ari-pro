@@ -65,10 +65,10 @@ class ProfilePage : Fragment(R.layout.page_profile) {
             )
 
             // ViewModel orqali maʼlumot olib, dialogga yuboriladi
-            viewLifecycleOwner.lifecycleScope.launch {
-//                viewModel.getContact.collectLatest { response ->
-//                    dialog.setContactData(response.phone_number, response.telegram_link)
-//                }
+            lifecycleScope.launch {
+                viewModel.getContact.collectLatest { response ->
+                    dialog.setContactData(response.phone_number, response.telegram_link)
+                }
             }
 
             dialog.show(parentFragmentManager, "ContactDialog")

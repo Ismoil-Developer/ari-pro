@@ -28,6 +28,11 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
 
     override fun disconnectWebSocket() = repository.disconnectWebSocket()
 
+    override fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) =
+        repository.startLocationUpdates(locationProvider)
+
+    override fun stopLocationUpdates() = repository.stopLocationUpdates()
+
     override suspend fun getOrderActive(id: Int): Flow<ResultData<OrderActiveResponse>> = repository.getOrderActive(id)
 
     override suspend fun getOrderActiveToken(): Flow<ResultData<OrderActiveResponse>> = repository.getOrderActiveToken()

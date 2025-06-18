@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import uz.mrx.aripro.data.remote.response.profile.ContactResponse
 import uz.mrx.aripro.data.remote.response.profile.ProfileResponse
 import uz.mrx.aripro.domain.usecase.profile.ProfileUseCase
 import uz.mrx.aripro.presentation.direction.main.MainScreenDirection
@@ -39,5 +40,23 @@ class ProfilePageViewModelImpl @Inject constructor(private val useCase: ProfileU
             direction.openProfileScreen()
         }
     }
+
+
+    override val getContact = flow<ContactResponse>()
+
+    init {
+        viewModelScope.launch {
+            useCase.getContact().collectLatest {
+                it.onSuccess {
+                    getContact.tryEmit(it)
+                }
+                it.onError {
+
+                }
+            }
+        }
+    }
+
+
 
 }

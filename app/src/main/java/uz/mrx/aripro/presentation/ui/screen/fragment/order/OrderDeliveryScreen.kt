@@ -1,6 +1,8 @@
 package uz.mrx.aripro.presentation.ui.screen.fragment.order
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -14,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
+import com.google.android.gms.location.LocationServices
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
 import com.yandex.mapkit.directions.DirectionsFactory
@@ -25,11 +28,14 @@ import com.yandex.mapkit.user_location.UserLocationLayer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import uz.mrx.aripro.R
+import uz.mrx.aripro.data.local.shp.MySharedPreference
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.databinding.ScreenOrderDeliveryBinding
 import uz.mrx.aripro.presentation.ui.viewmodel.order.OrderDeliveryScreenViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.order.impl.OrderDeliveryScreenViewModelImpl
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
@@ -43,6 +49,12 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     private lateinit var drivingRouter: DrivingRouter
 
+    @Inject
+    lateinit var sharedPref: MySharedPreference
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+    }
 
     private var phone: String? = null
     private var orderId: Int? = null
@@ -57,6 +69,19 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+        viewModel.connectWebSocket("ws://ari.uzfati.uz/ws/pro/connect/", sharedPref.token)
+
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED) {
+
+            // Ruxsat so'rash
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+        } else {
+            startSendingLocation()
+        }
 
         mapView = binding.mapView
 
@@ -220,6 +245,46 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     }
 
 
+    private fun startSendingLocation() {
+        lifecycleScope.launch {
+            try {
+                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+                val location = fusedLocationClient.lastLocation.await()
+
+                location?.let {
+                    val latitude = it.latitude
+                    val longitude = it.longitude
+
+                    viewModel.startSendingLocation {
+                        Pair(latitude, longitude)
+                    }
+                } ?: run {
+                    Log.e("Location", "Location is null")
+                }
+            } catch (e: SecurityException) {
+                Log.e("Location", "Permission denied: ${e.message}")
+            }
+        }
+    }
+
+    // Ruxsat natijasini qayta ishlash
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startSendingLocation()
+            } else {
+                Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+
     private fun getLastKnownLocation(callback: (android.location.Location?) -> Unit) {
         val fusedLocationClient =
             com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(
@@ -336,5 +401,11 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         }
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.stopSendingLocation()
+    }
+
 
 }

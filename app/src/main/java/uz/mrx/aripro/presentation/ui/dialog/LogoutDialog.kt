@@ -31,6 +31,7 @@ class LogoutDialog : DialogFragment() {
         }
 
         return dialog
+
     }
 
     override fun onDestroyView() {

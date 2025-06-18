@@ -1,8 +1,14 @@
 package uz.mrx.aripro.data.remote.websocket
 
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -22,6 +28,10 @@ class CourierWebSocketClient @Inject constructor() {
         .build()
 
     private var webSocket: WebSocket? = null
+
+    // 🔁 GPS update uchun coroutine
+    private var locationUpdateJob: Job? = null
+
 
     private val _incomingOrders = flow<WebSocketOrderEvent.NewOrder>()
     val incomingOrders = _incomingOrders.asSharedFlow()  // Exposing the flow
@@ -93,6 +103,33 @@ class CourierWebSocketClient @Inject constructor() {
         })
     }
 
+    fun startSendingLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) {
+        locationUpdateJob?.cancel() // avvalgi ishni to‘xtatish
+
+        locationUpdateJob = CoroutineScope(Dispatchers.IO).launch {
+            while (isActive) {
+                try {
+                    val (latitude, longitude) = locationProvider()
+                    val json = JSONObject().apply {
+                        put("action", "location_update")
+                        put("latitude", latitude)
+                        put("longitude", longitude)
+                    }
+                    webSocket?.send(json.toString())
+                    Log.d("WebSocket", "Location sent: $json")
+                } catch (e: Exception) {
+                    Log.e("WebSocket", "Error sending location: ${e.localizedMessage}")
+                }
+                delay(5000L) // har 5 sekundda yuboriladi
+            }
+        }
+    }
+
+    fun stopSendingLocationUpdates() {
+        locationUpdateJob?.cancel()
+        locationUpdateJob = null
+    }
+
     fun sendMessage(message: String) {
         webSocket?.send(message)
     }
@@ -103,12 +140,14 @@ class CourierWebSocketClient @Inject constructor() {
     }
 
     private fun reconnect() {
+        disconnect() // Disconnect old socket first
         currentUrl?.let { url ->
             currentToken?.let { token ->
                 connect(url, token)
             }
         }
     }
+
 
     private fun parseMessage(text: String): ResultData<WebSocketOrderEvent> {
         return try {

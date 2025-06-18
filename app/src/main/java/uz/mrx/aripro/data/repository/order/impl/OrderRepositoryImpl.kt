@@ -73,6 +73,16 @@ class OrderRepositoryImpl @Inject constructor(
         webSocketClient.disconnect()
     }
 
+    override fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) {
+        webSocketClient.startSendingLocationUpdates(locationProvider)
+    }
+
+    // 🔹 Lokatsiyani yuborishni to‘xtatish
+    override fun stopLocationUpdates() {
+        webSocketClient.stopSendingLocationUpdates()
+    }
+
+
     override suspend fun getOrderActive(id: Int) = channelFlow<ResultData<OrderActiveResponse>> {
         try {
 

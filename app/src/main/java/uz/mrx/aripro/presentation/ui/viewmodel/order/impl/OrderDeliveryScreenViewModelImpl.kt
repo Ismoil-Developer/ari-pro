@@ -5,9 +5,11 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
+import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
 import uz.mrx.aripro.domain.usecase.order.OrderUseCase
 import uz.mrx.aripro.presentation.direction.order.OrderDeliveryScreenDirection
 import uz.mrx.aripro.presentation.ui.viewmodel.order.OrderDeliveryScreenViewModel
@@ -59,6 +61,21 @@ class OrderDeliveryScreenViewModelImpl @Inject constructor(private val orderUseC
         }
     }
 
+    override fun startSendingLocation(locationProvider: suspend () -> Pair<Double, Double>) {
+        orderUseCase.startLocationUpdates(locationProvider)
+    }
+
+    override fun stopSendingLocation() = orderUseCase.stopLocationUpdates()
+
+    override fun connectWebSocket(url: String, token: String) {
+
+        orderUseCase   .connectWebSocket(url, token)
+
+    }
+
+    override fun disconnectWebSocket() {
+        orderUseCase.disconnectWebSocket()
+    }
 
     init {
         viewModelScope.launch {
