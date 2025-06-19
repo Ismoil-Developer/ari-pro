@@ -24,10 +24,9 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:drawablePadding="6dp"
+        android:layout_marginStart="10dp"
         android:fontFamily="@font/font_family"
-        android:text="Cancel order"
+        android:text="@string/buyurtmani_bekor_qilish"
         android:textColor="@color/text_color_bold"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/icBack"
@@ -58,7 +57,7 @@
         android:layout_marginBottom="30dp"
         android:background="@drawable/back_google_edt"
         android:gravity="start|top"
-        android:hint="Other reason ... "
+        android:hint="@string/boshqa_sabab"
         android:padding="@dimen/_10sdp"
         app:layout_constraintBottom_toTopOf="@id/btn_continue"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,8 +76,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/back_style_button"
         android:fontFamily="@font/font_family_medium"
-        android:text="Submit"
+        android:text="@string/davom_etish"
         android:textAllCaps="false"
+        android:textSize="16sp"
         android:textColor="@color/white" />
 
 

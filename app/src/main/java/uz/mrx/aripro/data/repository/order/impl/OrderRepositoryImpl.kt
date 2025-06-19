@@ -87,73 +87,70 @@ class OrderRepositoryImpl @Inject constructor(
         try {
 
             val response = api.getOrderActive(id)
+            if (response.isSuccessful){
 
-            if (response.isSuccessful) {
+                val registerResponse = response.body()
 
-                val profileResponse = response.body()
-                if (profileResponse != null) {
-                    trySend(ResultData.success(profileResponse))
-                } else {
-                    close(Exception("No data found for the provided ID"))
+                if (registerResponse != null){
+                    trySend(ResultData.success(registerResponse))
+                }else{
+                    trySend(ResultData.messageText("Something went wrong"))
                 }
-            } else {
-                val errorMessage = "Error ${response.code()}: ${response.message()}"
-                Log.e("API_ERROR", errorMessage)
-                close(Exception(errorMessage))
+            }else {
+                val errorBody = response.errorBody()?.string()
+                send(ResultData.error(Exception(errorBody)))
             }
         } catch (e: Exception) {
-            Log.e("API_EXCEPTION", "Exception while fetching data by ID: ${e.message}")
-            close(e)
+            send(ResultData.error(e))
         }
-    }
+    }.catch { emit(ResultData.error(it)) }
 
     override suspend fun getOrderActiveToken() = channelFlow<ResultData<OrderActiveResponse>> {
         try {
 
             val response = api.getOrderActiveToken()
+            if (response.isSuccessful){
 
-            if (response.isSuccessful) {
+                val registerResponse = response.body()
 
-                val profileResponse = response.body()
-                if (profileResponse != null) {
-                    trySend(ResultData.success(profileResponse))
-                } else {
-                    close(Exception("No data found for the provided ID"))
+                if (registerResponse != null){
+                    trySend(ResultData.success(registerResponse))
+                }else{
+                    trySend(ResultData.messageText("Something went wrong"))
                 }
-            } else {
-                val errorMessage = "Error ${response.code()}: ${response.message()}"
-                Log.e("API_ERROR", errorMessage)
-                close(Exception(errorMessage))
+            }else {
+                val errorBody = response.errorBody()?.string()
+                send(ResultData.error(Exception(errorBody)))
             }
         } catch (e: Exception) {
-            Log.e("API_EXCEPTION", "Exception while fetching data by ID: ${e.message}")
-            close(e)
+            send(ResultData.error(e))
         }
-    }
+    }.catch { emit(ResultData.error(it)) }
 
 
 
-    override suspend fun postDeliveryActive(): Flow<ResultData<WorkActiveResponse>> = channelFlow {
+    override suspend fun postDeliveryActive() = channelFlow<ResultData<WorkActiveResponse>>{
         try {
+
             val response = api.postDeliveryActive()
 
-            if (response.isSuccessful) {
-                val deliveryResponse = response.body()
-                if (deliveryResponse != null) {
-                    trySend(ResultData.success(deliveryResponse))
-                } else {
-                    close(Exception("No data found in postDeliveryActive response"))
+            if (response.isSuccessful){
+
+                val registerResponse = response.body()
+
+                if (registerResponse != null){
+                    trySend(ResultData.success(registerResponse))
+                }else{
+                    trySend(ResultData.messageText("Something went wrong"))
                 }
-            } else {
-                val errorMessage = "Error ${response.code()}: ${response.message()}"
-                Log.e("API_ERROR", errorMessage)
-                close(Exception(errorMessage))
+            }else {
+                val errorBody = response.errorBody()?.string()
+                send(ResultData.error(Exception(errorBody)))
             }
         } catch (e: Exception) {
-            Log.e("API_EXCEPTION", "Exception in postDeliveryActive: ${e.message}")
-            close(e)
+            send(ResultData.error(e))
         }
-    }
+    }.catch { emit(ResultData.error(it)) }
 
     override suspend fun postDirection(
         id: Int,

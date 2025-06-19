@@ -26,25 +26,26 @@ class ProfileRepositoryImpl @Inject constructor(private val api: ProfileApi, @Ap
 
         try {
 
-            val response = api.getProfile()
+        val response = api.getProfile()
 
-            if (response.isSuccessful) {
+        if (response.isSuccessful) {
 
-                val profileResponse = response.body()
-                if (profileResponse != null) {
-                    trySend(ResultData.success(profileResponse))
-                } else {
-                    close(Exception("No data found for the provided ID"))
-                }
+            val profileResponse = response.body()
+            if (profileResponse != null) {
+                trySend(ResultData.success(profileResponse))
             } else {
-                val errorMessage = "Error ${response.code()}: ${response.message()}"
-                Log.e("API_ERROR", errorMessage)
-                close(Exception(errorMessage))
+                close(Exception("No data found for the provided ID"))
             }
-        } catch (e: Exception) {
-            Log.e("API_EXCEPTION", "Exception while fetching data by ID: ${e.message}")
-            close(e)
+        } else {
+            val errorMessage = "Error ${response.code()}: ${response.message()}"
+            Log.e("API_ERROR", errorMessage)
+            close(Exception(errorMessage))
         }
+    } catch (e: Exception) {
+        Log.e("API_EXCEPTION", "Exception while fetching data by ID: ${e.message}")
+        close(e)
+    }
+
     }
 
     override suspend fun getProfilePage() = channelFlow<ResultData<ProfileResponse>> {

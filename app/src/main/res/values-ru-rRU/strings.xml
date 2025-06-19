@@ -1,6 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">AriPro</string>
-    <string name="profile">Profil</string>
+
+    <string name="profile">Профиле</string>
     <string name="qo_ng_iroq">Qo\'ng\'iroq</string>
     <string name="chat">Chat</string>
     <string name="telegram">Telegram</string>

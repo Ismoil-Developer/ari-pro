@@ -26,17 +26,14 @@ interface OrderDeliveryScreenViewModel {
 
     fun openChatScreen()
 
-
     fun startSendingLocation(locationProvider: suspend () -> Pair<Double, Double>)
 
     fun stopSendingLocation()
 
-
     fun connectWebSocket(url: String, token: String)
+
     fun disconnectWebSocket()
 
-
-
-
+    val activeErrorResponse:Flow<String>
 
 }

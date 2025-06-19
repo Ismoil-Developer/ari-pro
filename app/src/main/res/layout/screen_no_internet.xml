@@ -23,7 +23,7 @@
         android:fontFamily="@font/font_family_medium"
         android:gravity="center"
         android:textSize="22sp"
-        android:text="No internet found, Please check your network."
+        android:text="@string/internet_mavjud_emas_ltimos_tekshirib_ko_ring"
         android:textColor="@color/gray500" />
 
 

@@ -2,8 +2,10 @@ package uz.mrx.aripro.app
 
 import android.app.Application
 import com.yandex.mapkit.MapKitFactory
-import com.yandex.mapkit.transport.TransportFactory
+import com.yariksoffice.lingver.Lingver
 import dagger.hilt.android.HiltAndroidApp
+import uz.mrx.aripro.data.local.shp.MySharedPreference
+import javax.inject.Inject
 
 @HiltAndroidApp
 class App : Application() {
@@ -13,15 +15,20 @@ class App : Application() {
             private set
     }
 
+    @Inject
+    lateinit var sharedPreference: MySharedPreference
+
     override fun onCreate() {
         super.onCreate()
 
-        MapKitFactory.setApiKey("79fb340d-f68a-4f8b-b729-8f19f413786d") // API key
-        MapKitFactory.initialize(this)
-        TransportFactory.initialize(this)
-
-
         instance = this
-    }
 
+        MapKitFactory.setApiKey("79fb340d-f68a-4f8b-b729-8f19f413786d")
+        MapKitFactory.initialize(this)
+
+        // Lingver init
+        val languageCode = sharedPreference.language // "uz", "en", "ru", etc.
+        Lingver.init(this, languageCode)
+
+    }
 }

@@ -1,9 +1,7 @@
 package uz.mrx.aripro.data.repository.register.impl
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
-import kotlinx.coroutines.flow.flow
 import uz.mrx.aripro.data.remote.api.RegisterApi
 import uz.mrx.aripro.data.remote.request.register.ConfirmRequest
 import uz.mrx.aripro.data.remote.request.register.RegisterRequest
@@ -30,13 +28,16 @@ class RegisterRepositoryImpl @Inject constructor(private val api: RegisterApi) :
                 }else{
                     trySend(ResultData.messageText("Something went wrong"))
                 }
+
             }else {
                 val errorBody = response.errorBody()?.string()
                 send(ResultData.error(Exception(errorBody)))
             }
+
         } catch (e: Exception) {
             send(ResultData.error(e))
         }
+
     }.catch { emit(ResultData.error(it)) }
 
     override suspend fun confirm(request: ConfirmRequest) = channelFlow<ResultData<ConfirmResponse>> {

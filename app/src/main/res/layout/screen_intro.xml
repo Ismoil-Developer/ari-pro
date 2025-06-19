@@ -32,7 +32,7 @@
             android:layout_marginTop="20dp"
             android:fontFamily="@font/font_family"
             android:gravity="center"
-            android:text="Ari platforasiga ga xush \nkelibsiz!"
+            android:text="@string/ari_platformasiga_ga_xush_nkelibsiz"
             android:textColor="@color/text_color_bold"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,7 +46,7 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/font_family_medium"
             android:gravity="center"
-            android:text="Kerakli bo’lgan manzillarni biz bilan toping"
+            android:text="@string/kerakli_bo_lgan_manzillarni_biz_bilan_toping"
             android:textColor="@color/gray500"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -89,7 +89,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/font_family_medium"
                     android:gravity="start|center_vertical"
-                    android:text="Yuqori baholangan joylarni osongina toping"
+                    android:text="@string/yuqori_baholangan_joylarni_osongina_toping"
                     android:textColor="@color/text_color_bold"
                     android:textSize="14sp" />
 
@@ -140,7 +140,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/font_family_medium"
                     android:gravity="start|center_vertical"
-                    android:text="Manzilingiz haqida barcha ma’lumotlar"
+                    android:text="@string/manzilingiz_haqida_barcha_ma_lumotlar"
                     android:textColor="@color/text_color_bold"
                     android:textSize="14sp" />
 
@@ -192,7 +192,7 @@
                     android:layout_height="match_parent"
                     android:fontFamily="@font/font_family_medium"
                     android:gravity="start|center_vertical"
-                    android:text="Xaritalar orqali manzilni qiyinchiliklarsiz topish"
+                    android:text="@string/xaritalar_orqali_manzilni_qiyinchiliklarsiz_topish"
                     android:textColor="@color/text_color_bold"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -217,7 +217,7 @@
             android:layout_marginTop="12dp"
             android:background="@drawable/back_style_button"
             android:fontFamily="@font/font_family_medium"
-            android:text="Kirish"
+            android:text="@string/kirish"
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"

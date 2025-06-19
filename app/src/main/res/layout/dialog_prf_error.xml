@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="Profilingizdagi ma’lumotni o’zgartirishda hatolik yuz berdi"
+            android:text="@string/profilingizdagi_ma_lumotni_o_zgartirishda_xatolik_yuz_berdi"
             android:gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginHorizontal="16dp"

@@ -25,7 +25,7 @@
         android:layout_marginStart="6dp"
         android:drawablePadding="6dp"
         android:fontFamily="@font/font_family"
-        android:text="Profile"
+        android:text="@string/profile"
         android:textColor="@color/text_color_bold"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="@id/icBack"
@@ -53,7 +53,7 @@
         android:layout_marginTop="20dp"
         android:drawablePadding="6dp"
         android:fontFamily="@font/font_family"
-        android:text="Profile Info"
+        android:text="@string/profil_ma_lumoti"
         android:textColor="@color/text_color_bold"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -76,18 +76,6 @@
             android:layout_height="match_parent"
             android:background="@color/mainBgColor">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="21dp"
-                android:drawablePadding="6dp"
-                android:fontFamily="@font/font_family_medium"
-                android:text="Your name"
-                android:textColor="@color/text_color_bold"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -96,7 +84,7 @@
                 android:layout_marginTop="21dp"
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
-                android:text="Your name"
+                android:text="@string/ismingiz"
                 android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -124,7 +112,7 @@
                 android:layout_marginTop="21dp"
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
-                android:text="Phone number"
+                android:text="@string/telefon_raqam"
                 android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -153,7 +141,7 @@
                 android:layout_marginBottom="21dp"
                 android:drawablePadding="6dp"
                 android:fontFamily="@font/font_family_medium"
-                android:text="Ish vaqti"
+                android:text="@string/ish_vaqti"
                 android:textColor="@color/text_color_bold"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -200,14 +188,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/font_family_medium"
-                android:src="@drawable/ic_edit_btn" />
+                android:src="@drawable/ic_profile"
+                app:tint="@color/white"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/font_family"
-                android:text="Edit"
+                android:text="To'liq ma`lumot"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -232,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/font_family"
-                android:text="Edit Language"
+                android:text="@string/til_tanlash"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -257,7 +247,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/font_family"
-                android:text="Edit Contact us"
+                android:text="@string/bog_lanish"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -315,7 +305,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:fontFamily="@font/font_family"
-                android:text="Log Out"
+                android:text="@string/hisobdan_chiqish"
                 android:textColor="@color/red"
                 android:textSize="16sp" />
 

@@ -23,7 +23,6 @@ import com.yandex.mapkit.directions.DirectionsFactory
 import com.yandex.mapkit.directions.driving.DrivingRouter
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
-import com.yandex.mapkit.mapview.MapView
 import com.yandex.mapkit.user_location.UserLocationLayer
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -42,12 +41,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     private val binding: ScreenOrderDeliveryBinding by viewBinding(ScreenOrderDeliveryBinding::bind)
     private val viewModel: OrderDeliveryScreenViewModel by viewModels<OrderDeliveryScreenViewModelImpl>()
-    private val args:OrderDeliveryScreenArgs by navArgs()
-
-    private lateinit var mapView: MapView
-    private var userLocationLayer: UserLocationLayer? = null
-
-    private lateinit var drivingRouter: DrivingRouter
+    private val args: OrderDeliveryScreenArgs by navArgs()
 
     @Inject
     lateinit var sharedPref: MySharedPreference
@@ -65,7 +59,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         "arrived_at_store",
         "picked_up",
         "en_route_to_customer",
-        "arrived_to_customer")
+        "arrived_to_customer"
+    )
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,26 +68,28 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         viewModel.connectWebSocket("ws://ari.uzfati.uz/ws/pro/connect/", sharedPref.token)
 
+        val mapView = binding.mapView
+        val mapKit = MapKitFactory.getInstance()
 
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED) {
+
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
 
             // Ruxsat so'rash
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), LOCATION_PERMISSION_REQUEST_CODE)
+            requestPermissions(
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
         } else {
             startSendingLocation()
         }
 
-        mapView = binding.mapView
 
-        val mapKit = MapKitFactory.getInstance()
-        userLocationLayer = mapKit.createUserLocationLayer(mapView.mapWindow).apply {
-            isVisible = true
-            isHeadingEnabled = true
-        }
-
-
-        drivingRouter = DirectionsFactory.getInstance().createDrivingRouter()
 
         binding.message.setOnClickListener {
             viewModel.openChatScreen()
@@ -100,13 +97,15 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
 
         binding.orderCancel.setOnClickListener {
-            if (orderId != -1){
+
+            if (orderId != null && orderId != -1) {
                 viewModel.orderCancelScreen(orderId!!)
             }
+
         }
 
         binding.detail.setOnClickListener {
-            if (orderId != -1){
+            if (orderId != null && orderId != -1) {
                 viewModel.openOrderDetailScreen(orderId!!)
             }
         }
@@ -146,37 +145,38 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         }
 
 
-        if (args.id != -1){
+        if (args.id != -1) {
             viewModel.getOrderActive(args.id)
-        }else{
+        } else {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.orderActiveToken.collectLatest { order ->
+                    if (order != null) {
+                        orderId = order.id
+                        currentDirection = order.direction
 
+                        phone = order.customer_info.phone_number
+                        binding.courierRating.text = order.customer_info.rating.toString()
 
+                        if (!order.customer_info.avatar.isNullOrEmpty()) {
+                            Glide.with(requireContext()).load(order.customer_info.avatar)
+                                .into(binding.prf)
+                        }
 
-                    orderId = order.id
-                    currentDirection = order.direction
-
-                    phone = order.customer_info.phone_number
-                    binding.courierRating.text = order.customer_info.rating.toString()
-
-                    if (!order.customer_info.avatar.isNullOrEmpty()) {
-                        Glide.with(requireContext()).load(order.customer_info.avatar).into(binding.prf)
+                        binding.courierName.text = order.customer_info.full_name
+                        binding.swipeView.setText(getButtonText(order.direction))
+                    } else {
+                        // optional: error UI
                     }
-
-                    binding.courierName.text = order.customer_info.full_name
-                    binding.swipeView.setText(getButtonText(order.direction))
-
-                    // step indikatorni yangilash
-
                 }
             }
+
         }
 
         binding.btnContinue.setOnClickListener {
             val defaultLat = 41.311081
             val defaultLong = 69.240562
-            val uri = Uri.parse("geo:$defaultLat,$defaultLong?q=$defaultLat,$defaultLong(Yetkazib+berish+joyi)")
+            val uri =
+                Uri.parse("geo:$defaultLat,$defaultLong?q=$defaultLat,$defaultLong(Yetkazib+berish+joyi)")
             val intent = Intent(Intent.ACTION_VIEW, uri)
             val chooser = Intent.createChooser(intent, "Xaritani tanlang")
             if (intent.resolveActivity(requireActivity().packageManager) != null) {
@@ -219,7 +219,28 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             }
         }
 
-        if (args.id != -1){
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.activeErrorResponse.collectLatest { errorMessage ->
+                // Bu yerda 404 xatoni qayta ishlash
+                if (errorMessage.contains("No active order")) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Sizda hozirda faol zakaz mavjud emas",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    // Istasangiz boshqa sahifaga yo'naltiring yoki ekranda xabar chiqaring
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Xatolik yuz berdi: $errorMessage",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+
+        if (args.id != -1) {
             viewLifecycleOwner.lifecycleScope.launch {
                 viewModel.orderActiveResponse.collectLatest { order ->
                     orderId = order.id
@@ -229,7 +250,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                     binding.courierRating.text = order.customer_info.rating.toString()
 
                     if (!order.customer_info.avatar.isNullOrEmpty()) {
-                        Glide.with(requireContext()).load(order.customer_info.avatar).into(binding.prf)
+                        Glide.with(requireContext()).load(order.customer_info.avatar)
+                            .into(binding.prf)
                     }
 
                     binding.courierName.text = order.customer_info.full_name
@@ -248,7 +270,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     private fun startSendingLocation() {
         lifecycleScope.launch {
             try {
-                val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+                val fusedLocationClient =
+                    LocationServices.getFusedLocationProviderClient(requireContext())
                 val location = fusedLocationClient.lastLocation.await()
 
                 location?.let {
@@ -278,23 +301,26 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startSendingLocation()
             } else {
-                Toast.makeText(requireContext(), "Location permission is required", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Location permission is required",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
 
-
     private fun getLastKnownLocation(callback: (android.location.Location?) -> Unit) {
         val fusedLocationClient =
-            com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(
+            LocationServices.getFusedLocationProviderClient(
                 requireActivity()
             )
 
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             val locationRequest = com.google.android.gms.location.LocationRequest.create().apply {
                 priority = com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
@@ -325,11 +351,10 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             }
         } else {
             // Ruxsat so'rash
-            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
             callback(null)
         }
     }
-
 
 
     private fun getNextDirection(currentDirection: String): String? {
@@ -343,7 +368,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             "arrived_at_store",
             "picked_up",
             "en_route_to_customer",
-            "arrived_to_customer")
+            "arrived_to_customer"
+        )
 
         val nextIndex = directions.indexOf(direction) + 1
         val nextDirection = directions.getOrNull(nextIndex)
@@ -377,11 +403,13 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             "arrived_at_store" -> {
                 binding.arrivedAtStore.setColorFilter(activeColor)
             }
+
             "picked_up" -> {
                 binding.arrivedAtStore.setColorFilter(activeColor)
                 binding.line.setBackgroundColor(activeColor)
                 binding.pickedUp.setColorFilter(activeColor)
             }
+
             "en_route_to_customer" -> {
                 binding.arrivedAtStore.setColorFilter(activeColor)
                 binding.line.setBackgroundColor(activeColor)
@@ -389,6 +417,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 binding.line2.setBackgroundColor(activeColor)
                 binding.enRouteToCustomer.setColorFilter(activeColor)
             }
+
             "arrived_to_customer" -> {
                 binding.arrivedAtStore.setColorFilter(activeColor)
                 binding.line.setBackgroundColor(activeColor)
@@ -406,6 +435,31 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         super.onDestroyView()
         viewModel.stopSendingLocation()
     }
+
+//    override fun onStart() {
+//        super.onStart()
+//        MapKitFactory.getInstance().onStart()
+//        binding.mapView.onStart()
+//    }
+//
+//    override fun onStop() {
+//        binding.mapView.onStop()
+//        MapKitFactory.getInstance().onStop()
+//        super.onStop()
+//    }
+
+    override fun onStart() {
+        super.onStart()
+        binding.mapView.onStart()
+        MapKitFactory.getInstance().onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.mapView.onStop()
+        MapKitFactory.getInstance().onStop()
+    }
+
 
 
 }

@@ -10,8 +10,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
+
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="140dp"
@@ -54,7 +54,7 @@
                 android:layout_marginBottom="24dp"
                 android:fontFamily="@font/font_family"
                 android:gravity="center"
-                android:text="Nomer"
+                android:text="@string/telefon_raqam"
                 android:textColor="@color/text_color_bold"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toTopOf="@+id/phoneNumber"
@@ -70,8 +70,8 @@
                 android:layout_marginHorizontal="50dp"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:text="Tasdiqlash kodi +998 97 123-45-67 raqamiga \nyuborildi"
-                android:textColor="@color/gray500"
+                android:text="Tasdiqlash kodi +998 97 123-45-67 raqamiga yuborildi"
+                android:textColor="@color/text_color_medium"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@id/passwordContainer"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -80,19 +80,20 @@
             <LinearLayout
                 android:id="@+id/passwordContainer"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="65dp"
                 android:layout_marginHorizontal="10dp"
-                android:layout_marginBottom="84dp"
+                android:layout_marginBottom="74dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@id/repeatBtn">
 
                 <EditText
                     android:id="@+id/edt1"
-                    android:layout_width="50dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
+                    android:layout_weight="1"
                     android:background="@drawable/back_confirm"
                     android:gravity="center"
                     android:inputType="number"
@@ -103,26 +104,28 @@
 
                 <EditText
                     android:id="@+id/edt2"
-                    android:layout_width="50dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
                     android:background="@drawable/back_confirm"
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="1"
+                    android:layout_weight="1"
                     android:textColor="@color/text_color_bold"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/edt3"
-                    android:layout_width="50dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
                     android:background="@drawable/back_confirm"
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="1"
+                    android:layout_weight="1"
                     android:textColor="@color/text_color_bold"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -130,26 +133,42 @@
 
                 <EditText
                     android:id="@+id/edt4"
-                    android:layout_width="50dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
                     android:background="@drawable/back_confirm"
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="1"
+                    android:layout_weight="1"
                     android:textColor="@color/text_color_bold"
                     android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/edt5"
-                    android:layout_width="50dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="5dp"
+                    android:background="@drawable/back_confirm"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:layout_weight="1"
+                    android:maxLength="1"
+                    android:textColor="@color/text_color_bold"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/edt6"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginHorizontal="5dp"
                     android:background="@drawable/back_confirm"
                     android:gravity="center"
                     android:inputType="number"
                     android:maxLength="1"
+                    android:layout_weight="1"
                     android:textColor="@color/text_color_bold"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -183,7 +202,7 @@
                         android:layout_marginStart="76dp"
                         android:layout_marginEnd="100dp"
                         android:fontFamily="@font/font_family_medium"
-                        android:text="Kodni qayta yuborish:"
+                        android:text="@string/kodni_qayta_yuborish"
                         android:textColor="@color/white"
                         android:textSize="14sp"
                         android:textStyle="normal"
@@ -204,7 +223,6 @@
                         app:layout_constraintStart_toEndOf="@id/repeatText"
                         app:layout_constraintTop_toTopOf="parent" />
 
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </com.google.android.material.card.MaterialCardView>
@@ -218,7 +236,7 @@
                 android:background="@drawable/back_style_button_white"
                 android:fontFamily="@font/font_family_medium"
                 android:gravity="center"
-                android:text="Raqam ozgartirish"
+                android:text="@string/raqam_o_zgartirish"
                 android:textAllCaps="false"
                 android:textColor="@color/text_color_bold"
                 android:textSize="14sp"

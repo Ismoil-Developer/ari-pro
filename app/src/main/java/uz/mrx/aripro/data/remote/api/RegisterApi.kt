@@ -10,10 +10,10 @@ import uz.mrx.aripro.data.remote.response.register.RegisterResponse
 
 interface RegisterApi {
 
-    @POST("/pro/register/")
+    @POST("/pro/send-code/")
     suspend fun postRegister(@Body request: RegisterRequest): Response<RegisterResponse>
 
-    @POST("/pro/register/")
+    @POST("/pro/verify-code/")
     suspend fun postConfirm(@Body request: ConfirmRequest): Response<ConfirmResponse>
 
 }

@@ -8,11 +8,19 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.yariksoffice.lingver.Lingver
+import dagger.hilt.android.AndroidEntryPoint
+import uz.mrx.aripro.data.local.shp.MySharedPreference
 import uz.mrx.aripro.databinding.DialogLanguageBinding
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class LanguageDialog : DialogFragment() {
 
     private lateinit var binding: DialogLanguageBinding
+
+    @Inject
+    lateinit var sharedPreference: MySharedPreference
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogLanguageBinding.inflate(LayoutInflater.from(context))
@@ -20,37 +28,38 @@ class LanguageDialog : DialogFragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setView(binding.root)
 
-        // Dialog yopish tugmalari
-        binding.yes.setOnClickListener {
-            dismiss()
-        }
+        // Yopish tugmalari
+        binding.yes.setOnClickListener { dismiss() }
+        binding.no.setOnClickListener { dismiss() }
 
-        binding.no.setOnClickListener {
-            dismiss()
-        }
-
-        // Tilni tanlash bo'yicha ishlov berish
+        // O'zbek tilini tanlash
         binding.rbUz.setOnClickListener {
-            Toast.makeText(requireContext(), "O'zbek tili tanlandi", Toast.LENGTH_SHORT).show()
-            dismiss()
+            changeLanguage("uz")
         }
 
+        // Rus tilini tanlash
         binding.rbRus.setOnClickListener {
-            Toast.makeText(requireContext(), "Русский язык выбран", Toast.LENGTH_SHORT).show()
-            dismiss()
+            changeLanguage("ru")
         }
 
         return builder.create()
     }
 
+    private fun changeLanguage(languageCode: String) {
+        sharedPreference.language = languageCode // sharedPreferenceda saqlash
+        Lingver.getInstance().setLocale(requireContext(), languageCode) // tilni o'zgartirish
+        Toast.makeText(requireContext(), "Til o'zgartirildi", Toast.LENGTH_SHORT).show()
+        dismiss()
+        requireActivity().recreate() // Aktivitetni qayta yuklab, tilni amalda ko‘rsatish
+    }
+
     override fun onStart() {
         super.onStart()
         dialog?.window?.let { window ->
-            // Dialogni ekranning o‘rtasiga joylash
             window.setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            window.setBackgroundDrawableResource(android.R.color.transparent) // Fonni shaffof qilish
-            window.setGravity(Gravity.CENTER) // Dialogni ekranning markaziga qo‘yish
-            window.setWindowAnimations(android.R.style.Animation_Dialog) // Animatsiya (ixtiyoriy)
+            window.setBackgroundDrawableResource(android.R.color.transparent)
+            window.setGravity(Gravity.CENTER)
+            window.setWindowAnimations(android.R.style.Animation_Dialog)
         }
     }
 }

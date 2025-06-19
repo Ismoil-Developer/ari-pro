@@ -3,13 +3,12 @@ package uz.mrx.aripro.presentation.ui.viewmodel.order.impl
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
-import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
 import uz.mrx.aripro.domain.usecase.order.OrderUseCase
 import uz.mrx.aripro.presentation.direction.order.OrderDeliveryScreenDirection
 import uz.mrx.aripro.presentation.ui.viewmodel.order.OrderDeliveryScreenViewModel
@@ -17,12 +16,15 @@ import uz.mrx.aripro.utils.flow
 import javax.inject.Inject
 
 @HiltViewModel
-class OrderDeliveryScreenViewModelImpl @Inject constructor(private val orderUseCase: OrderUseCase, private val direction: OrderDeliveryScreenDirection):OrderDeliveryScreenViewModel,ViewModel() {
+class OrderDeliveryScreenViewModelImpl @Inject constructor(
+    private val orderUseCase: OrderUseCase,
+    private val direction: OrderDeliveryScreenDirection
+) : OrderDeliveryScreenViewModel, ViewModel() {
     override val orderActiveResponse = flow<OrderActiveResponse>()
 
     override fun postDirection(id: Int, request: DirectionRequest) {
         viewModelScope.launch {
-            orderUseCase.postDirection(id,request).collectLatest {
+            orderUseCase.postDirection(id, request).collectLatest {
 
                 it.onError {
 
@@ -39,6 +41,7 @@ class OrderDeliveryScreenViewModelImpl @Inject constructor(private val orderUseC
     override val responseDirection = flow<DirectionResponse>()
 
     override val orderActiveToken = flow<OrderActiveResponse>()
+
     override fun openOrderCompletedScreen(id: Int) {
         viewModelScope.launch {
             direction.openOrderCompletedScreen(id)
@@ -48,12 +51,14 @@ class OrderDeliveryScreenViewModelImpl @Inject constructor(private val orderUseC
     override fun openOrderDetailScreen(id: Int) {
         viewModelScope.launch {
             direction.openOrderDetail(id)
-        }    }
+        }
+    }
 
     override fun orderCancelScreen(id: Int) {
         viewModelScope.launch {
             direction.openOrderCancelScreen(id)
-        }    }
+        }
+    }
 
     override fun openChatScreen() {
         viewModelScope.launch {
@@ -69,9 +74,11 @@ class OrderDeliveryScreenViewModelImpl @Inject constructor(private val orderUseC
 
     override fun connectWebSocket(url: String, token: String) {
 
-        orderUseCase   .connectWebSocket(url, token)
+        orderUseCase.connectWebSocket(url, token)
 
     }
+
+    override val activeErrorResponse = flow<String>()
 
     override fun disconnectWebSocket() {
         orderUseCase.disconnectWebSocket()
@@ -81,7 +88,7 @@ class OrderDeliveryScreenViewModelImpl @Inject constructor(private val orderUseC
         viewModelScope.launch {
             orderUseCase.getOrderActiveToken().collectLatest {
                 it.onError {
-
+                    activeErrorResponse.tryEmit(it.message.toString())
                 }
                 it.onSuccess {
                     orderActiveToken.tryEmit(it)

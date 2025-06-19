@@ -10,8 +10,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
-
-
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
@@ -27,9 +26,15 @@
         android:theme="@style/Theme.AriPro"
         tools:targetApi="31">
 
+        <meta-data
+            android:name="com.yandex.android.maps.apikey"
+            android:value="79fb340d-f68a-4f8b-b729-8f19f413786d"/>
+
         <activity
             android:name=".presentation.ui.screen.activity.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
