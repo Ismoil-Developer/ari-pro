@@ -66,11 +66,11 @@ class OrderDeliveryScreenViewModelImpl @Inject constructor(
         }
     }
 
-    override fun startSendingLocation(locationProvider: suspend () -> Pair<Double, Double>) {
-        orderUseCase.startLocationUpdates(locationProvider)
-    }
+//    override fun startSendingLocation(locationProvider: suspend () -> Pair<Double, Double>) {
+//        orderUseCase.startLocationUpdates(locationProvider)
+//    }
 
-    override fun stopSendingLocation() = orderUseCase.stopLocationUpdates()
+//    override fun stopSendingLocation() = orderUseCase.stopLocationUpdates()
 
     override fun connectWebSocket(url: String, token: String) {
 

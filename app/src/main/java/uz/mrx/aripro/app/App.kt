@@ -31,4 +31,5 @@ class App : Application() {
         Lingver.init(this, languageCode)
 
     }
+
 }

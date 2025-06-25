@@ -44,7 +44,6 @@ class LoginScreen : Fragment(R.layout.screen_login) {
 
         })
 
-
         lifecycleScope.launchWhenStarted {
             viewModel.isLoading.collectLatest { isLoading ->
                 binding.btnContinue.isEnabled = !isLoading
@@ -53,8 +52,6 @@ class LoginScreen : Fragment(R.layout.screen_login) {
             }
         }
 
-
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.isLoading.collectLatest { isLoading ->
@@ -62,9 +59,6 @@ class LoginScreen : Fragment(R.layout.screen_login) {
                 }
             }
         }
-
-
-
 
         binding.btnContinue.setSafeOnClickListener {
             val phoneNumber = binding.phoneNumberEditText.text.toString().trim()
@@ -96,7 +90,6 @@ class LoginScreen : Fragment(R.layout.screen_login) {
         }
 
 
-
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.toastMessage.collectLatest { message ->
@@ -123,13 +116,10 @@ class LoginScreen : Fragment(R.layout.screen_login) {
         }
     }
 
-
-
     fun AppCompatButton.setLoading(isLoading: Boolean, loadingText: String = "Yuklanmoqda...") {
         isEnabled = !isLoading
         text = if (isLoading) loadingText else "Davom etish"
         alpha = if (isLoading) 0.6f else 1f
     }
-
 
 }

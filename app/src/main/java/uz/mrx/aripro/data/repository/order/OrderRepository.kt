@@ -25,9 +25,9 @@ interface OrderRepository {
 
     fun disconnectWebSocket()
 
-    fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>)
-    fun stopLocationUpdates()
+//    fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>)
 
+//    fun stopLocationUpdates()
 
     suspend fun getOrderActive(id: Int):Flow<ResultData<OrderActiveResponse>>
 
@@ -42,8 +42,5 @@ interface OrderRepository {
     suspend fun cancelOrder(id: Int, request: OrderCancelRequest):Flow<ResultData<OrderCancelResponse>>
 
     suspend fun postFeedBack(id: Int, request: OrderFeedBackRequest):Flow<ResultData<OrderFeedBackResponse>>
-
-
-
 
 }

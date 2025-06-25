@@ -1,19 +1,14 @@
 package uz.mrx.aripro.data.remote.websocket
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Looper
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import com.google.android.gms.location.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.Response
-import okhttp3.WebSocket
-import okhttp3.WebSocketListener
+import okhttp3.*
 import org.json.JSONObject
 import uz.mrx.aripro.utils.ResultData
 import uz.mrx.aripro.utils.flow
@@ -28,26 +23,25 @@ class CourierWebSocketClient @Inject constructor() {
         .build()
 
     private var webSocket: WebSocket? = null
+    private var currentUrl: String? = null
+    private var currentToken: String? = null
 
-    // 🔁 GPS update uchun coroutine
     private var locationUpdateJob: Job? = null
 
-
     private val _incomingOrders = flow<WebSocketOrderEvent.NewOrder>()
-    val incomingOrders = _incomingOrders.asSharedFlow()  // Exposing the flow
+    val incomingOrders = _incomingOrders.asSharedFlow()
 
     private val _orderTimeouts = flow<WebSocketOrderEvent.OrderTimeout>()
-    val orderTimeouts = _orderTimeouts.asSharedFlow()  // Exposing the flow
+    val orderTimeouts = _orderTimeouts.asSharedFlow()
 
     private val _orderTakens = flow<WebSocketOrderEvent.OrderTaken>()
     val orderTakens = _orderTakens.asSharedFlow()
 
-    private var currentUrl: String? = null
-    private var currentToken: String? = null
+    private var locationCallback: LocationCallback? = null
+
 
     fun connect(url: String, token: String) {
-
-        if (webSocket != null) return // already connected
+        if (webSocket != null) return
 
         currentUrl = url
         currentToken = token
@@ -58,89 +52,39 @@ class CourierWebSocketClient @Inject constructor() {
             .build()
 
         webSocket = client.newWebSocket(request, object : WebSocketListener() {
-
             override fun onOpen(webSocket: WebSocket, response: Response) {
-                Log.d("WebSocket", "Connection opened")
+                Log.d("WebSocket", "✅ Connected")
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-                Log.d("WebSocket", "Message received: $text")
+                Log.d("WebSocket", "📩 Message: $text")
                 parseMessage(text).onSuccess { event ->
                     when (event) {
-                        is WebSocketOrderEvent.NewOrder -> {
-                            _incomingOrders.tryEmit(event)  // Emit to the shared flow
-                            Log.d("WebSocket", "New Order event: $event")
-                        }
-                        is WebSocketOrderEvent.OrderTaken -> {
-                            _orderTakens.tryEmit(event)
-                            Log.d("WebSocket", "Order Taken event: $event")
-                        }
-                        is WebSocketOrderEvent.OrderTimeout -> {
-                            Log.d("WebSocket", "Order Timeout event: $event")
-                            _orderTimeouts.tryEmit(event)  // Emit to the shared flow
-                        }
-                        is WebSocketOrderEvent.UnknownMessage -> {
-                            // Handle unknown messages if needed
-                            Log.d("WebSocket", "Unknown message: $event")
-                        }
+                        is WebSocketOrderEvent.NewOrder -> _incomingOrders.tryEmit(event)
+                        is WebSocketOrderEvent.OrderTaken -> _orderTakens.tryEmit(event)
+                        is WebSocketOrderEvent.OrderTimeout -> _orderTimeouts.tryEmit(event)
+                        else -> Log.d("WebSocket", "ℹ️ Unknown event")
                     }
-                }.onError { error ->
-                    Log.e("WebSocket", "Parsing error: ${error.localizedMessage}")
+                }.onError {
+                    Log.e("WebSocket", "❌ Parsing error: ${it.localizedMessage}")
                 }
             }
 
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                Log.e("WebSocket", "Error: ${t.localizedMessage}")
-                webSocket.cancel()
+                Log.e("WebSocket", "❌ Connection failed: ${t.message}")
                 this@CourierWebSocketClient.webSocket = null
                 reconnect()
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                Log.d("WebSocket", "Connection closed: $reason")
+                Log.d("WebSocket", "🔌 Closed: $reason")
                 this@CourierWebSocketClient.webSocket = null
             }
         })
     }
 
-    fun startSendingLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) {
-        locationUpdateJob?.cancel() // avvalgi ishni to‘xtatish
-
-        locationUpdateJob = CoroutineScope(Dispatchers.IO).launch {
-            while (isActive) {
-                try {
-                    val (latitude, longitude) = locationProvider()
-                    val json = JSONObject().apply {
-                        put("action", "location_update")
-                        put("latitude", latitude)
-                        put("longitude", longitude)
-                    }
-                    webSocket?.send(json.toString())
-                    Log.d("WebSocket", "Location sent: $json")
-                } catch (e: Exception) {
-                    Log.e("WebSocket", "Error sending location: ${e.localizedMessage}")
-                }
-                delay(5000L) // har 5 sekundda yuboriladi
-            }
-        }
-    }
-
-    fun stopSendingLocationUpdates() {
-        locationUpdateJob?.cancel()
-        locationUpdateJob = null
-    }
-
-    fun sendMessage(message: String) {
-        webSocket?.send(message)
-    }
-
-    fun disconnect() {
-        webSocket?.close(1000, "Client closed")
-        webSocket = null
-    }
-
     private fun reconnect() {
-        disconnect() // Disconnect old socket first
+        disconnect()
         currentUrl?.let { url ->
             currentToken?.let { token ->
                 connect(url, token)
@@ -148,63 +92,106 @@ class CourierWebSocketClient @Inject constructor() {
         }
     }
 
+    fun disconnect() {
+        webSocket?.close(1000, "Client closed")
+        webSocket = null
+    }
 
-    private fun parseMessage(text: String): ResultData<WebSocketOrderEvent> {
-        return try {
-            val json = JSONObject(text)
+    fun sendMessage(message: String) {
+        webSocket?.send(message)
+    }
 
-            when {
-                json.has("shop") && json.has("order_items") -> {
-                    val orderId = json.getInt("order_id")
-                    val shop = json.getString("shop")
-                    val details = json.optString("details", "")
-                    val price = if (json.isNull("price")) null else json.getDouble("price")
-                    val distanceKm = json.optDouble("distance_km", 0.0)
-                    val durationMin = json.optDouble("duration_min", 0.0)
-                    val orderItems = json.optString("order_items", "")
+    @SuppressLint("MissingPermission")
+    fun startSendingLocationUpdates(context: Context) {
+        locationUpdateJob?.cancel()
 
-                    // coordinates optional bo'lishi mumkin
-                    val coordinates = if (json.has("coordinates")) {
-                        val coordsJson = json.getJSONArray("coordinates")
-                        listOf(coordsJson.getDouble(0), coordsJson.getDouble(1))
-                    } else {
-                        emptyList()
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            5000L
+        ).build()
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val location = locationResult.lastLocation
+                if (location != null) {
+                    val json = JSONObject().apply {
+                        put("action", "location_update")
+                        put("latitude", location.latitude)
+                        put("longitude", location.longitude)
                     }
-
-                    ResultData.success(
-                        WebSocketOrderEvent.NewOrder(
-                            orderId = orderId,
-                            shop = shop,
-                            coordinates = coordinates,
-                            details = details,
-                            price = price,
-                            distanceKm = distanceKm,
-                            durationMin = durationMin,
-                            orderItems = orderItems
-                        )
-                    )
+                    webSocket?.send(json.toString())
+                    Log.d("WebSocket", "Location sent: $json")
+                } else {
+                    Log.e("WebSocket", "Location is null")
                 }
-
-                json.has("type") && json.getString("type") == "order_taken" -> {
-                    val orderId = json.getInt("order_id")
-                    ResultData.success(WebSocketOrderEvent.OrderTaken(orderId))
-                }
-
-                json.has("details") && json.has("order_id") -> {
-                    val orderId = json.getInt("order_id")
-                    val details = json.getString("details")
-                    ResultData.success(WebSocketOrderEvent.OrderTimeout(orderId, details))
-                }
-
-                else -> {
-                    ResultData.success(WebSocketOrderEvent.UnknownMessage(text))
-                }
-
             }
-        } catch (e: Exception) {
-            ResultData.error(e)
+        }
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback!!,
+            Looper.getMainLooper()
+        )
+
+        locationUpdateJob = CoroutineScope(Dispatchers.IO).launch {
+            awaitCancellation()
+            fusedLocationClient.removeLocationUpdates(locationCallback!!)
+        }
+    }
+
+    fun stopSendingLocationUpdates(context: Context) {
+        locationUpdateJob?.cancel()
+        locationUpdateJob = null
+
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        locationCallback?.let {
+            fusedLocationClient.removeLocationUpdates(it)
         }
     }
 
 
+    private fun parseMessage(text: String): ResultData<WebSocketOrderEvent> = try {
+        val json = JSONObject(text)
+
+        when {
+            json.has("shop") && json.has("order_items") -> {
+                val orderId = json.getInt("order_id")
+                val shop = json.getString("shop")
+                val details = json.optString("details", "")
+                val price = if (json.isNull("price")) null else json.getDouble("price")
+                val distanceKm = json.optDouble("distance_km", 0.0)
+                val durationMin = json.optDouble("duration_min", 0.0)
+                val orderItems = json.optString("order_items", "")
+
+                val coordinates = if (json.has("coordinates")) {
+                    val coords = json.getJSONArray("coordinates")
+                    listOf(coords.getDouble(0), coords.getDouble(1))
+                } else emptyList()
+
+                ResultData.success(
+                    WebSocketOrderEvent.NewOrder(
+                        orderId, shop, coordinates, details, price, distanceKm, durationMin, orderItems
+                    )
+                )
+            }
+
+            json.optString("type") == "order_taken" -> {
+                ResultData.success(WebSocketOrderEvent.OrderTaken(json.getInt("order_id")))
+            }
+
+            json.has("details") && json.has("order_id") -> {
+                ResultData.success(
+                    WebSocketOrderEvent.OrderTimeout(
+                        json.getInt("order_id"),
+                        json.getString("details")
+                    )
+                )
+            }
+
+            else -> ResultData.success(WebSocketOrderEvent.UnknownMessage(text))
+        }
+    } catch (e: Exception) {
+        ResultData.error(e)
+    }
 }

@@ -55,7 +55,7 @@
     <string name="yetkazish">Yetkazish</string>
     <string name="buyurtma">Buyurtma</string>
     <string name="bosh_sahifa">Bosh sahifa</string>
-    <string name="internet_mavjud_emas_ltimos_tekshirib_ko_ring">Internet mavjud emas, ltimos tekshirib ko\'ring</string>
+    <string name="internet_mavjud_emas_ltimos_tekshirib_ko_ring">Internet mavjud emas, iltimos tekshirib ko\'ring</string>
     <string name="bildirishnoma">Bildirishnoma</string>
     <string name="qidiruv">Qidiruv</string>
     <string name="iltimos_buyurtmachini_baholang">Iltimos Buyurtmachini baholang</string>
@@ -65,4 +65,5 @@
     <string name="kartaga_yo_naltirish">Kartaga yo\'naltirish</string>
     <string name="buyurtma_bekor_qilish">Buyurtma bekor qilish</string>
     <string name="ro_yhat">Ro`yhat</string>
+    <string name="rahmat_buyurtma_yakunlandi">Rahmat! Buyurtma yakunlandi!</string>
 </resources>

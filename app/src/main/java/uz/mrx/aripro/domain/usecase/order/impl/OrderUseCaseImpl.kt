@@ -18,6 +18,10 @@ import javax.inject.Inject
 
 class OrderUseCaseImpl @Inject constructor(private val repository: OrderRepository):OrderUseCase {
 
+//    override fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) =
+//        repository.startLocationUpdates(locationProvider)
+
+//    override fun stopLocationUpdates() = repository.stopLocationUpdates()
     override fun connectWebSocket(url: String, token: String) = repository.connectWebSocket(url, token)
 
     override fun observeMessages(): Flow<WebSocketOrderEvent> = repository.observeMessages()
@@ -28,10 +32,7 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
 
     override fun disconnectWebSocket() = repository.disconnectWebSocket()
 
-    override fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) =
-        repository.startLocationUpdates(locationProvider)
 
-    override fun stopLocationUpdates() = repository.stopLocationUpdates()
 
     override suspend fun getOrderActive(id: Int): Flow<ResultData<OrderActiveResponse>> = repository.getOrderActive(id)
 

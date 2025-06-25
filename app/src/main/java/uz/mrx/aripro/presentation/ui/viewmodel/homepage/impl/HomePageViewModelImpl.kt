@@ -86,7 +86,7 @@ class HomePageViewModelImpl @Inject constructor(
             }
 
             is WebSocketOrderEvent.OrderTaken -> {
-                _orderTaken.emit(message) // Emit the OrderTaken event directly
+                _orderTaken.tryEmit(message) // Emit the OrderTaken event directly
             }
 
             is WebSocketOrderEvent.UnknownMessage -> {

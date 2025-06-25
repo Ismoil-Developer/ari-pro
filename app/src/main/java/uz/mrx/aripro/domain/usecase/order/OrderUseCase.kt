@@ -25,10 +25,8 @@ interface OrderUseCase {
 
     fun disconnectWebSocket()
 
-    fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>)
-    fun stopLocationUpdates()
-
-
+//    fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>)
+//    fun stopLocationUpdates()
 
     suspend fun getOrderActive(id: Int):Flow<ResultData<OrderActiveResponse>>
 
