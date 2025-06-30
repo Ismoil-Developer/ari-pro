@@ -25,7 +25,4 @@ interface RepositoryModule {
     @[Binds Singleton]
     fun bindProfileRepository(impl: ProfileRepositoryImpl): ProfileRepository
 
-
-
-
 }

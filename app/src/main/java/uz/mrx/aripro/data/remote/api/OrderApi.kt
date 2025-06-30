@@ -32,10 +32,10 @@ interface OrderApi {
     @GET("/pro/orders/assigned/")
     suspend fun getAssigned():Response<List<AssignedResponse>>
 
-    @POST("/goo/order/{id}/feedback/")
+    @POST("/pro/order/{id}/feedback/")
     suspend fun postFeedBack(@Path("id") id: Int, @Body request: OrderFeedBackRequest):Response<OrderFeedBackResponse>
 
-    @POST("/goo/order/{id}/cancel/")
+    @POST("/pro/order/{id}/cancel/")
     suspend fun cancelOrder(@Path("id") id: Int, @Body request: OrderCancelRequest):Response<OrderCancelResponse>
 
 }

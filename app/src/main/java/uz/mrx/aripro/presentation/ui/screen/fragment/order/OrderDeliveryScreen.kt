@@ -75,7 +75,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     @Inject
     lateinit var courierWebSocketClient:CourierWebSocketClient
 
-
     private var phone: String? = null
     private var orderId: Int? = null
     private var currentDirection: String? = null
@@ -91,7 +90,9 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        courierWebSocketClient.connect("ws://ari.uzfati.uz/ws/pro/connect/", sharedPref.token)
+        courierWebSocketClient.connect("ws://ari.digitallaboratory.uz/ws/pro/connect/", sharedPref.token)
+
+        viewModel.connectWebSocket("ws://ari.digitallaboratory.uz/ws/pro/connect/", sharedPref.token)
 
         checkAndRequestLocationPermission()
 

@@ -48,7 +48,7 @@ class HomePage : Fragment(R.layout.page_home) {
         loadData()
 
         // Websocket ulanish
-        viewModel.connectWebSocket("ws://ari.uzfati.uz/ws/pro/connect/", sharedPref.token)
+        viewModel.connectWebSocket("ws://ari.digitallaboratory.uz/ws/pro/connect/", sharedPref.token)
 
         // Orderni kuzatish
         observeIncomingOrders()
