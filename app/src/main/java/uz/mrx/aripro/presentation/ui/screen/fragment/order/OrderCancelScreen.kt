@@ -48,7 +48,6 @@ class OrderCancelScreen : Fragment(R.layout.screen_cancel_order) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.cancelResponse.collectLatest { response ->
-                // Agar response muvaffaqiyatli bo'lsa
                 if (response.status == "success") {
 
                     val dialog = CancelDialog(requireContext()) {

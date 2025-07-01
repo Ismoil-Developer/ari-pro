@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
@@ -98,6 +99,10 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         binding.gps.setOnClickListener { moveToCurrentLocation() }
 
+        binding.icBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
         binding.message.setOnClickListener { viewModel.openChatScreen() }
         binding.call.setOnClickListener { phone?.let { dialNumber(it) } }
         binding.detail.setOnClickListener { orderId?.let { viewModel.openOrderDetailScreen(it) } }
@@ -116,7 +121,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 orderId?.let { viewModel.postDirection(it, DirectionRequest(next)) }
             } else {
                 Toast.makeText(requireContext(), "Buyurtma yakunlandi", Toast.LENGTH_SHORT).show()
-                viewModel.openOrderCompletedScreen(orderId!!)
+                orderId?.let { viewModel.openOrderCompletedScreen(it) }
             }
         }
 
@@ -260,6 +265,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         // Holatga qarab aktivlashtiramiz
         when (status) {
+
             "arrived_at_store" -> {
                 binding.arrivedAtStore.setColorFilter(activeColor)
             }
@@ -268,6 +274,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 binding.arrivedAtStore.setColorFilter(activeColor)
                 binding.line.setBackgroundColor(activeColor)
                 binding.pickedUp.setColorFilter(activeColor)
+//                viewModel.openPaymentConfirmScreen()
             }
 
             "en_route_to_customer" -> {

@@ -27,7 +27,6 @@ class ProfileInfoScreen:Fragment(R.layout.screen_profile_info) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.icBack.setOnClickListener {
             findNavController().popBackStack()
         }

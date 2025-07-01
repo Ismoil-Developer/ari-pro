@@ -48,7 +48,7 @@ class OrderCompletedScreen:Fragment(R.layout.screen_order_completed) {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.feedBackResponse.collectLatest {
-                if (it.status == "completed"){
+                if (it.status == "handed_over"){
                     viewModel.openMainScreen()
                 }
             }

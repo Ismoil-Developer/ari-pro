@@ -1,4 +1,4 @@
-package uz.mrx.aripro.presentation.ui.screen.fragment.main.page
+package uz.mrx.aripro.presentation.ui.screen.fragment.order
 
 import android.os.Bundle
 import android.view.View
@@ -6,12 +6,12 @@ import androidx.fragment.app.Fragment
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import uz.mrx.aripro.R
-import uz.mrx.aripro.databinding.PageConfirmBinding
+import uz.mrx.aripro.databinding.ScreenPaymentConfirmBinding
 
 @AndroidEntryPoint
-class ConfirmPage:Fragment(R.layout.page_confirm) {
+class PaymentConfirmScreen:Fragment(R.layout.screen_payment_confirm) {
 
-    private val binding:PageConfirmBinding by viewBinding(PageConfirmBinding::bind)
+    private val binding:ScreenPaymentConfirmBinding by viewBinding(ScreenPaymentConfirmBinding::bind)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

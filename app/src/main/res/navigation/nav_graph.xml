@@ -105,6 +105,9 @@
         <action
             android:id="@+id/action_orderDeliveryScreen_to_orderCompletedScreen"
             app:destination="@id/orderCompletedScreen" />
+        <action
+            android:id="@+id/action_orderDeliveryScreen_to_paymentConfirmScreen"
+            app:destination="@id/paymentConfirmScreen" />
     </fragment>
     <fragment
         android:id="@+id/chatScreen"
@@ -134,6 +137,10 @@
             app:argType="integer"
             android:defaultValue="-1" />
     </fragment>
+    <fragment
+        android:id="@+id/paymentConfirmScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.order.PaymentConfirmScreen"
+        android:label="PaymentConfirmScreen" />
 
 
 </navigation>
