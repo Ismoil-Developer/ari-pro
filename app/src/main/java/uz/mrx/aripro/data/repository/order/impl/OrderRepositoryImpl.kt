@@ -1,16 +1,25 @@
 package uz.mrx.aripro.data.repository.order.impl
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import uz.mrx.aripro.data.remote.api.OrderApi
 import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
 import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
+import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
@@ -20,12 +29,68 @@ import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
 import uz.mrx.aripro.data.repository.order.OrderRepository
 import uz.mrx.aripro.utils.ResultData
+import java.io.File
 import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
     private val webSocketClient: CourierWebSocketClient,
-    private val api: OrderApi
+    private val api: OrderApi,
+    @ApplicationContext private val context: Context
 ) : OrderRepository {
+
+
+    override suspend fun uploadCheck(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    ) = channelFlow<ResultData<CheckUploadResponse>>{
+        try {
+            val orderRequestBody = orderId.toString()
+                .toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val priceRequestBody = price.toString()
+                .toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val imagePart = prepareFilePart(imageFile)
+
+            val response = api.uploadCheck(
+                order = orderRequestBody,
+                image = imagePart,
+                price = priceRequestBody
+            )
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    trySend(ResultData.success(body))
+                } else {
+                    trySend(ResultData.messageText("Response body is null"))
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                trySend(ResultData.error(Exception(errorBody ?: "Unknown error")))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.error(e))
+        }
+    }.catch { emit(ResultData.error(it)) }
+
+
+
+    private fun prepareFilePart(uri: Uri): MultipartBody.Part {
+        val file = File(context.cacheDir, "check_${System.currentTimeMillis()}.jpg")
+        context.contentResolver.openInputStream(uri)?.use { inputStream ->
+            file.outputStream().use { outputStream ->
+                inputStream.copyTo(outputStream)
+            }
+        }
+
+        val requestFile = file
+            .asRequestBody("image/jpeg".toMediaTypeOrNull())
+
+        return MultipartBody.Part.createFormData("image", file.name, requestFile)
+    }
+
 
     override fun connectWebSocket(url: String, token: String) {
         webSocketClient.connect(url, token)
@@ -235,6 +300,7 @@ class OrderRepositoryImpl @Inject constructor(
             trySend(ResultData.error(e))
         }
     }
+
 
 
 

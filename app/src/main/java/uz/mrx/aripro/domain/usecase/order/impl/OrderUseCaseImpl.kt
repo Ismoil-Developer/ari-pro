@@ -1,10 +1,12 @@
 package uz.mrx.aripro.domain.usecase.order.impl
 
+import android.net.Uri
 import kotlinx.coroutines.flow.Flow
 import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
 import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
+import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
@@ -14,14 +16,25 @@ import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
 import uz.mrx.aripro.data.repository.order.OrderRepository
 import uz.mrx.aripro.domain.usecase.order.OrderUseCase
 import uz.mrx.aripro.utils.ResultData
+import java.io.File
 import javax.inject.Inject
 
 class OrderUseCaseImpl @Inject constructor(private val repository: OrderRepository):OrderUseCase {
+
+
+    override suspend fun uploadCheck(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    ): Flow<ResultData<CheckUploadResponse>> = repository.uploadCheck(orderId, imageFile, price)
+
+
 
 //    override fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) =
 //        repository.startLocationUpdates(locationProvider)
 
 //    override fun stopLocationUpdates() = repository.stopLocationUpdates()
+
     override fun connectWebSocket(url: String, token: String) = repository.connectWebSocket(url, token)
 
     override fun observeMessages(): Flow<WebSocketOrderEvent> = repository.observeMessages()
@@ -56,5 +69,6 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
         id: Int,
         request: OrderFeedBackRequest
     ): Flow<ResultData<OrderFeedBackResponse>> = repository.postFeedBack(id, request)
+
 
 }

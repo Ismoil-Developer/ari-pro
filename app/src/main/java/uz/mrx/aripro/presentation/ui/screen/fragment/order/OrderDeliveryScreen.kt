@@ -324,10 +324,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
 }
 
-
-
-
-
 //    override fun onStart() {
 //        super.onStart()
 //        MapKitFactory.getInstance().onStart()
@@ -339,8 +335,3 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 //        MapKitFactory.getInstance().onStop()
 //        super.onStop()
 //    }
-
-
-
-
-

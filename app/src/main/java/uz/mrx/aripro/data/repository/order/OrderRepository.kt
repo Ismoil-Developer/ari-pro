@@ -1,10 +1,12 @@
 package uz.mrx.aripro.data.repository.order
 
+import android.net.Uri
 import kotlinx.coroutines.flow.Flow
 import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
 import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
+import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
@@ -15,6 +17,14 @@ import uz.mrx.aripro.utils.ResultData
 
 interface OrderRepository {
 
+    suspend fun uploadCheck(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    ): Flow<ResultData<CheckUploadResponse>>
+
+
+
     fun connectWebSocket(url: String, token: String)
 
     fun observeMessages(): Flow<WebSocketOrderEvent>
@@ -24,10 +34,6 @@ interface OrderRepository {
     fun rejectOrder(orderId: Int)
 
     fun disconnectWebSocket()
-
-//    fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>)
-
-//    fun stopLocationUpdates()
 
     suspend fun getOrderActive(id: Int):Flow<ResultData<OrderActiveResponse>>
 
@@ -42,5 +48,6 @@ interface OrderRepository {
     suspend fun cancelOrder(id: Int, request: OrderCancelRequest):Flow<ResultData<OrderCancelResponse>>
 
     suspend fun postFeedBack(id: Int, request: OrderFeedBackRequest):Flow<ResultData<OrderFeedBackResponse>>
+
 
 }
