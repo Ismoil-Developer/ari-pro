@@ -15,4 +15,14 @@ interface PaymentConfirmScreenViewModel {
 
     val uploadCheckResponse:Flow<CheckUploadResponse>
 
+    fun uploadCheckManual(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    )
+
+    val uploadCheckManualResponse:Flow<CheckUploadResponse>
+
+    fun openQrScannerFragment()
+
 }

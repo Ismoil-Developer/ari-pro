@@ -24,6 +24,12 @@ interface OrderUseCase {
         price: Double
     ): Flow<ResultData<CheckUploadResponse>>
 
+    suspend fun uploadCheckManual(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    ): Flow<ResultData<CheckUploadResponse>>
+
     fun connectWebSocket(url: String, token: String)
 
     fun observeMessages(): Flow<WebSocketOrderEvent>

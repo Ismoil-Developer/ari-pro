@@ -43,7 +43,7 @@ class OrderRepositoryImpl @Inject constructor(
         orderId: Int,
         imageFile: Uri,
         price: Double
-    ) = channelFlow<ResultData<CheckUploadResponse>>{
+    ) = channelFlow<ResultData<CheckUploadResponse>> {
         try {
             val orderRequestBody = orderId.toString()
                 .toRequestBody("text/plain".toMediaTypeOrNull())
@@ -75,6 +75,42 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }.catch { emit(ResultData.error(it)) }
 
+
+    override suspend fun uploadCheckManual(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    ) = channelFlow<ResultData<CheckUploadResponse>> {
+        try {
+            val orderRequestBody = orderId.toString()
+                .toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val priceRequestBody = price.toString()
+                .toRequestBody("text/plain".toMediaTypeOrNull())
+
+            val imagePart = prepareFilePart(imageFile)
+
+            val response = api.uploadCheckManual(
+                order = orderRequestBody,
+                image = imagePart,
+                price = priceRequestBody
+            )
+
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    trySend(ResultData.success(body))
+                } else {
+                    trySend(ResultData.messageText("Response body is null"))
+                }
+            } else {
+                val errorBody = response.errorBody()?.string()
+                trySend(ResultData.error(Exception(errorBody ?: "Unknown error")))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.error(e))
+        }
+    }.catch { emit(ResultData.error(it)) }
 
 
     private fun prepareFilePart(uri: Uri): MultipartBody.Part {
@@ -152,16 +188,16 @@ class OrderRepositoryImpl @Inject constructor(
         try {
 
             val response = api.getOrderActive(id)
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
 
                 val registerResponse = response.body()
 
-                if (registerResponse != null){
+                if (registerResponse != null) {
                     trySend(ResultData.success(registerResponse))
-                }else{
+                } else {
                     trySend(ResultData.messageText("Something went wrong"))
                 }
-            }else {
+            } else {
                 val errorBody = response.errorBody()?.string()
                 send(ResultData.error(Exception(errorBody)))
             }
@@ -174,16 +210,16 @@ class OrderRepositoryImpl @Inject constructor(
         try {
 
             val response = api.getOrderActiveToken()
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
 
                 val registerResponse = response.body()
 
-                if (registerResponse != null){
+                if (registerResponse != null) {
                     trySend(ResultData.success(registerResponse))
-                }else{
+                } else {
                     trySend(ResultData.messageText("Something went wrong"))
                 }
-            }else {
+            } else {
                 val errorBody = response.errorBody()?.string()
                 send(ResultData.error(Exception(errorBody)))
             }
@@ -193,22 +229,21 @@ class OrderRepositoryImpl @Inject constructor(
     }.catch { emit(ResultData.error(it)) }
 
 
-
-    override suspend fun postDeliveryActive() = channelFlow<ResultData<WorkActiveResponse>>{
+    override suspend fun postDeliveryActive() = channelFlow<ResultData<WorkActiveResponse>> {
         try {
 
             val response = api.postDeliveryActive()
 
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
 
                 val registerResponse = response.body()
 
-                if (registerResponse != null){
+                if (registerResponse != null) {
                     trySend(ResultData.success(registerResponse))
-                }else{
+                } else {
                     trySend(ResultData.messageText("Something went wrong"))
                 }
-            }else {
+            } else {
                 val errorBody = response.errorBody()?.string()
                 send(ResultData.error(Exception(errorBody)))
             }
@@ -225,16 +260,16 @@ class OrderRepositoryImpl @Inject constructor(
 
             val response = api.postDirection(id, request)
 
-            if (response.isSuccessful){
+            if (response.isSuccessful) {
 
                 val registerResponse = response.body()
 
-                if (registerResponse != null){
+                if (registerResponse != null) {
                     trySend(ResultData.success(registerResponse))
-                }else{
+                } else {
                     trySend(ResultData.messageText("Something went wrong"))
                 }
-            }else {
+            } else {
                 val errorBody = response.errorBody()?.string()
                 send(ResultData.error(Exception(errorBody)))
             }
@@ -300,8 +335,6 @@ class OrderRepositoryImpl @Inject constructor(
             trySend(ResultData.error(e))
         }
     }
-
-
 
 
 }

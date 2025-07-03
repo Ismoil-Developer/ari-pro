@@ -24,6 +24,12 @@ interface OrderRepository {
     ): Flow<ResultData<CheckUploadResponse>>
 
 
+    suspend fun uploadCheckManual(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    ): Flow<ResultData<CheckUploadResponse>>
+
 
     fun connectWebSocket(url: String, token: String)
 
@@ -35,19 +41,28 @@ interface OrderRepository {
 
     fun disconnectWebSocket()
 
-    suspend fun getOrderActive(id: Int):Flow<ResultData<OrderActiveResponse>>
+    suspend fun getOrderActive(id: Int): Flow<ResultData<OrderActiveResponse>>
 
-    suspend fun getOrderActiveToken():Flow<ResultData<OrderActiveResponse>>
+    suspend fun getOrderActiveToken(): Flow<ResultData<OrderActiveResponse>>
 
-    suspend fun postDeliveryActive():Flow<ResultData<WorkActiveResponse>>
+    suspend fun postDeliveryActive(): Flow<ResultData<WorkActiveResponse>>
 
-    suspend fun postDirection(id:Int, request: DirectionRequest):Flow<ResultData<DirectionResponse>>
+    suspend fun postDirection(
+        id: Int,
+        request: DirectionRequest
+    ): Flow<ResultData<DirectionResponse>>
 
-    suspend fun getAssignedOrder():Flow<ResultData<List<AssignedResponse>>>
+    suspend fun getAssignedOrder(): Flow<ResultData<List<AssignedResponse>>>
 
-    suspend fun cancelOrder(id: Int, request: OrderCancelRequest):Flow<ResultData<OrderCancelResponse>>
+    suspend fun cancelOrder(
+        id: Int,
+        request: OrderCancelRequest
+    ): Flow<ResultData<OrderCancelResponse>>
 
-    suspend fun postFeedBack(id: Int, request: OrderFeedBackRequest):Flow<ResultData<OrderFeedBackResponse>>
+    suspend fun postFeedBack(
+        id: Int,
+        request: OrderFeedBackRequest
+    ): Flow<ResultData<OrderFeedBackResponse>>
 
 
 }

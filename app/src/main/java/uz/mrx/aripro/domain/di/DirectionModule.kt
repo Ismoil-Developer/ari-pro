@@ -20,10 +20,14 @@ import uz.mrx.aripro.presentation.direction.order.OrderCancelScreenDirection
 import uz.mrx.aripro.presentation.direction.order.OrderCompletedScreenDirection
 import uz.mrx.aripro.presentation.direction.order.OrderDeliveryScreenDirection
 import uz.mrx.aripro.presentation.direction.order.OrderDetailScreenDirection
+import uz.mrx.aripro.presentation.direction.order.PaymentConfirmScreenDirection
+import uz.mrx.aripro.presentation.direction.order.QrScannerFragmentDirection
 import uz.mrx.aripro.presentation.direction.order.impl.OrderCancelScreenDirectionImpl
 import uz.mrx.aripro.presentation.direction.order.impl.OrderCompletedScreenDirectionImpl
 import uz.mrx.aripro.presentation.direction.order.impl.OrderDeliveryScreenDirectionImpl
 import uz.mrx.aripro.presentation.direction.order.impl.OrderDetailScreenDirectionImpl
+import uz.mrx.aripro.presentation.direction.order.impl.PaymentConfirmScreenDirectionImpl
+import uz.mrx.aripro.presentation.direction.order.impl.QrScannerFragmentDirectionImpl
 import uz.mrx.aripro.presentation.direction.splash.SplashScreenDirection
 import uz.mrx.aripro.presentation.direction.splash.impl.SplashScreenDirectionImpl
 
@@ -63,5 +67,11 @@ interface DirectionModule {
 
     @[Binds]
     fun bindChatScreenDirection(impl: ChatScreenDirectionImpl): ChatScreenDirection
+
+    @[Binds]
+    fun bindPaymentConfirmScreenDirection(impl: PaymentConfirmScreenDirectionImpl): PaymentConfirmScreenDirection
+
+    @[Binds]
+    fun bindQrScannerFragmentDirection(impl: QrScannerFragmentDirectionImpl): QrScannerFragmentDirection
 
 }

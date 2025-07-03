@@ -28,6 +28,7 @@ import uz.mrx.aripro.presentation.ui.viewmodel.order.PaymentConfirmScreenViewMod
 import uz.mrx.aripro.presentation.ui.viewmodel.order.impl.PaymentConfirmScreenViewModelImpl
 import uz.mrx.aripro.utils.toast
 import java.io.File
+
 @AndroidEntryPoint
 class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
 
@@ -43,6 +44,10 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        binding.containerImg.setOnClickListener {
+            viewModel.openQrScannerFragment()
+        }
 
         // Kamera permission
         requestPermissionLauncher = registerForActivityResult(
@@ -61,12 +66,13 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
             if (success) {
                 photoUri?.let { uri ->
                     binding.imageQr.setImageURI(uri)
-                    viewModel.uploadCheck(orderId, uri, price)
+                    viewModel.uploadCheckManual(orderId, uri, price)
                 } ?: toast("Rasm URI topilmadi")
             } else {
                 toast("Rasm olinmadi")
             }
         }
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

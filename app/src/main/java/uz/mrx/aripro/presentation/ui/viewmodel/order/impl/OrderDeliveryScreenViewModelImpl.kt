@@ -110,9 +110,9 @@ class OrderDeliveryScreenViewModelImpl @Inject constructor(
         }
     }
 
-    override fun openPaymentConfirmScreen() {
+    override fun openPaymentConfirmScreen(id: Int) {
         viewModelScope.launch {
-            direction.openPaymentConfirmScreen()
+            direction.openPaymentConfirmScreen(id)
         }
     }
 

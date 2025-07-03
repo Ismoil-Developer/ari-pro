@@ -10,6 +10,6 @@ interface OrderDeliveryScreenDirection {
 
     suspend fun openOrderCancelScreen(id: Int)
 
-    suspend fun openPaymentConfirmScreen()
+    suspend fun openPaymentConfirmScreen(id: Int)
 
 }

@@ -26,7 +26,7 @@ interface OrderDeliveryScreenViewModel {
 
     fun openChatScreen()
 
-    fun openPaymentConfirmScreen()
+    fun openPaymentConfirmScreen(id: Int)
 
 //    fun startSendingLocation(locationProvider: suspend () -> Pair<Double, Double>)
 

@@ -67,7 +67,7 @@
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/font_family_medium"
                 android:gravity="center"
-                android:text="@string/yangi_hujjatni_yuklang_pdf_yoki_jpeg"
+                android:text="Qr kodli rasmni yuklang"
                 android:textColor="#9E9E9E"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"

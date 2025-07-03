@@ -59,6 +59,10 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
     }
 
+    private var order: OrderActiveResponse? = null
+
+
+
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -79,6 +83,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     private var phone: String? = null
     private var orderId: Int? = null
     private var currentDirection: String? = null
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val directions = listOf(
         "en_route_to_store",
@@ -108,12 +114,33 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         binding.detail.setOnClickListener { orderId?.let { viewModel.openOrderDetailScreen(it) } }
         binding.orderCancel.setOnClickListener { orderId?.let { viewModel.orderCancelScreen(it) } }
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
         binding.btnContinue.setOnClickListener {
-            val lat = 41.311081
-            val long = 69.240562
-            val uri = Uri.parse("geo:$lat,$long?q=$lat,$long(Yetkazib+berish+joyi)")
-            startActivity(Intent.createChooser(Intent(Intent.ACTION_VIEW, uri), "Xaritani tanlang"))
+            val order = this.order
+            if (order == null) {
+                Toast.makeText(requireContext(), "Buyurtma maʼlumotlari mavjud emas", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    openMapWithDirections(
+                        location.latitude,
+                        location.longitude,
+                        order.shop_location.latitude,
+                        order.shop_location.longitude,
+                        order.customer_location.latitude,
+                        order.customer_location.longitude
+                    )
+                } else {
+                    Toast.makeText(requireContext(), "Joylashuv olinmadi", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener {
+                Toast.makeText(requireContext(), "Joylashuv olishda xatolik", Toast.LENGTH_SHORT).show()
+            }
         }
+
 
         binding.swipeView.setOnSwipeListener {
             val next = getNextDirection(currentDirection ?: return@setOnSwipeListener)
@@ -130,6 +157,71 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         observeErrors()
 
     }
+
+    private fun openMapWithDirections(
+        courierLat: Double,
+        courierLng: Double,
+        shopLat: Double,
+        shopLng: Double,
+        customerLat: Double,
+        customerLng: Double
+    ) {
+        val googleUri = Uri.parse("https://www.google.com/maps/dir/?api=1" +
+                "&origin=$courierLat,$courierLng" +
+                "&waypoints=$shopLat,$shopLng" +
+                "&destination=$customerLat,$customerLng" +
+                "&travelmode=driving")
+
+        val googleIntent = Intent(Intent.ACTION_VIEW, googleUri).apply {
+            setPackage("com.google.android.apps.maps")
+        }
+
+        val yandexUri = Uri.parse("yandexmaps://maps.yandex.com/?rtext=$courierLat,$courierLng~$shopLat,$shopLng~$customerLat,$customerLng&rtt=auto")
+
+        val yandexIntent = Intent(Intent.ACTION_VIEW, yandexUri).apply {
+            setPackage("ru.yandex.yandexmaps")
+        }
+
+        val chooserIntent = Intent.createChooser(googleIntent, "Xaritani tanlang")
+        val additionalIntents = mutableListOf<Intent>()
+
+        if (yandexIntent.resolveActivity(requireContext().packageManager) != null) {
+            additionalIntents.add(yandexIntent)
+        }
+
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, additionalIntents.toTypedArray())
+        startActivity(chooserIntent)
+    }
+
+
+    private fun updateOrderUI(order: OrderActiveResponse) {
+
+        this.order = order
+
+        orderId = order.id
+        currentDirection = order.direction
+        phone = order.customer_info.phone_number
+
+        binding.courierName.text = order.customer_info.full_name
+        binding.courierRating.text = order.customer_info.rating.toString()
+        binding.swipeView.setText(getButtonText(order.direction))
+
+        updateDeliverySteps(order.direction)
+
+        order.courier_location.latitude
+        order.courier_location.longitude
+
+        order.customer_location.latitude
+        order.customer_location.longitude
+
+        order.shop_location.latitude
+        order.shop_location.longitude
+
+        Glide.with(requireContext())
+            .load(order.customer_info.avatar)
+            .into(binding.prf)
+    }
+
 
     private fun checkAndRequestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(
@@ -195,19 +287,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         }
     }
 
-    private fun updateOrderUI(order: OrderActiveResponse) {
-        orderId = order.id
-        currentDirection = order.direction
-        phone = order.customer_info.phone_number
 
-        binding.courierName.text = order.customer_info.full_name
-        binding.courierRating.text = order.customer_info.rating.toString()
-        binding.swipeView.setText(getButtonText(order.direction))
-
-        Glide.with(requireContext())
-            .load(order.customer_info.avatar)
-            .into(binding.prf)
-    }
 
     private fun observeDirectionUpdates() {
         viewLifecycleOwner.lifecycleScope.launch {
@@ -216,6 +296,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 binding.swipeView.setText(getButtonText(it.direction))
                 binding.swipeView.reset()
                 updateDeliverySteps(it.direction)
+
             }
         }
     }
@@ -274,7 +355,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 binding.arrivedAtStore.setColorFilter(activeColor)
                 binding.line.setBackgroundColor(activeColor)
                 binding.pickedUp.setColorFilter(activeColor)
-//                viewModel.openPaymentConfirmScreen()
+                viewModel.openPaymentConfirmScreen(args.id)
             }
 
             "en_route_to_customer" -> {

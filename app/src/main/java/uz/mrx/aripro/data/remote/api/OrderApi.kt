@@ -30,7 +30,13 @@ interface OrderApi {
         @Part("price") price: RequestBody
     ): Response<CheckUploadResponse>
 
-
+    @Multipart
+    @POST("/pro/manual-checks/upload/")
+    suspend fun uploadCheckManual(
+        @Part("order") order: RequestBody,
+        @Part image: MultipartBody.Part,
+        @Part("price") price: RequestBody
+    ): Response<CheckUploadResponse>
 
     @GET("/pro/active/orders/{id}")
     suspend fun getOrderActive(@Path("id") id: Int): Response<OrderActiveResponse>
@@ -52,7 +58,5 @@ interface OrderApi {
 
     @POST("/pro/order/{id}/cancel/")
     suspend fun cancelOrder(@Path("id") id: Int, @Body request: OrderCancelRequest):Response<OrderCancelResponse>
-
-
 
 }

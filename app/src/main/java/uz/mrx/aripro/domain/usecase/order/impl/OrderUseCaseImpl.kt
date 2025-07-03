@@ -28,6 +28,12 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
         price: Double
     ): Flow<ResultData<CheckUploadResponse>> = repository.uploadCheck(orderId, imageFile, price)
 
+   override suspend fun uploadCheckManual(
+        orderId: Int,
+        imageFile: Uri,
+        price: Double
+    ): Flow<ResultData<CheckUploadResponse>> = repository.uploadCheckManual(orderId, imageFile, price)
+
 
 
 //    override fun startLocationUpdates(locationProvider: suspend () -> Pair<Double, Double>) =
