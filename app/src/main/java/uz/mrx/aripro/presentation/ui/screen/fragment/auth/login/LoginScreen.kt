@@ -44,21 +44,7 @@ class LoginScreen : Fragment(R.layout.screen_login) {
 
         })
 
-        lifecycleScope.launchWhenStarted {
-            viewModel.isLoading.collectLatest { isLoading ->
-                binding.btnContinue.isEnabled = !isLoading
-                binding.btnContinue.alpha = if (isLoading) 0.5f else 1f
-                binding.btnContinue.text = if (isLoading) "Yuklanmoqda..." else "Davom etish"
-            }
-        }
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.isLoading.collectLatest { isLoading ->
-                    binding.btnContinue.setLoading(isLoading, "Yuklanmoqda...")
-                }
-            }
-        }
 
         binding.btnContinue.setSafeOnClickListener {
             val phoneNumber = binding.phoneNumberEditText.text.toString().trim()
@@ -87,17 +73,30 @@ class LoginScreen : Fragment(R.layout.screen_login) {
                     }
                 }
             }
+
+            lifecycleScope.launchWhenStarted {
+                viewModel.isLoading.collectLatest { isLoading ->
+                    binding.btnContinue.isEnabled = !isLoading
+                    binding.btnContinue.alpha = if (isLoading) 0.5f else 1f
+                    binding.btnContinue.text = if (isLoading) "Yuklanmoqda..." else "Davom etish"
+                }
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.isLoading.collectLatest { isLoading ->
+                        binding.btnContinue.setLoading(isLoading, "Yuklanmoqda...")
+                    }
+                }
+            }
+
         }
 
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.toastMessage.collectLatest { message ->
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                    viewModel.openConfirmScreen(
-                        binding.phoneNumberEditText.text.toString(),
-                        message
-                    )
+
                 }
             }
         }

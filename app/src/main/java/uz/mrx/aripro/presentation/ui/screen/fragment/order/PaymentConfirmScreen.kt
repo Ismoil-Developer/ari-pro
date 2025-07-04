@@ -19,6 +19,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -34,20 +35,16 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
 
     private val binding: ScreenPaymentConfirmBinding by viewBinding(ScreenPaymentConfirmBinding::bind)
     private val viewModel: PaymentConfirmScreenViewModel by viewModels<PaymentConfirmScreenViewModelImpl>()
+    private val args:PaymentConfirmScreenArgs by navArgs()
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private var photoUri: Uri? = null
 
-    private val orderId = 394
     private val price = 15000.00
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        binding.containerImg.setOnClickListener {
-            viewModel.openQrScannerFragment()
-        }
 
         // Kamera permission
         requestPermissionLauncher = registerForActivityResult(
@@ -66,7 +63,7 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
             if (success) {
                 photoUri?.let { uri ->
                     binding.imageQr.setImageURI(uri)
-                    viewModel.uploadCheckManual(orderId, uri, price)
+                    viewModel.uploadCheckManual(args.id, uri, price)
                 } ?: toast("Rasm URI topilmadi")
             } else {
                 toast("Rasm olinmadi")
@@ -77,6 +74,11 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.containerImg.setOnClickListener {
+            viewModel.openQrScannerFragment()
+        }
+
 
         binding.camera.setOnClickListener {
             val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

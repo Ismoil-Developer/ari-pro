@@ -8,4 +8,6 @@ interface MainScreenDirection {
 
     suspend fun openOrderDeliveryScreen(id:Int)
 
+    suspend fun openHistoryDetailScreen(id: Int)
+
 }

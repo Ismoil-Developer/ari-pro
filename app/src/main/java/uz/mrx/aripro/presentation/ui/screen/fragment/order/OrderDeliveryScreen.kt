@@ -15,7 +15,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
@@ -44,7 +46,6 @@ import uz.mrx.aripro.presentation.ui.viewmodel.order.OrderDeliveryScreenViewMode
 import uz.mrx.aripro.presentation.ui.viewmodel.order.impl.OrderDeliveryScreenViewModelImpl
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
@@ -60,8 +61,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     }
 
     private var order: OrderActiveResponse? = null
-
-
 
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -144,6 +143,14 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         binding.swipeView.setOnSwipeListener {
             val next = getNextDirection(currentDirection ?: return@setOnSwipeListener)
+
+            // Agar hozirgi direction "picked_up" bo‘lsa va endi "en_route_to_customer" ga o‘tayotgan bo‘lsa:
+            if (currentDirection == "picked_up") {
+                orderId?.let {
+                    viewModel.openPaymentConfirmScreen(it)
+                }
+            }
+
             if (next != null) {
                 orderId?.let { viewModel.postDirection(it, DirectionRequest(next)) }
             } else {
@@ -200,10 +207,10 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         orderId = order.id
         currentDirection = order.direction
-        phone = order.customer_info.phone_number
+        phone = order.deliver_user.phone_number
 
-        binding.courierName.text = order.customer_info.full_name
-        binding.courierRating.text = order.customer_info.rating.toString()
+        binding.courierName.text = order.deliver_user.full_name
+        binding.courierRating.text = order.deliver_user.rating.toString()
         binding.swipeView.setText(getButtonText(order.direction))
 
         updateDeliverySteps(order.direction)
@@ -218,7 +225,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         order.shop_location.longitude
 
         Glide.with(requireContext())
-            .load(order.customer_info.avatar)
+            .load(order.deliver_user.avatar)
             .into(binding.prf)
     }
 
@@ -303,16 +310,32 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     private fun observeErrors() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.activeErrorResponse.collectLatest {
-                val message = if (it.contains("No active order")) {
-                    "Sizda hozirda faol zakaz mavjud emas"
-                } else {
-                    "Xatolik yuz berdi: $it"
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.activeErrorResponse.collectLatest {
+                    val isNoActiveOrder = it.contains("No active order", ignoreCase = true)
+
+                    val message = if (isNoActiveOrder) {
+                        "Sizda hozirda faol zakaz mavjud emas"
+                    } else {
+                        "Xatolik yuz berdi: $it"
+                    }
+
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+
+                    // View holatini yangilash
+                    if (isNoActiveOrder) {
+                        binding.deliverContainer.visibility = View.GONE
+                        binding.emptyContainer.visibility = View.VISIBLE
+                    } else {
+                        binding.deliverContainer.visibility = View.VISIBLE
+                        binding.emptyContainer.visibility = View.GONE
+                    }
                 }
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+
 
     private fun getButtonText(direction: String): String {
         return when (direction) {
@@ -355,7 +378,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 binding.arrivedAtStore.setColorFilter(activeColor)
                 binding.line.setBackgroundColor(activeColor)
                 binding.pickedUp.setColorFilter(activeColor)
-                viewModel.openPaymentConfirmScreen(args.id)
             }
 
             "en_route_to_customer" -> {

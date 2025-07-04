@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uz.mrx.aripro.R
-import uz.mrx.aripro.data.model.LoadData
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.databinding.ItemOrderBinding
 
-class LoadAdapter(private var onItemClickListener: (LoadData) -> Unit) :
-    ListAdapter<LoadData, LoadAdapter.ViewHolder>(LoadDataDiffUtilCallback) {
+class LoadAdapter(private var onItemClickListener: (OrderHistoryResponse) -> Unit) :
+    ListAdapter<OrderHistoryResponse, LoadAdapter.ViewHolder>(OrderHistoryResponseDiffUtilCallback) {
 
 
     inner class ViewHolder(private val binding: ItemOrderBinding) :
@@ -18,10 +18,17 @@ class LoadAdapter(private var onItemClickListener: (LoadData) -> Unit) :
         fun onBind() {
             val newsData = getItem(absoluteAdapterPosition)
 
-            binding.textView.text = newsData.id
-            binding.textView2.text = newsData.status
+            binding.textView.text = newsData.order_code
 
-            binding.icOrder.setImageResource(R.drawable.ic_load)
+            if (newsData.status == "completed"){
+                binding.icOrder.setImageResource(R.drawable.ic_delivery_completed)
+                binding.textView2.text = "Buyurtma yakunlandi"
+            }else{
+                binding.icOrder.setImageResource(R.drawable.ic_load)
+                binding.textView2.text = "Yetkazib berishda"
+
+            }
+
 
             itemView.setOnClickListener {
                 onItemClickListener.invoke(newsData)
@@ -43,12 +50,12 @@ class LoadAdapter(private var onItemClickListener: (LoadData) -> Unit) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.onBind()
 
 
-    object LoadDataDiffUtilCallback : DiffUtil.ItemCallback<LoadData>() {
-        override fun areItemsTheSame(oldItem: LoadData, newItem: LoadData): Boolean {
+    object OrderHistoryResponseDiffUtilCallback : DiffUtil.ItemCallback<OrderHistoryResponse>() {
+        override fun areItemsTheSame(oldItem: OrderHistoryResponse, newItem: OrderHistoryResponse): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: LoadData, newItem: LoadData): Boolean {
+        override fun areContentsTheSame(oldItem: OrderHistoryResponse, newItem: OrderHistoryResponse): Boolean {
             return oldItem == newItem
         }
     }

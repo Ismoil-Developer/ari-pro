@@ -5,6 +5,8 @@ import kotlinx.coroutines.flow.Flow
 import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
 import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryDetailResponse
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
@@ -75,6 +77,10 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
         id: Int,
         request: OrderFeedBackRequest
     ): Flow<ResultData<OrderFeedBackResponse>> = repository.postFeedBack(id, request)
+
+    override suspend fun getHistory(): Flow<ResultData<List<OrderHistoryResponse>>> = repository.getHistory()
+
+    override suspend fun getHistoryById(id: Int): Flow<ResultData<OrderHistoryDetailResponse>> = repository.getHistoryById(id)
 
 
 }

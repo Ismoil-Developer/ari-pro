@@ -5,6 +5,7 @@ import com.yandex.mapkit.MapKitFactory
 import com.yariksoffice.lingver.Lingver
 import dagger.hilt.android.HiltAndroidApp
 import uz.mrx.aripro.data.local.shp.MySharedPreference
+import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
 import javax.inject.Inject
 
 @HiltAndroidApp
@@ -18,6 +19,9 @@ class App : Application() {
     @Inject
     lateinit var sharedPreference: MySharedPreference
 
+    @Inject
+    lateinit var courierWebSocketClient: CourierWebSocketClient
+
     override fun onCreate() {
         super.onCreate()
 
@@ -25,6 +29,11 @@ class App : Application() {
 
         MapKitFactory.setApiKey("79fb340d-f68a-4f8b-b729-8f19f413786d")
         MapKitFactory.initialize(this)
+
+        courierWebSocketClient.connect(
+            url = "ws://ari.digitallaboratory.uz/ws/pro/connect/",
+            token = sharedPreference.token
+        )
 
         // Lingver init
         val languageCode = sharedPreference.language // "uz", "en", "ru", etc.

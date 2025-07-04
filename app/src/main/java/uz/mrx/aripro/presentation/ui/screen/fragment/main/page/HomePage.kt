@@ -47,12 +47,6 @@ class HomePage : Fragment(R.layout.page_home) {
 
         loadData()
 
-        // Websocket ulanish
-        viewModel.connectWebSocket("ws://ari.digitallaboratory.uz/ws/pro/connect/", sharedPref.token)
-
-        // Orderni kuzatish
-        observeIncomingOrders()
-
         val adapterAssigned = AssignedAdapter {
             viewModel.openOrderDeliveryScreen(it.id)
         }
@@ -72,10 +66,20 @@ class HomePage : Fragment(R.layout.page_home) {
 
         // Adapter setup
         val loadAdapter = LoadAdapter {
-            viewModel.openOrderDetailScreen()
+            viewModel.openHistoryDetailScreen(it.id)
         }
 
-        loadAdapter.submitList(loadList)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.historyResponse.collectLatest {
+                if (it != null){
+
+                    loadAdapter.submitList(it)
+
+                }
+            }
+        }
+
         binding.rv.adapter = loadAdapter
 
         // Profilni olish va UI ni yangilash
@@ -100,15 +104,6 @@ class HomePage : Fragment(R.layout.page_home) {
             }
         }
 
-        // Buyurtma olinganda navigatsiya qilish
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.orderTaken.collectLatest {
-                if (it.orderId != -1) {
-                    viewModel.openOrderDeliveryScreen(it.orderId)
-                }
-            }
-        }
-
     }
 
     private fun loadData() {
@@ -123,37 +118,6 @@ class HomePage : Fragment(R.layout.page_home) {
         }
     }
 
-    private fun observeIncomingOrders() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            viewModel.incomingOrders.collectLatest { newOrder ->
-                Log.d("EEEEEEE", "observeIncomingOrders: ${newOrder.orderItems}")
-                showNewOrderDialog(newOrder)
-            }
-        }
-    }
-
-    private fun showNewOrderDialog(newOrder: WebSocketOrderEvent.NewOrder) {
-
-        val orderDesc = newOrder.orderItems
-        val orderPrice = newOrder.price.toString()
-
-        val orderTimeDialog = OrderTimeDialog(
-            requireContext(),
-            orderDesc,
-            orderPrice,
-            onAcceptClickListener = {
-                viewModel.acceptOrder(newOrder.orderId)
-                Toast.makeText(requireContext(), "Zakaz qabul qilindi", Toast.LENGTH_SHORT).show()
-            },
-            onSkipClickListener = {
-                viewModel.rejectOrder(newOrder.orderId)
-                Toast.makeText(requireContext(), "Zakaz rad etildi", Toast.LENGTH_SHORT).show()
-            }
-        )
-
-        orderTimeDialog.show()
-
-    }
 
     // Faqat UI holatini yangilaydi
     private fun updateActiveUI(isActive: Boolean) {

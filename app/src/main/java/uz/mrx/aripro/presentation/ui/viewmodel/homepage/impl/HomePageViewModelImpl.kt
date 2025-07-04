@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.response.profile.DeliveryHomeResponse
@@ -167,4 +169,30 @@ class HomePageViewModelImpl @Inject constructor(
 
     override val deliveryActiveResponse = flow<WorkActiveResponse>()
 
+    override val historyResponse = flow<List<OrderHistoryResponse>>()
+
+    init {
+
+        viewModelScope.launch {
+            useCase.getHistory().collectLatest {
+                useCase.getHistory().collectLatest {
+                    it.onSuccess {
+
+                    }
+                    it.onSuccess {
+                        historyResponse.tryEmit(it)
+                    }
+                    it.onMessage {
+
+                    }
+                }
+            }
+        }
+    }
+
+    override fun openHistoryDetailScreen(id: Int) {
+        viewModelScope.launch {
+            direction.openHistoryDetailScreen(id)
+        }
+    }
 }

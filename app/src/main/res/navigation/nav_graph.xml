@@ -52,6 +52,9 @@
         <action
             android:id="@+id/action_screenMain_to_orderDeliveryScreen"
             app:destination="@id/orderDeliveryScreen" />
+        <action
+            android:id="@+id/action_screenMain_to_historyDetailScreen"
+            app:destination="@id/historyDetailScreen" />
 
     </fragment>
 
@@ -170,6 +173,15 @@
         <action
             android:id="@+id/action_qrScannerFragment_to_orderDeliveryScreen"
             app:destination="@id/orderDeliveryScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/historyDetailScreen"
+        android:name="uz.mrx.aripro.presentation.ui.screen.fragment.history.HistoryDetailScreen"
+        android:label="HistoryDetailScreen" >
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
 
 

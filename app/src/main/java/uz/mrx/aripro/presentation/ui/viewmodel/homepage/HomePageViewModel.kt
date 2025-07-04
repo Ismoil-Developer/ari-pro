@@ -2,6 +2,7 @@ package uz.mrx.aripro.presentation.ui.viewmodel.homepage
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.response.profile.DeliveryHomeResponse
@@ -31,6 +32,10 @@ interface HomePageViewModel {
     val deliveryActiveResponse:Flow<WorkActiveResponse>
 
     val assignedResponse:Flow<List<AssignedResponse>>
+
+    val historyResponse:Flow<List<OrderHistoryResponse>>
+
+    fun openHistoryDetailScreen(id: Int)
 
 
 }

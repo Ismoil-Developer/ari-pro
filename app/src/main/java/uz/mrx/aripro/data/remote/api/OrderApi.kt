@@ -12,6 +12,8 @@ import retrofit2.http.Path
 import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
 import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryDetailResponse
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
@@ -58,5 +60,11 @@ interface OrderApi {
 
     @POST("/pro/order/{id}/cancel/")
     suspend fun cancelOrder(@Path("id") id: Int, @Body request: OrderCancelRequest):Response<OrderCancelResponse>
+
+    @GET("/pro/orders/history/")
+    suspend fun getHistory():Response<List<OrderHistoryResponse>>
+
+    @GET("/pro/orders/history/{id}/")
+    suspend fun getHistoryById(@Path("id") id: Int):Response<OrderHistoryDetailResponse>
 
 }

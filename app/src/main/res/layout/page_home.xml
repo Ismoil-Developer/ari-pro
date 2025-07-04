@@ -261,19 +261,6 @@
         android:textColor="@color/text_color_bold"
         />
 
-    <TextView
-        android:id="@+id/seeAllMagazine"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="15dp"
-        android:fontFamily="@font/font_family_medium"
-        android:padding="10dp"
-        android:text="Hammasi"
-        android:textColor="@color/see_all"
-        android:textSize="16dp"
-        app:layout_constraintBottom_toBottomOf="@id/otherLoad"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/otherLoad" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"

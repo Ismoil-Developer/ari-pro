@@ -18,6 +18,8 @@ import uz.mrx.aripro.data.remote.api.OrderApi
 import uz.mrx.aripro.data.remote.request.order.OrderCancelRequest
 import uz.mrx.aripro.data.remote.request.order.OrderFeedBackRequest
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryDetailResponse
+import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
@@ -321,6 +323,40 @@ class OrderRepositoryImpl @Inject constructor(
     ) = channelFlow<ResultData<OrderFeedBackResponse>> {
         try {
             val response = api.postFeedBack(id, request)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    trySend(ResultData.success(body))
+                } else {
+                    trySend(ResultData.messageText("Response body is null"))
+                }
+            } else {
+                trySend(ResultData.messageText("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.error(e))
+        }
+    }
+
+    override suspend fun getHistory() = channelFlow<ResultData<List<OrderHistoryResponse>>> {
+        try {
+            val response = api.getHistory()
+            if (response.isSuccessful) {
+                val newsResponse = response.body() as List<OrderHistoryResponse>
+
+                trySend(ResultData.success(newsResponse))
+
+            } else {
+                trySend(ResultData.messageText(response.message()))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.messageText(e.message.toString()))
+        }
+    }.catch { emit(ResultData.error(it)) }
+
+    override suspend fun getHistoryById(id: Int) = channelFlow<ResultData<OrderHistoryDetailResponse>> {
+        try {
+            val response = api.getHistoryById(id)
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {

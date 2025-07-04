@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainBgColor"
+    android:fitsSystemWindows="true"
+    android:paddingTop="16dp"
+    >
+
+    <ImageView
+        android:id="@+id/icBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_color_bold"
+        />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/font_family"
+        android:text="Tarih"
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/contract_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text=""
+        android:textColor="@color/text_color_medium"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <ImageView
+        android:id="@+id/icMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:padding="10dp"
+        android:src="@drawable/ic_message"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/text_color_bold"
+        />
+
+
+    <TextView
+        android:id="@+id/shopName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="28dp"
+        android:fontFamily="@font/font_family"
+        android:text=""
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/contract_number" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text=""
+        android:textColor="@color/text_color_medium"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shopName" />
+
+
+    <TextView
+        android:id="@+id/yetkazishTafsiloti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="28dp"
+        android:fontFamily="@font/font_family"
+        android:text="@string/yetkazish_tafsilotlari"
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date" />
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/deliveryBasket"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/ic_delivery_basket"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/yetkazishTafsiloti" />
+
+
+    <TextView
+        android:id="@+id/shopName2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/font_family"
+        android:text=""
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@id/deliveryBasket"
+        app:layout_constraintTop_toTopOf="@id/deliveryBasket" />
+
+    <TextView
+        android:id="@+id/shopRegion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text="Shayhontohur tumani"
+        android:textColor="@color/text_color_medium"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@id/deliveryBasket"
+        app:layout_constraintStart_toEndOf="@id/deliveryBasket" />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/shopRegion"
+        app:layout_constraintTop_toBottomOf="@id/shopRegion" />
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/locationImg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_delivery_location"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line" />
+
+    <TextView
+        android:id="@+id/addressRegion"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="1dp"
+        android:fontFamily="@font/font_family"
+        android:text=""
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintBottom_toBottomOf="@id/locationImg"
+        app:layout_constraintStart_toEndOf="@id/locationImg"
+        app:layout_constraintTop_toTopOf="@id/locationImg" />
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/shopRegion"
+        app:layout_constraintTop_toBottomOf="@id/locationImg" />
+
+    <View
+        android:id="@+id/line3"
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:layout_marginVertical="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/line"
+        app:layout_constraintBottom_toTopOf="@id/locationImg"
+        app:layout_constraintEnd_toEndOf="@id/locationImg"
+        app:layout_constraintStart_toStartOf="@id/locationImg"
+        app:layout_constraintTop_toBottomOf="@id/deliveryBasket" />
+
+
+    <TextView
+        android:id="@+id/paymentType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/font_family"
+        android:text="Mahsulot narxi: "
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/line2" />
+
+
+    <TextView
+        android:id="@+id/price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text=""
+        android:textColor="@color/text_color_medium"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/paymentType"
+        app:layout_constraintTop_toTopOf="@id/paymentType"
+        app:layout_constraintStart_toEndOf="@id/paymentType" />
+
+    <TextView
+        android:id="@+id/courierTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/font_family"
+        android:text="Kuryer narxi: "
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/price" />
+
+
+    <TextView
+        android:id="@+id/courierCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text=""
+        android:textColor="@color/text_color_medium"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/courierTxt"
+        app:layout_constraintTop_toTopOf="@id/courierTxt"
+        app:layout_constraintStart_toEndOf="@id/courierTxt" />
+
+
+    <TextView
+        android:id="@+id/totalCostType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/font_family"
+        android:text="Umumiy narx:"
+        android:textColor="@color/text_color_bold"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/courierCost" />
+
+
+    <TextView
+        android:id="@+id/totalCost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="1dp"
+        android:fontFamily="@font/font_family_medium"
+        android:text=""
+        android:textColor="@color/text_color_medium"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/totalCostType"
+        app:layout_constraintTop_toTopOf="@id/totalCostType"
+        app:layout_constraintStart_toEndOf="@id/totalCostType" />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
