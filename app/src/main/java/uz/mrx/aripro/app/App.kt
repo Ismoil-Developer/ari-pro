@@ -30,10 +30,13 @@ class App : Application() {
         MapKitFactory.setApiKey("79fb340d-f68a-4f8b-b729-8f19f413786d")
         MapKitFactory.initialize(this)
 
-        courierWebSocketClient.connect(
-            url = "ws://ari.digitallaboratory.uz/ws/pro/connect/",
-            token = sharedPreference.token
-        )
+        if (sharedPreference.token.isNotEmpty()){
+            courierWebSocketClient.connect(
+                url = "ws://ari.digitallaboratory.uz/ws/pro/connect/",
+                token = sharedPreference.token
+            )
+
+        }
 
         // Lingver init
         val languageCode = sharedPreference.language // "uz", "en", "ru", etc.

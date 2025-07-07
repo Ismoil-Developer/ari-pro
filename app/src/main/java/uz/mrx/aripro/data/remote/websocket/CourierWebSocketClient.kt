@@ -80,6 +80,7 @@ class CourierWebSocketClient @Inject constructor() {
                 Log.d("WebSocket", "🔌 Closed: $reason")
                 this@CourierWebSocketClient.webSocket = null
             }
+
         })
     }
 

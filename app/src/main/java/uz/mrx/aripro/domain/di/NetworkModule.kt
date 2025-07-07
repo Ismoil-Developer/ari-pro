@@ -14,6 +14,7 @@ import uz.mrx.aripro.data.remote.api.OrderApi
 import uz.mrx.aripro.data.remote.api.ProfileApi
 import uz.mrx.aripro.data.remote.api.RegisterApi
 import uz.mrx.aripro.utils.RequestInterceptor
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -39,12 +40,15 @@ class NetworkModule {
     fun provideClient(
         loggingInterceptor: HttpLoggingInterceptor,
         languageInterceptor: Interceptor,
-        requestInterceptor: RequestInterceptor // Qo‘shildi
+        requestInterceptor: RequestInterceptor
     ): OkHttpClient =
         OkHttpClient.Builder()
+            .connectTimeout(1, TimeUnit.HOURS) // Aloqa o‘rnatish uchun maksimal kutish vaqti
+            .readTimeout(1, TimeUnit.HOURS)    // Javobni o‘qish uchun maksimal kutish vaqti
+            .writeTimeout(1, TimeUnit.HOURS)   // Ma’lumot yozish uchun maksimal kutish vaqti
             .addInterceptor(loggingInterceptor)
             .addInterceptor(languageInterceptor)
-            .addInterceptor(requestInterceptor) // Qo‘shildi
+            .addInterceptor(requestInterceptor)
             .build()
 
     @Provides

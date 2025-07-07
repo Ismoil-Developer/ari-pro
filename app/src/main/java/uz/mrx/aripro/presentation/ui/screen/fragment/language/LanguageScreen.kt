@@ -21,6 +21,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class LanguageScreen : Fragment(R.layout.screen_language) {
+
     private val binding: ScreenLanguageBinding by viewBinding(ScreenLanguageBinding::bind)
     private val viewModel: LanguageScreenViewModel by viewModels<LanguageScreenViewModelImpl>()
 
@@ -70,6 +71,8 @@ class LanguageScreen : Fragment(R.layout.screen_language) {
                 if (selectedLanguage == "uz") R.drawable.ic_selected_lan else R.drawable.ic_unselected_lan,
                 0
             )
+            updateUi()
+
         }
 
         binding.rbRus.apply {
@@ -80,9 +83,16 @@ class LanguageScreen : Fragment(R.layout.screen_language) {
                 if (selectedLanguage == "ru") R.drawable.ic_selected_lan else R.drawable.ic_unselected_lan,
                 0
             )
+            updateUi()
         }
 
 
+    }
+
+    private fun updateUi() {
+        binding.chooseLanguage.text = getString(R.string.tilni_tanlang)
+        binding.changeLanguage.text = getString(R.string.tilni_keyinchalik_o_zgartirishingiz_ham_mumkun)
+        binding.btnContinueLn.text = getString(R.string.davom_etish)
     }
 
     @SuppressLint("ResourceAsColor")

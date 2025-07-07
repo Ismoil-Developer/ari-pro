@@ -127,10 +127,10 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                     openMapWithDirections(
                         location.latitude,
                         location.longitude,
-                        order.shop_location.latitude,
-                        order.shop_location.longitude,
-                        order.customer_location.latitude,
-                        order.customer_location.longitude
+                        order.shopLocation.latitude,
+                        order.shopLocation.longitude,
+                        order.customerLocation.latitude,
+                        order.customerLocation.longitude
                     )
                 } else {
                     Toast.makeText(requireContext(), "Joylashuv olinmadi", Toast.LENGTH_SHORT).show()
@@ -198,8 +198,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, additionalIntents.toTypedArray())
         startActivity(chooserIntent)
-    }
 
+    }
 
     private fun updateOrderUI(order: OrderActiveResponse) {
 
@@ -207,26 +207,27 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         orderId = order.id
         currentDirection = order.direction
-        phone = order.deliver_user.phone_number
+        phone = order.deliverUser?.phoneNumber
 
-        binding.courierName.text = order.deliver_user.full_name
-        binding.courierRating.text = order.deliver_user.rating.toString()
+        binding.courierName.text = order.deliverUser?.fullName
+        binding.courierRating.text = order.deliverUser?.rating.toString()
         binding.swipeView.setText(getButtonText(order.direction))
 
         updateDeliverySteps(order.direction)
 
-        order.courier_location.latitude
-        order.courier_location.longitude
+        order.courierLocation.latitude
+        order.courierLocation.longitude
 
-        order.customer_location.latitude
-        order.customer_location.longitude
+        order.customerLocation.latitude
+        order.customerLocation.longitude
 
-        order.shop_location.latitude
-        order.shop_location.longitude
+        order.shopLocation.latitude
+        order.shopLocation.longitude
 
         Glide.with(requireContext())
-            .load(order.deliver_user.avatar)
+            .load(order.deliverUser?.avatar)
             .into(binding.prf)
+
     }
 
 
@@ -294,8 +295,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         }
     }
 
-
-
     private fun observeDirectionUpdates() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.responseDirection.collectLatest {
@@ -334,8 +333,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             }
         }
     }
-
-
 
     private fun getButtonText(direction: String): String {
         return when (direction) {
@@ -413,7 +410,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         MapKitFactory.getInstance().onStop()
     }
 
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
@@ -426,15 +422,3 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     }
 
 }
-
-//    override fun onStart() {
-//        super.onStart()
-//        MapKitFactory.getInstance().onStart()
-//        binding.mapView.onStart()
-//    }
-//
-//    override fun onStop() {
-//        binding.mapView.onStop()
-//        MapKitFactory.getInstance().onStop()
-//        super.onStop()
-//    }
