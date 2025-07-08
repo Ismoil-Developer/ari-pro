@@ -47,6 +47,13 @@ class HomePage : Fragment(R.layout.page_home) {
 
         loadData()
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.deliveryWeeklyPriceResponse.collectLatest {
+                binding.balance.text = it.totalPrice.toString()
+            }
+        }
+
+
         val adapterAssigned = AssignedAdapter {
             viewModel.openOrderDeliveryScreen(it.id)
         }

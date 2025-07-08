@@ -19,6 +19,7 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -74,6 +75,10 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.icBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         binding.containerImg.setOnClickListener {
             viewModel.openQrScannerFragment()

@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
+import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.response.profile.DeliveryHomeResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -195,4 +196,20 @@ class HomePageViewModelImpl @Inject constructor(
             direction.openHistoryDetailScreen(id)
         }
     }
+
+    override val deliveryWeeklyPriceResponse = flow<DeliveryWeeklyPriceResponse>()
+
+    init {
+        viewModelScope.launch {
+            useCase.getDeliveryWeeklyPrice().collectLatest {
+                it.onSuccess {
+                    deliveryWeeklyPriceResponse.tryEmit(it)
+                }
+                it.onError {
+
+                }
+            }
+        }
+    }
+
 }

@@ -9,6 +9,7 @@ import uz.mrx.aripro.data.remote.response.history.OrderHistoryDetailResponse
 import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
+import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
@@ -70,5 +71,6 @@ interface OrderRepository {
 
     suspend fun getHistoryById(id: Int):Flow<ResultData<OrderHistoryDetailResponse>>
 
+    suspend fun getDeliveryWeeklyPrice():Flow<ResultData<DeliveryWeeklyPriceResponse>>
 
 }

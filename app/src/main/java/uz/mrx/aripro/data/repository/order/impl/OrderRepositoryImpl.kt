@@ -22,6 +22,7 @@ import uz.mrx.aripro.data.remote.response.history.OrderHistoryDetailResponse
 import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
 import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
+import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
@@ -357,6 +358,24 @@ class OrderRepositoryImpl @Inject constructor(
     override suspend fun getHistoryById(id: Int) = channelFlow<ResultData<OrderHistoryDetailResponse>> {
         try {
             val response = api.getHistoryById(id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    trySend(ResultData.success(body))
+                } else {
+                    trySend(ResultData.messageText("Response body is null"))
+                }
+            } else {
+                trySend(ResultData.messageText("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.error(e))
+        }
+    }
+
+    override suspend fun getDeliveryWeeklyPrice() = channelFlow<ResultData<DeliveryWeeklyPriceResponse>> {
+        try {
+            val response = api.getWeeklyEarnings()
             if (response.isSuccessful) {
                 val body = response.body()
                 if (body != null) {

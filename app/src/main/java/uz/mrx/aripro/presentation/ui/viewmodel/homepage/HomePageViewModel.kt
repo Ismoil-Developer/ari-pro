@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import uz.mrx.aripro.data.remote.response.history.OrderHistoryResponse
 import uz.mrx.aripro.data.remote.response.order.AssignedResponse
+import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.response.profile.DeliveryHomeResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -36,6 +37,8 @@ interface HomePageViewModel {
     val historyResponse:Flow<List<OrderHistoryResponse>>
 
     fun openHistoryDetailScreen(id: Int)
+
+    val deliveryWeeklyPriceResponse:Flow<DeliveryWeeklyPriceResponse>
 
 
 }
