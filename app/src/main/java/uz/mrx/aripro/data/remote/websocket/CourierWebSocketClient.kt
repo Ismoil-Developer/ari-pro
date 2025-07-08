@@ -28,13 +28,13 @@ class CourierWebSocketClient @Inject constructor() {
 
     private var locationUpdateJob: Job? = null
 
-    private val _incomingOrders = flow<WebSocketOrderEvent.NewOrder>()
+    private val _incomingOrders = MutableSharedFlow<WebSocketOrderEvent.NewOrder>(extraBufferCapacity = 1)
     val incomingOrders = _incomingOrders.asSharedFlow()
 
     private val _orderTimeouts = flow<WebSocketOrderEvent.OrderTimeout>()
     val orderTimeouts = _orderTimeouts.asSharedFlow()
 
-    private val _orderTakens = flow<WebSocketOrderEvent.OrderTaken>()
+    private val _orderTakens = MutableSharedFlow<WebSocketOrderEvent.OrderTaken>(extraBufferCapacity = 1)
     val orderTakens = _orderTakens.asSharedFlow()
 
     private var locationCallback: LocationCallback? = null
@@ -60,7 +60,10 @@ class CourierWebSocketClient @Inject constructor() {
                 Log.d("WebSocket", "📩 Message: $text")
                 parseMessage(text).onSuccess { event ->
                     when (event) {
-                        is WebSocketOrderEvent.NewOrder -> _incomingOrders.tryEmit(event)
+                        is WebSocketOrderEvent.NewOrder -> {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                _incomingOrders.emit(event)
+                            }                        }
                         is WebSocketOrderEvent.OrderTaken -> _orderTakens.tryEmit(event)
                         is WebSocketOrderEvent.OrderTimeout -> _orderTimeouts.tryEmit(event)
                         else -> Log.d("WebSocket", "ℹ️ Unknown event")
@@ -156,7 +159,7 @@ class CourierWebSocketClient @Inject constructor() {
         val json = JSONObject(text)
 
         when {
-            json.has("shop") && json.has("order_items") -> {
+            json.has("order_id") && json.has("shop") && json.has("order_items") -> {
                 val orderId = json.getInt("order_id")
                 val shop = json.getString("shop")
                 val details = json.optString("details", "")
@@ -176,6 +179,7 @@ class CourierWebSocketClient @Inject constructor() {
                     )
                 )
             }
+
 
             json.optString("type") == "order_taken" -> {
                 ResultData.success(WebSocketOrderEvent.OrderTaken(json.getInt("order_id")))

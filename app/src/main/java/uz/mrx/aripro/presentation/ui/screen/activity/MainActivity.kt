@@ -73,7 +73,23 @@ class MainActivity : AppCompatActivity() {
                 token = sharedPreference.token
             )
 
+            viewModel.connectWebSocket(url = "ws://ari.digitallaboratory.uz/ws/pro/connect/",
+                token = sharedPreference.token)
+
         }
+
+
+        lifecycleScope.launch {
+            webSocketClient.orderTakens.collectLatest { newOrder ->
+
+                val bundle = Bundle().apply {
+                    putInt("orderId", newOrder.orderId)
+                }
+
+                navController.navigate(R.id.orderDeliveryScreen, bundle)
+            }
+        }
+
 
 
         checkAndPromptEnableGPS {
@@ -141,11 +157,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Zakaz qabul qilindi", Toast.LENGTH_SHORT).show()
 
                 // ✅ Zakaz qabul qilingach, OrderDeliveryScreen fragmentiga o'tish
-                val bundle = Bundle().apply {
-                    putInt("orderId", newOrder.orderId)
-                }
 
-                navController.navigate(R.id.orderDeliveryScreen, bundle)
 
             },
             onSkipClickListener = {
