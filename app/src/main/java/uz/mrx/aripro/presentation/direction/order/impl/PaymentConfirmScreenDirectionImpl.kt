@@ -8,8 +8,8 @@ import javax.inject.Inject
 class PaymentConfirmScreenDirectionImpl @Inject constructor(private val navigator: Navigator) :
     PaymentConfirmScreenDirection {
 
-    override suspend fun openQrScannerFragment() {
-        navigator.navigateTo(PaymentConfirmScreenDirections.actionPaymentConfirmScreenToQrScannerFragment())
+    override suspend fun openQrScannerFragment(id:Int) {
+        navigator.navigateTo(PaymentConfirmScreenDirections.actionPaymentConfirmScreenToQrScannerFragment(id))
     }
 
 }

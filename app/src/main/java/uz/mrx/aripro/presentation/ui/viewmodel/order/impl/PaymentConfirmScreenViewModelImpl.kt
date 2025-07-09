@@ -10,21 +10,22 @@ import kotlinx.coroutines.launch
 import uz.mrx.aripro.data.remote.response.order.CheckUploadResponse
 import uz.mrx.aripro.domain.usecase.order.OrderUseCase
 import uz.mrx.aripro.presentation.direction.order.PaymentConfirmScreenDirection
+import uz.mrx.aripro.presentation.direction.order.QrScannerFragmentDirection
 import uz.mrx.aripro.presentation.ui.viewmodel.order.PaymentConfirmScreenViewModel
 import uz.mrx.aripro.utils.flow
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class PaymentConfirmScreenViewModelImpl @Inject constructor(private val useCase: OrderUseCase, private val direction: PaymentConfirmScreenDirection):PaymentConfirmScreenViewModel, ViewModel(){
+class PaymentConfirmScreenViewModelImpl @Inject constructor(private val useCase: OrderUseCase, private val direction: PaymentConfirmScreenDirection, private val directionQr: QrScannerFragmentDirection):PaymentConfirmScreenViewModel, ViewModel(){
 
     override fun uploadCheck(
         orderId: Int,
         imageFile: Uri,
-        price: Double
+        qrUrl:String
     ){
         viewModelScope.launch {
-            useCase.uploadCheck(orderId, imageFile, price).collectLatest {
+            useCase.uploadCheck(orderId, imageFile, qrUrl).collectLatest {
                 it.onError {
                     Log.e("UploadCheck", "Error: ${it.message}")
                 }
@@ -56,9 +57,15 @@ class PaymentConfirmScreenViewModelImpl @Inject constructor(private val useCase:
 
     override val uploadCheckManualResponse = flow<CheckUploadResponse>()
 
-    override fun openQrScannerFragment() {
+    override fun openQrScannerFragment(id:Int) {
         viewModelScope.launch {
-            direction.openQrScannerFragment()
+            direction.openQrScannerFragment(id)
+        }
+    }
+
+    override fun openDeliveryScreen(id: Int) {
+        viewModelScope.launch {
+            directionQr.openDeliveryScreen(id)
         }
     }
 

@@ -45,13 +45,13 @@ class OrderRepositoryImpl @Inject constructor(
     override suspend fun uploadCheck(
         orderId: Int,
         imageFile: Uri,
-        price: Double
+        qrUrl: String
     ) = channelFlow<ResultData<CheckUploadResponse>> {
         try {
             val orderRequestBody = orderId.toString()
                 .toRequestBody("text/plain".toMediaTypeOrNull())
 
-            val priceRequestBody = price.toString()
+            val qrUrlRequestBody = qrUrl
                 .toRequestBody("text/plain".toMediaTypeOrNull())
 
             val imagePart = prepareFilePart(imageFile)
@@ -59,7 +59,7 @@ class OrderRepositoryImpl @Inject constructor(
             val response = api.uploadCheck(
                 order = orderRequestBody,
                 image = imagePart,
-                price = priceRequestBody
+                qrUrlRequestBody
             )
 
             if (response.isSuccessful) {
@@ -171,6 +171,7 @@ class OrderRepositoryImpl @Inject constructor(
         """.trimIndent()
 
         webSocketClient.sendMessage(message)
+
     }
 
     override fun disconnectWebSocket() {

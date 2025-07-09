@@ -12,9 +12,9 @@ import javax.inject.Inject
 @HiltViewModel
 class QrScannerFragmentViewModelImpl @Inject constructor(private val direction: QrScannerFragmentDirection):QrScannerFragmentViewModel, ViewModel() {
 
-    override fun openDeliveryScreen() {
+    override fun openDeliveryScreen(id: Int) {
         viewModelScope.launch {
-            direction.openDeliveryScreen()
+            direction.openDeliveryScreen(id)
         }
     }
 

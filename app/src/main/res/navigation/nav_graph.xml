@@ -173,6 +173,10 @@
         <action
             android:id="@+id/action_qrScannerFragment_to_orderDeliveryScreen"
             app:destination="@id/orderDeliveryScreen" />
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
     </fragment>
     <fragment
         android:id="@+id/historyDetailScreen"

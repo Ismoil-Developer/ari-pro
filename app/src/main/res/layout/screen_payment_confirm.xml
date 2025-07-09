@@ -7,149 +7,184 @@
     android:fitsSystemWindows="true"
     android:paddingTop="16dp">
 
-    <ImageView
-        android:id="@+id/icBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:src="@drawable/ic_back"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/text_color_bold" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:drawablePadding="6dp"
-        android:fontFamily="@font/font_family"
-        android:text="@string/to_lovni_tasdiqlash"
-        android:textColor="@color/text_color_bold"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="@id/icBack"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/icBack" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/containerImg"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="31dp"
-        app:cardCornerRadius="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:strokeColor="@color/buttonBgColor"
-        app:strokeWidth="3dp">
+        android:layout_height="match_parent"
+        >
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/mainBgColor">
+            >
 
             <ImageView
-                android:id="@+id/image"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/ic_image"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/icBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/ic_back"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/text_color_bold" />
 
             <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:drawablePadding="6dp"
+                android:fontFamily="@font/font_family"
+                android:text="@string/to_lovni_tasdiqlash"
+                android:textColor="@color/text_color_bold"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@id/icBack"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/icBack" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/containerImg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="35dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/font_family_medium"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="31dp"
+                app:cardCornerRadius="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                app:strokeColor="@color/buttonBgColor"
+                app:strokeWidth="3dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/mainBgColor">
+
+                    <ImageView
+                        android:id="@+id/image"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/ic_image"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="35dp"
+                        android:layout_marginBottom="10dp"
+                        android:fontFamily="@font/font_family_medium"
+                        android:gravity="center"
+                        android:text="Qr kodli rasmni yuklang"
+                        android:textColor="#9E9E9E"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/image" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/containerLine"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
                 android:gravity="center"
-                android:text="Qr kodli rasmni yuklang"
-                android:textColor="#9E9E9E"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/containerImg">
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="4"
+                    android:background="@color/line_back" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Or"
+                    android:textColor="@color/text_color_medium" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="4"
+                    android:background="@color/line_back" />
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:id="@+id/camera"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/back_open_camera"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/containerLine">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/font_family_medium"
+                    android:src="@drawable/ic_camera" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/font_family"
+                    android:text="@string/kamerani_oching_rasmga_oling"
+                    android:textColor="@color/buttonBgColor"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/edtCost"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginBottom="20dp"
+                android:hint="Mahsulot narxini kiriting: "
+                android:textColor="@color/textProfile"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/image" />
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:drawablePadding="10dp"
+                app:layout_constraintTop_toBottomOf="@id/camera"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:background="@drawable/edt_bg"
+                />
+
+            <ImageView
+                android:id="@+id/imageQr"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_200sdp"
+                app:layout_constraintTop_toBottomOf="@id/edtCost"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="20dp"
+
+                />
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <LinearLayout
-        android:id="@+id/containerLine"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="15dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/containerImg">
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="4"
-            android:background="@color/line_back" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Or"
-            android:textColor="@color/text_color_medium" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="4"
-            android:background="@color/line_back" />
-
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:id="@+id/camera"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="15dp"
-        android:background="@drawable/back_open_camera"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/containerLine">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/font_family_medium"
-            android:src="@drawable/ic_camera" />
-d
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/font_family"
-            android:text="@string/kamerani_oching_rasmga_oling"
-            android:textColor="@color/buttonBgColor"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageQr"
-        android:layout_width="@dimen/_200sdp"
-        android:layout_height="@dimen/_200sdp"
-        app:layout_constraintTop_toBottomOf="@id/camera"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="@dimen/_20sdp"
-        />
+    </androidx.core.widget.NestedScrollView>
 
 
     <androidx.appcompat.widget.AppCompatButton
@@ -168,6 +203,5 @@ d
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:strokeWidth="0dp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

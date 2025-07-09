@@ -30,7 +30,7 @@ interface OrderApi {
     suspend fun uploadCheck(
         @Part("order") order: RequestBody,
         @Part image: MultipartBody.Part,
-        @Part("price") price: RequestBody
+        @Part("qr_url") qrUrl: RequestBody
     ): Response<CheckUploadResponse>
 
     @Multipart

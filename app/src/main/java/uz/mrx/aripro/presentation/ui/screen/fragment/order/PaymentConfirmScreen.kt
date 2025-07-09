@@ -1,18 +1,12 @@
 package uz.mrx.aripro.presentation.ui.screen.fragment.order
 
 import android.Manifest
-import android.app.Activity
-import android.content.ContentValues
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
@@ -42,7 +36,7 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
     private lateinit var takePictureLauncher: ActivityResultLauncher<Uri>
     private var photoUri: Uri? = null
 
-    private val price = 15000.00
+    private val price = 0.00
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +75,7 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
         }
 
         binding.containerImg.setOnClickListener {
-            viewModel.openQrScannerFragment()
+            viewModel.openQrScannerFragment(args.id)
         }
 
 

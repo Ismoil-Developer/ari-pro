@@ -78,7 +78,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
         lifecycleScope.launch {
             webSocketClient.orderTakens.collectLatest { newOrder ->
 
@@ -89,7 +88,6 @@ class MainActivity : AppCompatActivity() {
                 navController.navigate(R.id.orderDeliveryScreen, bundle)
             }
         }
-
 
 
         checkAndPromptEnableGPS {
@@ -132,8 +130,8 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-    }
 
+    }
 
     private fun observeIncomingOrders() {
         lifecycleScope.launch {

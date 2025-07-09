@@ -24,7 +24,7 @@ interface OrderUseCase {
     suspend fun uploadCheck(
         orderId: Int,
         imageFile: Uri,
-        price: Double
+        qrUrl:String
     ): Flow<ResultData<CheckUploadResponse>>
 
     suspend fun uploadCheckManual(

@@ -8,9 +8,9 @@ import javax.inject.Inject
 class QrScannerFragmentDirectionImpl @Inject constructor(private val navigator: Navigator) :
     QrScannerFragmentDirection {
 
-    override suspend fun openDeliveryScreen() {
+    override suspend fun openDeliveryScreen(id:Int) {
 
-        navigator.navigateTo(QrScannerFragmentDirections.actionQrScannerFragmentToOrderDeliveryScreen())
+        navigator.navigateTo(QrScannerFragmentDirections.actionQrScannerFragmentToOrderDeliveryScreen(id))
 
     }
 
