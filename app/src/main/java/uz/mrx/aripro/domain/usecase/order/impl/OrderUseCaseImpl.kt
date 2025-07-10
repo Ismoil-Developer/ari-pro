@@ -13,6 +13,7 @@ import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
+import uz.mrx.aripro.data.remote.response.order.OrderDetailResponse
 import uz.mrx.aripro.data.remote.response.order.OrderFeedBackResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -89,5 +90,7 @@ class OrderUseCaseImpl @Inject constructor(private val repository: OrderReposito
 
     override suspend fun getDeliveryWeeklyPrice(): Flow<ResultData<DeliveryWeeklyPriceResponse>> =
         repository.getDeliveryWeeklyPrice()
+
+    override suspend fun getOrderDetail(id: Int): Flow<ResultData<OrderDetailResponse>> = repository.getOrderDetail(id)
 
 }

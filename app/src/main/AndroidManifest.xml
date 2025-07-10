@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Qurilma xususiyatlari -->
     <uses-feature
         android:name="android.hardware.telephony"
         android:required="false" />
@@ -9,13 +10,14 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <!-- Ruxsatnomalar -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.CALL_PHONE"/>
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -36,6 +38,14 @@
         android:theme="@style/Theme.AriPro"
         tools:targetApi="31">
 
+        <!-- Kuryerning foreground servisi -->
+        <service
+            android:name=".utils.CourierLocationService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+
+        <!-- Fayl yaratish uchun provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -46,19 +56,18 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-
+        <!-- Yandex Map API -->
         <meta-data
             android:name="com.yandex.android.maps.apikey"
             android:value="79fb340d-f68a-4f8b-b729-8f19f413786d"/>
 
+        <!-- Main Activity -->
         <activity
             android:name=".presentation.ui.screen.activity.MainActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
-            >
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

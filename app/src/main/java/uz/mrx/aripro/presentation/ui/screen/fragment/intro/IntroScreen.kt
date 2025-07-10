@@ -82,11 +82,9 @@ class IntroScreen : Fragment(R.layout.screen_intro) {
     }
 
     fun loadData(){
-
-        list.add(IntroData(R.drawable.back_login_image))
-        list.add(IntroData(R.drawable.back_login_image))
-        list.add(IntroData(R.drawable.back_login_image))
-        list.add(IntroData(R.drawable.back_login_image))
-        list.add(IntroData(R.drawable.back_login_image))
+        list.add(IntroData(R.drawable.intro_one))
+        list.add(IntroData(R.drawable.intro_two))
+        list.add(IntroData(R.drawable.intro_three))
     }
+
 }

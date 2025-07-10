@@ -281,8 +281,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/detail"
-                android:layout_width="@dimen/_55sdp"
-                android:layout_height="30dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:backgroundTint="@android:color/transparent"
                 app:layout_constraintBottom_toBottomOf="@id/myOrderTxt"
                 app:layout_constraintEnd_toEndOf="@id/btn_continue"
@@ -291,10 +291,12 @@
                 app:strokeWidth="1dp">
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/batafsil"
+                    android:paddingVertical="5dp"
+                    android:paddingHorizontal="10dp"
                     android:textColor="@color/buttonBgColor" />
 
             </com.google.android.material.card.MaterialCardView>

@@ -20,6 +20,7 @@ import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
+import uz.mrx.aripro.data.remote.response.order.OrderDetailResponse
 import uz.mrx.aripro.data.remote.response.order.OrderFeedBackResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 
@@ -70,5 +71,8 @@ interface OrderApi {
 
     @GET("/pro/courier/weekly-earnings/")
     suspend fun getWeeklyEarnings():Response<DeliveryWeeklyPriceResponse>
+
+    @GET("/pro/orders/{id}/")
+    suspend fun getOrderDetail(@Path("id") id: Int):Response<OrderDetailResponse>
 
 }

@@ -2,9 +2,12 @@ package uz.mrx.aripro.presentation.ui.screen.fragment.main.page
 
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -14,21 +17,17 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uz.mrx.aripro.R
 import uz.mrx.aripro.data.local.shp.MySharedPreference
 import uz.mrx.aripro.data.model.LoadData
-import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
 import uz.mrx.aripro.databinding.PageHomeBinding
 import uz.mrx.aripro.presentation.adapter.AssignedAdapter
 import uz.mrx.aripro.presentation.adapter.LoadAdapter
-import uz.mrx.aripro.presentation.ui.dialog.OrderTimeDialog
 import uz.mrx.aripro.presentation.ui.viewmodel.homepage.HomePageViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.homepage.impl.HomePageViewModelImpl
 import javax.inject.Inject
-import kotlin.math.log
 
 @AndroidEntryPoint
 class HomePage : Fragment(R.layout.page_home) {
@@ -42,14 +41,40 @@ class HomePage : Fragment(R.layout.page_home) {
     private var loadList = arrayListOf<LoadData>()
     private var active = false
 
+    private var doubleBackToExitPressedOnce = false
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         loadData()
 
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (doubleBackToExitPressedOnce) {
+                        requireActivity().finish()
+                    } else {
+                        doubleBackToExitPressedOnce = true
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.ilovadan_chiqish_uchun_yana_bir_marta_orqaga_tugmasini_bosing),
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            doubleBackToExitPressedOnce = false
+                        }, 2000) // 2 second delay
+                    }
+                }
+            })
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.deliveryWeeklyPriceResponse.collectLatest {
-                binding.balance.text = it.totalPrice.toString()
+                if(it.totalPrice.toString().isNotEmpty()){
+                    binding.balance.text = it.totalPrice.toString()
+                }
             }
         }
 

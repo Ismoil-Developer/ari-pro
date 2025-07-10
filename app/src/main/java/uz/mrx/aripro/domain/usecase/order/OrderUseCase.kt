@@ -13,6 +13,7 @@ import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
+import uz.mrx.aripro.data.remote.response.order.OrderDetailResponse
 import uz.mrx.aripro.data.remote.response.order.OrderFeedBackResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
@@ -62,5 +63,7 @@ interface OrderUseCase {
     suspend fun getHistoryById(id: Int):Flow<ResultData<OrderHistoryDetailResponse>>
 
     suspend fun getDeliveryWeeklyPrice():Flow<ResultData<DeliveryWeeklyPriceResponse>>
+
+    suspend fun getOrderDetail(id: Int):Flow<ResultData<OrderDetailResponse>>
 
 }

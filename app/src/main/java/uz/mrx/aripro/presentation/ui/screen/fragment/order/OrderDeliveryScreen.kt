@@ -110,8 +110,13 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         binding.message.setOnClickListener { viewModel.openChatScreen() }
         binding.call.setOnClickListener { phone?.let { dialNumber(it) } }
-        binding.detail.setOnClickListener { orderId?.let { viewModel.openOrderDetailScreen(it) } }
-        binding.orderCancel.setOnClickListener { orderId?.let { viewModel.orderCancelScreen(it) } }
+        binding.detail.setOnClickListener {
+            orderId?.let {
+                viewModel.openOrderDetailScreen(it)
+            }
+        }
+        binding.orderCancel.setOnClickListener {
+            orderId?.let { viewModel.orderCancelScreen(it) } }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 

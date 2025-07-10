@@ -1,7 +1,11 @@
 package uz.mrx.aripro.presentation.ui.screen.activity
 
+import android.Manifest
 import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +14,8 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -31,6 +37,7 @@ import uz.mrx.aripro.presentation.navigation.NavigationHandler
 import uz.mrx.aripro.presentation.ui.dialog.OrderTimeDialog
 import uz.mrx.aripro.presentation.ui.viewmodel.main.MainViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.main.impl.MainViewModelImpl
+import uz.mrx.aripro.utils.CourierLocationService
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -66,6 +73,26 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        }
+
+
+        val serviceIntent = Intent(this, CourierLocationService::class.java)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
+        }
+
 
         if (sharedPreference.token.isNotEmpty()){
             webSocketClient.connect(

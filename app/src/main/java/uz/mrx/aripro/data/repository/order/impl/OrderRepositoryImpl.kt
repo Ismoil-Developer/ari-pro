@@ -26,6 +26,7 @@ import uz.mrx.aripro.data.remote.response.order.DeliveryWeeklyPriceResponse
 import uz.mrx.aripro.data.remote.response.order.DirectionResponse
 import uz.mrx.aripro.data.remote.response.order.OrderActiveResponse
 import uz.mrx.aripro.data.remote.response.order.OrderCancelResponse
+import uz.mrx.aripro.data.remote.response.order.OrderDetailResponse
 import uz.mrx.aripro.data.remote.response.order.OrderFeedBackResponse
 import uz.mrx.aripro.data.remote.response.order.WorkActiveResponse
 import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
@@ -392,5 +393,22 @@ class OrderRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getOrderDetail(id:Int) = channelFlow<ResultData<OrderDetailResponse>> {
+        try {
+            val response = api.getOrderDetail(id)
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    trySend(ResultData.success(body))
+                } else {
+                    trySend(ResultData.messageText("Response body is null"))
+                }
+            } else {
+                trySend(ResultData.messageText("Error ${response.code()}: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            trySend(ResultData.error(e))
+        }
+    }
 
 }
