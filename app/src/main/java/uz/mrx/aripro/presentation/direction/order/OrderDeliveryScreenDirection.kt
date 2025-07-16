@@ -12,4 +12,6 @@ interface OrderDeliveryScreenDirection {
 
     suspend fun openPaymentConfirmScreen(id: Int)
 
+    suspend fun openMainScreen()
+
 }

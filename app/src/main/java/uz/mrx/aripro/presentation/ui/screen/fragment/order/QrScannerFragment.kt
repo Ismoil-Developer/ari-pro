@@ -55,7 +55,7 @@ class QrScannerFragment : Fragment(R.layout.screen_qr_scanner) {
             viewModel.uploadCheckResponse.collectLatest {
                 Log.d("CCCCCCCCCC", "onViewCreated: ${it.qrUrl}")
 
-                viewModel.openDeliveryScreen(it.id)
+                viewModel.openDeliveryScreen(it.order)
 
             }
         }

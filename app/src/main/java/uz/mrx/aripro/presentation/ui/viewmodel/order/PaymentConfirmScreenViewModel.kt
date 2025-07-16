@@ -27,4 +27,6 @@ interface PaymentConfirmScreenViewModel {
 
     fun openDeliveryScreen(id: Int)
 
+    fun openPaymentScreenToDeliveryScreen(id: Int)
+
 }

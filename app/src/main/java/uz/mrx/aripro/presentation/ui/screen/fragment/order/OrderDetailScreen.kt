@@ -56,5 +56,6 @@ class OrderDetailScreen:Fragment(R.layout.screen_order_detail) {
 
             }
         }
+
     }
 }

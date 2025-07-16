@@ -45,7 +45,7 @@ class CourierWebSocketClient @Inject constructor() {
 
         currentUrl = url
         currentToken = token
-
+    
         val request = Request.Builder()
             .url(url)
             .addHeader("Authorization", "Bearer $token")
@@ -196,7 +196,9 @@ class CourierWebSocketClient @Inject constructor() {
 
             else -> ResultData.success(WebSocketOrderEvent.UnknownMessage(text))
         }
+
     } catch (e: Exception) {
         ResultData.error(e)
     }
+
 }

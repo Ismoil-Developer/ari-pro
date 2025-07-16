@@ -29,4 +29,8 @@ class OrderDeliveryScreenDirectionImpl @Inject constructor(private val navigator
         navigator.navigateTo(OrderDeliveryScreenDirections.actionOrderDeliveryScreenToPaymentConfirmScreen(id))
     }
 
+    override suspend fun openMainScreen() {
+        navigator.navigateTo(OrderDeliveryScreenDirections.actionOrderDeliveryScreenToScreenMain())
+    }
+
 }

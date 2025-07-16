@@ -12,4 +12,7 @@ class PaymentConfirmScreenDirectionImpl @Inject constructor(private val navigato
         navigator.navigateTo(PaymentConfirmScreenDirections.actionPaymentConfirmScreenToQrScannerFragment(id))
     }
 
+    override suspend fun openDeliveryScreen(id: Int) {
+        navigator.navigateTo(PaymentConfirmScreenDirections.actionPaymentConfirmScreenToOrderDeliveryScreen(id))
+    }
 }

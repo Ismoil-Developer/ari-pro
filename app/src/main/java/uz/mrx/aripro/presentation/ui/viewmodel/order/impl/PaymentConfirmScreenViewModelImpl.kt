@@ -69,4 +69,10 @@ class PaymentConfirmScreenViewModelImpl @Inject constructor(private val useCase:
         }
     }
 
+    override fun openPaymentScreenToDeliveryScreen(id: Int) {
+        viewModelScope.launch {
+            direction.openDeliveryScreen(id)
+        }
+    }
+
 }

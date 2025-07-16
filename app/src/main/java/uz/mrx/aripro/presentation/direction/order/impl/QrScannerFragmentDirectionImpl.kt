@@ -11,7 +11,6 @@ class QrScannerFragmentDirectionImpl @Inject constructor(private val navigator: 
     override suspend fun openDeliveryScreen(id:Int) {
 
         navigator.navigateTo(QrScannerFragmentDirections.actionQrScannerFragmentToOrderDeliveryScreen(id))
-
     }
 
 }

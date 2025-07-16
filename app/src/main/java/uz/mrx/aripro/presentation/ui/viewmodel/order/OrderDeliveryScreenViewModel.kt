@@ -38,4 +38,6 @@ interface OrderDeliveryScreenViewModel {
 
     val activeErrorResponse:Flow<String>
 
+    fun openMainScreen()
+
 }

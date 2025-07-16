@@ -125,6 +125,9 @@
         <action
             android:id="@+id/action_orderDeliveryScreen_to_paymentConfirmScreen"
             app:destination="@id/paymentConfirmScreen" />
+        <action
+            android:id="@+id/action_orderDeliveryScreen_to_screenMain"
+            app:destination="@id/screenMain" />
     </fragment>
     <fragment
         android:id="@+id/chatScreen"
@@ -165,6 +168,9 @@
             android:name="id"
             android:defaultValue="-1"
             app:argType="integer" />
+        <action
+            android:id="@+id/action_paymentConfirmScreen_to_orderDeliveryScreen"
+            app:destination="@id/orderDeliveryScreen" />
     </fragment>
     <fragment
         android:id="@+id/qrScannerFragment"

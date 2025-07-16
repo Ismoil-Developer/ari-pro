@@ -3,6 +3,7 @@ package uz.mrx.aripro.presentation.ui.screen.fragment.order
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -10,6 +11,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -69,15 +71,15 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
         if (fineLocationGranted || coarseLocationGranted) {
-            moveToCurrentLocation()
             courierWebSocketClient.startSendingLocationUpdates(requireContext())
         } else {
-            Toast.makeText(requireContext(), "Joylashuv ruxsat berilmadi", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Joylashuv ruxsat berilmadi", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
     @Inject
-    lateinit var courierWebSocketClient:CourierWebSocketClient
+    lateinit var courierWebSocketClient: CourierWebSocketClient
 
     private var phone: String? = null
     private var orderId: Int? = null
@@ -96,34 +98,110 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        courierWebSocketClient.connect("ws://ari.digitallaboratory.uz/ws/pro/connect/", sharedPref.token)
+        courierWebSocketClient.connect(
+            "ws://ari.digitallaboratory.uz/ws/pro/connect/",
+            sharedPref.token
+        )
 
-        viewModel.connectWebSocket("ws://ari.digitallaboratory.uz/ws/pro/connect/", sharedPref.token)
+        viewModel.connectWebSocket(
+            "ws://ari.digitallaboratory.uz/ws/pro/connect/",
+            sharedPref.token
+        )
+
+
+        binding.icBack.setOnClickListener {
+            viewModel.openMainScreen()
+        }
 
         checkAndRequestLocationPermission()
 
-        binding.gps.setOnClickListener { moveToCurrentLocation() }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.openMainScreen()
+            }
+        })
 
-        binding.icBack.setOnClickListener {
-            findNavController().popBackStack()
+        binding.gps.setOnClickListener {
+
+            val locationRequest = LocationRequest.create().apply {
+                priority = Priority.PRIORITY_HIGH_ACCURACY
+            }
+
+            val builder = com.google.android.gms.location.LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest)
+
+            val settingsClient =
+                LocationServices.getSettingsClient(requireActivity())
+            val task = settingsClient.checkLocationSettings(builder.build())
+
+            task.addOnSuccessListener {
+                // GPS yoqilgan, joylashuvni olish
+                getLastKnownLocation { location ->
+                    if (location != null) {
+                        val userLocation = Point(location.latitude, location.longitude)
+                        binding.mapView.map.move(
+                            CameraPosition(userLocation, 18.0f, 0.0f, 0.0f),
+                            Animation(Animation.Type.SMOOTH, 1f),
+                            null
+                        )
+
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Joylashuvni olish uchun ruhsat bering",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+
+            task.addOnFailureListener { exception ->
+                if (exception is com.google.android.gms.common.api.ResolvableApiException) {
+                    // GPSni yoqish oynasini ko'rsatish
+                    try {
+                        exception.startResolutionForResult(requireActivity(), 1001)
+                    } catch (sendEx: IntentSender.SendIntentException) {
+                        Toast.makeText(
+                            requireContext(),
+                            "GPSni yoqish muammosi yuz berdi",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "GPSni yoqish talab qilinadi",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
 
+
         binding.message.setOnClickListener { viewModel.openChatScreen() }
+
         binding.call.setOnClickListener { phone?.let { dialNumber(it) } }
+
         binding.detail.setOnClickListener {
             orderId?.let {
                 viewModel.openOrderDetailScreen(it)
             }
         }
+
         binding.orderCancel.setOnClickListener {
-            orderId?.let { viewModel.orderCancelScreen(it) } }
+            orderId?.let { viewModel.orderCancelScreen(it) }
+        }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         binding.btnContinue.setOnClickListener {
             val order = this.order
             if (order == null) {
-                Toast.makeText(requireContext(), "Buyurtma maʼlumotlari mavjud emas", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Buyurtma maʼlumotlari mavjud emas",
+                    Toast.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
             }
 
@@ -138,10 +216,12 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                         order.customerLocation.longitude
                     )
                 } else {
-                    Toast.makeText(requireContext(), "Joylashuv olinmadi", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Joylashuv olinmadi", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Joylashuv olishda xatolik", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Joylashuv olishda xatolik", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -170,6 +250,52 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     }
 
+    private fun getLastKnownLocation(callback: (android.location.Location?) -> Unit) {
+        val fusedLocationClient =
+            com.google.android.gms.location.LocationServices.getFusedLocationProviderClient(
+                requireActivity()
+            )
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            val locationRequest = com.google.android.gms.location.LocationRequest.create().apply {
+                priority = com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+                interval = 1000 // 1 sekund
+                fastestInterval = 500
+            }
+
+            fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    callback(location)
+                } else {
+                    // Agar oxirgi joylashuv yo'q bo'lsa, real vaqtda joylashuvni oling
+                    fusedLocationClient.requestLocationUpdates(
+                        locationRequest,
+                        object : com.google.android.gms.location.LocationCallback() {
+                            override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
+                                val currentLocation = locationResult.lastLocation
+                                callback(currentLocation)
+                                fusedLocationClient.removeLocationUpdates(this) // Faqat bir marta joylashuvni oling
+                            }
+                        },
+                        null
+                    )
+                }
+            }.addOnFailureListener { exception ->
+                Log.e("LocationError", "Joylashuvni olishda xatolik: ${exception.message}")
+                callback(null)
+            }
+        } else {
+            // Ruxsat so'rash
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            callback(null)
+        }
+    }
+
+
     private fun openMapWithDirections(
         courierLat: Double,
         courierLng: Double,
@@ -178,17 +304,20 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         customerLat: Double,
         customerLng: Double
     ) {
-        val googleUri = Uri.parse("https://www.google.com/maps/dir/?api=1" +
-                "&origin=$courierLat,$courierLng" +
-                "&waypoints=$shopLat,$shopLng" +
-                "&destination=$customerLat,$customerLng" +
-                "&travelmode=driving")
+        val googleUri = Uri.parse(
+            "https://www.google.com/maps/dir/?api=1" +
+                    "&origin=$courierLat,$courierLng" +
+                    "&waypoints=$shopLat,$shopLng" +
+                    "&destination=$customerLat,$customerLng" +
+                    "&travelmode=driving"
+        )
 
         val googleIntent = Intent(Intent.ACTION_VIEW, googleUri).apply {
             setPackage("com.google.android.apps.maps")
         }
 
-        val yandexUri = Uri.parse("yandexmaps://maps.yandex.com/?rtext=$courierLat,$courierLng~$shopLat,$shopLng~$customerLat,$customerLng&rtt=auto")
+        val yandexUri =
+            Uri.parse("yandexmaps://maps.yandex.com/?rtext=$courierLat,$courierLng~$shopLat,$shopLng~$customerLat,$customerLng&rtt=auto")
 
         val yandexIntent = Intent(Intent.ACTION_VIEW, yandexUri).apply {
             setPackage("ru.yandex.yandexmaps")
@@ -209,6 +338,9 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     private fun updateOrderUI(order: OrderActiveResponse) {
 
         this.order = order
+
+        binding.emptyContainer.visibility = View.GONE
+        binding.deliverContainer.visibility = View.VISIBLE
 
         orderId = order.id
         currentDirection = order.direction
@@ -249,40 +381,10 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 )
             )
         } else {
-            moveToCurrentLocation()
             courierWebSocketClient.startSendingLocationUpdates(requireContext())
         }
     }
 
-
-    @SuppressLint("MissingPermission")
-    private fun moveToCurrentLocation() {
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                val point = Point(it.latitude, it.longitude)
-                binding.mapView.map.move(
-                    CameraPosition(point, 15.0f, 0.0f, 0.0f),
-                    Animation(Animation.Type.SMOOTH, 1f),
-                    null
-                )
-            } ?: Toast.makeText(requireContext(), "Joylashuv topilmadi", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun sendCurrentLocation() {
-        lifecycleScope.launch {
-            try {
-                val location = LocationServices.getFusedLocationProviderClient(requireContext()).lastLocation.await()
-                location?.let {
-//                    viewModel.startSendingLocation { Pair(it.latitude, it.longitude) }
-                }
-            } catch (e: Exception) {
-                Log.e("Location", "Error: ${e.message}")
-            }
-        }
-    }
 
     private fun dialNumber(number: String) {
         val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$number"))
@@ -313,9 +415,11 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     }
 
     private fun observeErrors() {
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.activeErrorResponse.collectLatest {
+
                     val isNoActiveOrder = it.contains("No active order", ignoreCase = true)
 
                     val message = if (isNoActiveOrder) {
@@ -337,6 +441,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 }
             }
         }
+
     }
 
     private fun getButtonText(direction: String): String {
@@ -415,14 +520,19 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         MapKitFactory.getInstance().onStop()
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE &&
             grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
         ) {
-            sendCurrentLocation()
+
         } else {
-            Toast.makeText(requireContext(), "Joylashuv ruxsati talab qilinadi", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Joylashuv ruxsati talab qilinadi", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
