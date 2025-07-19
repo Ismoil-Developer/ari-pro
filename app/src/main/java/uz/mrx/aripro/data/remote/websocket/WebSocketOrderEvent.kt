@@ -25,6 +25,10 @@ sealed class WebSocketOrderEvent {
         val orderId: Int
     ) : WebSocketOrderEvent()
 
+    data class OrderAssigned(
+        val orderId: Int
+    ) : WebSocketOrderEvent()
+
     data class UnknownMessage(
         val rawMessage: String
     ) : WebSocketOrderEvent()

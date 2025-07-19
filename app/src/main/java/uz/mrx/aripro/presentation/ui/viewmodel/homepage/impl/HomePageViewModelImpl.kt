@@ -92,6 +92,10 @@ class HomePageViewModelImpl @Inject constructor(
                 _orderTaken.tryEmit(message) // Emit the OrderTaken event directly
             }
 
+            is WebSocketOrderEvent.OrderAssigned ->{
+
+            }
+
             is WebSocketOrderEvent.UnknownMessage -> {
                 // Ignore or log unknown messages
             }

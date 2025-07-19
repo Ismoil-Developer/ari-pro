@@ -36,7 +36,7 @@ import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
 import uz.mrx.aripro.presentation.navigation.NavigationHandler
 import uz.mrx.aripro.presentation.ui.dialog.OrderTimeDialog
 import uz.mrx.aripro.presentation.ui.viewmodel.main.MainViewModel
-import uz.mrx.aripro.presentation.ui.viewmodel.main.impl.MainViewModelImpl
+import uz.mrx.aripro.presentation.ui.viewmodel.main.MainViewModelImpl
 import uz.mrx.aripro.utils.CourierLocationService
 import javax.inject.Inject
 
@@ -132,7 +132,7 @@ class MainActivity : AppCompatActivity() {
 
         // Buyurtmalarni qabul qilish
         lifecycleScope.launch {
-            webSocketClient.orderTakens.collectLatest { newOrder ->
+            webSocketClient.orderAssigned.collectLatest { newOrder ->
                 val bundle = Bundle().apply { putInt("orderId", newOrder.orderId) }
                 navController.navigate(R.id.orderDeliveryScreen, bundle)
             }

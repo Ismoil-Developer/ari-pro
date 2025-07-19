@@ -9,6 +9,7 @@ interface MainViewModel {
     val orderTimeouts: SharedFlow<WebSocketOrderEvent.OrderTimeout>
 
     val orderTaken:SharedFlow<WebSocketOrderEvent.OrderTaken>
+    val orderAssigned:SharedFlow<WebSocketOrderEvent.OrderAssigned>
 
 
     fun connectWebSocket(url: String, token: String)

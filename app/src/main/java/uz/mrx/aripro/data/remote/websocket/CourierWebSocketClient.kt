@@ -37,6 +37,10 @@ class CourierWebSocketClient @Inject constructor() {
     private val _orderTakens = MutableSharedFlow<WebSocketOrderEvent.OrderTaken>(extraBufferCapacity = 1)
     val orderTakens = _orderTakens.asSharedFlow()
 
+    private val _orderAssigned = MutableSharedFlow<WebSocketOrderEvent.OrderAssigned>(extraBufferCapacity = 1)
+    val orderAssigned = _orderAssigned.asSharedFlow()
+
+
     private var locationCallback: LocationCallback? = null
 
 
@@ -66,6 +70,7 @@ class CourierWebSocketClient @Inject constructor() {
                             }                        }
                         is WebSocketOrderEvent.OrderTaken -> _orderTakens.tryEmit(event)
                         is WebSocketOrderEvent.OrderTimeout -> _orderTimeouts.tryEmit(event)
+                        is WebSocketOrderEvent.OrderAssigned -> _orderAssigned.tryEmit(event) // ✅ Yangi qo‘shildi
                         else -> Log.d("WebSocket", "ℹ️ Unknown event")
                     }
                 }.onError {
@@ -183,6 +188,10 @@ class CourierWebSocketClient @Inject constructor() {
 
             json.optString("type") == "order_taken" -> {
                 ResultData.success(WebSocketOrderEvent.OrderTaken(json.getInt("order_id")))
+            }
+
+            json.optString("type") == "order.assigned" -> {
+                ResultData.success(WebSocketOrderEvent.OrderAssigned(json.getInt("order_id")))
             }
 
             json.has("details") && json.has("order_id") -> {

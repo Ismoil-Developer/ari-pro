@@ -5,6 +5,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
@@ -26,6 +27,9 @@ class HistoryDetailScreen:Fragment(R.layout.screen_history_detail) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.icBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         if (args.id != -1){
             viewModel.getHistoryById(args.id)
@@ -36,7 +40,10 @@ class HistoryDetailScreen:Fragment(R.layout.screen_history_detail) {
 
                 binding.shopName.text = it.shop_title
                 binding.shopName2.text = it.shop_title
-                Glide.with(requireContext()).load(it.shop_image).into(binding.deliveryBasket)
+
+                if (it.shop_image.isNotEmpty()){
+                    Glide.with(requireContext()).load(it.shop_image).into(binding.deliveryBasket)
+                }
 
                 binding.contractNumber.text =  it.order_code
                 binding.date.text = it.created_at
@@ -52,4 +59,4 @@ class HistoryDetailScreen:Fragment(R.layout.screen_history_detail) {
 
 
     }
-}
+}                

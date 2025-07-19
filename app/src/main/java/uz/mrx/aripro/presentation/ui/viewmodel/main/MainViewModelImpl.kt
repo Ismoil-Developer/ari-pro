@@ -1,4 +1,4 @@
-package uz.mrx.aripro.presentation.ui.viewmodel.main.impl
+package uz.mrx.aripro.presentation.ui.viewmodel.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,6 +28,9 @@ class MainViewModelImpl @Inject constructor(
 
     private val _orderTaken = MutableSharedFlow<WebSocketOrderEvent.OrderTaken>()
     override val orderTaken: SharedFlow<WebSocketOrderEvent.OrderTaken> = _orderTaken
+
+    private val _orderAssigned = MutableSharedFlow<WebSocketOrderEvent.OrderAssigned>()
+    override val orderAssigned: SharedFlow<WebSocketOrderEvent.OrderAssigned> = _orderAssigned
 
 
     override fun connectWebSocket(url: String, token: String) {
@@ -66,6 +70,11 @@ class MainViewModelImpl @Inject constructor(
             is WebSocketOrderEvent.UnknownMessage -> {
                 // Ignore or log unknown messages
             }
+
+            is WebSocketOrderEvent.OrderAssigned ->{
+                _orderAssigned.tryEmit(message)
+            }
+
         }
     }
 
