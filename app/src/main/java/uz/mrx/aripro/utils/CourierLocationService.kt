@@ -1,18 +1,20 @@
 package uz.mrx.aripro.utils
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.app.*
-import android.content.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.net.ConnectivityManager
 import android.os.Build
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONObject
@@ -29,31 +31,27 @@ class CourierLocationService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationCallback: LocationCallback? = null
 
-    private val connectivityReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            // Bu yerda internet o'zgarishini kuzatishingiz mumkin
-        }
-    }
-
     override fun onCreate() {
         super.onCreate()
-        registerConnectivityReceiver()
-        startForegroundServiceWithNotification()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        startForegroundServiceWithNotification()
         startLocationUpdates()
     }
 
-    private fun registerConnectivityReceiver() {
-        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                registerReceiver(connectivityReceiver, filter, Context.RECEIVER_NOT_EXPORTED)
-            } else {
-                registerReceiver(connectivityReceiver, filter)
-            }
-        } catch (e: SecurityException) {
-            Log.e("CourierService", "Receiver ro'yxatdan o'tkazishda xatolik: ${e.message}")
-        }
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    private fun startForegroundServiceWithNotification() {
+        val channelId = "location_channel"
+        createNotificationChannel(channelId, "Courier Location Updates")
+
+        val notification: Notification = NotificationCompat.Builder(this, channelId)
+            .setContentTitle("Joylashuv yuborilmoqda")
+            .setContentText("Sizning joylashuvingiz yangilanmoqda...")
+            .setSmallIcon(R.drawable.ic_location_det)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        startForeground(1, notification)
     }
 
     private fun createNotificationChannel(channelId: String, name: String) {
@@ -61,36 +59,18 @@ class CourierLocationService : Service() {
             val channel = NotificationChannel(
                 channelId,
                 name,
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_HIGH
             )
             val manager = getSystemService(NotificationManager::class.java)
-            manager?.createNotificationChannel(channel)
+            manager.createNotificationChannel(channel)
         }
     }
 
-    private fun startForegroundServiceWithNotification() {
-        val channelId = "location_service_channel"
-        val channelName = "Courier Location Service"
-
-        createNotificationChannel(channelId, channelName)
-
-        val notification = NotificationCompat.Builder(this, channelId)
-            .setContentTitle("Joylashuv kuzatilmoqda")
-            .setContentText("Joylashuvingiz real vaqtda kuzatilmoqda.")
-            .setSmallIcon(R.drawable.ic_location_det)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .build()
-
-        startForeground(1, notification)
-
-    }
-
-    @SuppressLint("MissingPermission")
     private fun startLocationUpdates() {
-        if (
-            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
         ) {
-            Log.e("CourierService", "Joylashuv ruxsatlari mavjud emas")
+            Log.e("CourierService", "📍 Joylashuv permission yo'q!")
             stopSelf()
             return
         }
@@ -102,8 +82,15 @@ class CourierLocationService : Service() {
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
-                val location: Location = result.lastLocation ?: return
+                val location = result.lastLocation ?: return
                 sendLocationOverWebSocket(location)
+
+                // Lokatsiyani Toast orqali chiqarish
+                Toast.makeText(
+                    this@CourierLocationService,
+                    "📍 Lat: ${location.latitude}, Lon: ${location.longitude}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -123,21 +110,14 @@ class CourierLocationService : Service() {
             }
             webSocketClient.sendMessage(json.toString())
         } catch (e: Exception) {
-            Log.e("CourierService", "JSON yuborishda xatolik: ${e.message}")
+            Log.e("CourierService", "❌ JSON yuborishda xatolik: ${e.message}")
         }
     }
 
     override fun onDestroy() {
+        super.onDestroy()
         locationCallback?.let {
             fusedLocationClient.removeLocationUpdates(it)
         }
-        try {
-            unregisterReceiver(connectivityReceiver)
-        } catch (e: Exception) {
-            Log.e("CourierService", "Receiver o'chirishda xatolik: ${e.message}")
-        }
-        super.onDestroy()
     }
-
-    override fun onBind(intent: Intent?): IBinder? = null
 }

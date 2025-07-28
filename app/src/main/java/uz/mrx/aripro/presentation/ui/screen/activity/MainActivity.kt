@@ -47,11 +47,22 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var handler: NavigationHandler
     @Inject
-    lateinit var sharedPreference: MySharedPreference
+    lateinit var mySharedPreference: MySharedPreference
+
+    private val locationPermissionRequest = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val allGranted = permissions.all { it.value }
+        if (allGranted) {
+            startCourierLocationServiceIfNeeded()
+        } else {
+            Toast.makeText(this, "Permissionlar berilmadi!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     @Inject
     lateinit var webSocketClient: CourierWebSocketClient
 
-    private val REQUEST_LOCATION_PERMISSION = 1001
 
     // ViewModel
     private val viewModel: MainViewModel by viewModels<MainViewModelImpl>()
@@ -83,51 +94,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Barcha permissionlarni so'rash
-        requestAllPermissions()
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.FOREGROUND_SERVICE_LOCATION
-                ),
-                REQUEST_LOCATION_PERMISSION
-            )
-        }
-
-
-        // POST_NOTIFICATIONS permission (Android 13+)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                1001
-            )
-        }
-
-        // Foreground servisni ishga tushirish
-        val serviceIntent = Intent(this, CourierLocationService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent)
-        } else {
-            startService(serviceIntent)
-        }
 
         // WebSocket ulanishi
-        if (sharedPreference.token.isNotEmpty()) {
+        if (mySharedPreference.token.isNotEmpty()) {
             val wsUrl = "ws://ari.digitallaboratory.uz/ws/pro/connect/"
-            webSocketClient.connect(url = wsUrl, token = sharedPreference.token)
-            viewModel.connectWebSocket(url = wsUrl, token = sharedPreference.token)
+            webSocketClient.connect(url = wsUrl, token = mySharedPreference.token)
+            viewModel.connectWebSocket(url = wsUrl, token = mySharedPreference.token)
         }
 
         // Buyurtmalarni qabul qilish
@@ -230,89 +202,76 @@ class MainActivity : AppCompatActivity() {
         return locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
     }
 
-    private fun requestAllPermissions() {
-        val permissionsToRequest = mutableListOf<String>()
-
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-
-        if (ContextCompat.checkSelfPermission(
-                this,
+    private fun checkPermissionsAndStartService() {
+        if (mySharedPreference.token.isNotEmpty()) {
+            val permissionsNeeded = mutableListOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsToRequest.add(Manifest.permission.ACCESS_COARSE_LOCATION)
-        }
+            )
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.FOREGROUND_SERVICE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsToRequest.add(Manifest.permission.FOREGROUND_SERVICE_LOCATION)
-        }
+            // Android 14 dan boshlab yangi permission ham so‘raladi
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                permissionsNeeded.add(Manifest.permission.FOREGROUND_SERVICE_LOCATION)
+            }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
-        }
+            val notGranted = permissionsNeeded.filter {
+                ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED
+            }
 
-        if (permissionsToRequest.isNotEmpty()) {
-            ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), 1010)
+            if (notGranted.isEmpty()) {
+                startCourierLocationServiceIfNeeded()
+            } else {
+                locationPermissionRequest.launch(notGranted.toTypedArray())
+            }
         }
     }
 
-    private fun checkLocationPermissionAndStartService() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+    private fun startCourierLocationServiceIfNeeded() {
+        val serviceIntent = Intent(this, CourierLocationService::class.java)
+        ContextCompat.startForegroundService(this, serviceIntent)
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationPermission()
+        } else {
+            checkPermissionsAndStartService()
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
             != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.FOREGROUND_SERVICE_LOCATION
-                ),
-                REQUEST_LOCATION_PERMISSION
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                1001
             )
         } else {
-            // Ruxsat berilgan bo‘lsa — servisni ishga tushiring
-            startCourierLocationService()
+            checkPermissionsAndStartService()
         }
     }
 
-    private fun startCourierLocationService() {
-        val intent = Intent(this, CourierLocationService::class.java)
-        ContextCompat.startForegroundService(this, intent)
-    }
-
-    // Ruxsat so‘roviga javobni qabul qilish
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        if (requestCode == REQUEST_LOCATION_PERMISSION &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            // Ruxsat berildi — servisni ishga tushiring
-            startCourierLocationService()
-        } else {
-            Toast.makeText(this, "Joylashuv ruxsati kerak", Toast.LENGTH_SHORT).show()
+        if (requestCode == 1001) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkPermissionsAndStartService()
+            } else {
+                Toast.makeText(this, "📢 Notification permission bermadingiz!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
+
+
+
 }
 
 
