@@ -43,12 +43,15 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
 
         setupPermissionRequest()
         setupTakePictureLauncher()
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.repeatBtn.setOnClickListener {
+
+            Log.d("RRRRRRR", "onViewCreated: ${args.id}")
             val priceInput = binding.edtCost.text.toString().trim()
             val price = priceInput.toDoubleOrNull()
 
@@ -65,10 +68,9 @@ class PaymentConfirmScreen : Fragment(R.layout.screen_payment_confirm) {
             viewModel.uploadCheckManual(args.id, photoUri!!, price)
         }
 
-
-
         setupViews()
         observeViewModel()
+
     }
 
     private fun setupViews() = with(binding) {

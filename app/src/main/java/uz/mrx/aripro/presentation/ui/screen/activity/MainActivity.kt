@@ -94,10 +94,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         // WebSocket ulanishi
         if (mySharedPreference.token.isNotEmpty()) {
-            val wsUrl = "ws://ari.digitallaboratory.uz/ws/pro/connect/"
+            val wsUrl = "ws://ari-delivery.uz/ws/pro/connect/"
             webSocketClient.connect(url = wsUrl, token = mySharedPreference.token)
             viewModel.connectWebSocket(url = wsUrl, token = mySharedPreference.token)
         }

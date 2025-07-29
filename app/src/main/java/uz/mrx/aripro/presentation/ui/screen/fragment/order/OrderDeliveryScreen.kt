@@ -99,12 +99,12 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         super.onViewCreated(view, savedInstanceState)
 
         courierWebSocketClient.connect(
-            "ws://ari.digitallaboratory.uz/ws/pro/connect/",
+            "ws://ari-delivery.uz/ws/pro/connect/",
             sharedPref.token
         )
 
         viewModel.connectWebSocket(
-            "ws://ari.digitallaboratory.uz/ws/pro/connect/",
+            "ws://ari-delivery.uz/ws/pro/connect/",
             sharedPref.token
         )
 
@@ -352,21 +352,30 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         updateDeliverySteps(order.direction)
 
-        order.courierLocation.latitude
-        order.courierLocation.longitude
 
-        order.customerLocation.latitude
-        order.customerLocation.longitude
+        order.courierLocation?.let {
+            val lat = it.latitude
+            val lon = it.longitude
 
-        order.shopLocation.latitude
-        order.shopLocation.longitude
+        }
+
+        order.customerLocation?.let {
+            val lat = it.latitude
+            val lon = it.longitude
+
+        }
+
+        order.shopLocation?.let {
+            val lat = it.latitude
+            val lon = it.longitude
+        }
+
 
         Glide.with(requireContext())
             .load(order.deliverUser?.avatar)
             .into(binding.prf)
 
     }
-
 
     private fun checkAndRequestLocationPermission() {
         if (ActivityCompat.checkSelfPermission(
@@ -446,8 +455,8 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     private fun getButtonText(direction: String): String {
         return when (direction) {
-            "en_route_to_store" -> "Do'konga yo'l olindi"
-            "arrived_at_store" -> "Do'konga yetib kelindi"
+            "en_route_to_store" -> "Do‘konga yo‘lda"
+            "arrived_at_store" -> "Do‘konga yetib keldi"
             "picked_up" -> "Buyurtma olindi"
             "en_route_to_customer" -> "Mijoz tomon yo'lga chiqildi"
             "arrived_to_customer" -> "Mijozga yetib kelindi"

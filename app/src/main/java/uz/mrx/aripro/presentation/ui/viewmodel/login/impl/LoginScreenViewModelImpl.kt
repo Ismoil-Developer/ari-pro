@@ -1,10 +1,8 @@
 package uz.mrx.aripro.presentation.ui.viewmodel.login.impl
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +15,6 @@ import uz.mrx.aripro.data.remote.response.register.RegisterResponse
 import uz.mrx.aripro.domain.usecase.register.RegisterUseCase
 import uz.mrx.aripro.presentation.direction.login.LoginScreenDirection
 import uz.mrx.aripro.presentation.ui.viewmodel.login.LoginScreenViewModel
-import uz.mrx.aripro.utils.flow
 import javax.inject.Inject
 
 @HiltViewModel
