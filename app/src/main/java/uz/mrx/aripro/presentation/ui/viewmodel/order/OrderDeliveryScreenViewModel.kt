@@ -17,7 +17,6 @@ interface OrderDeliveryScreenViewModel {
 
     val orderActiveToken:Flow<OrderActiveResponse>
 
-
     fun openOrderCompletedScreen(id: Int)
 
     fun openOrderDetailScreen(id: Int)

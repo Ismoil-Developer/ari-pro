@@ -35,6 +35,7 @@ import uz.mrx.aripro.data.remote.websocket.CourierWebSocketClient
 import uz.mrx.aripro.data.remote.websocket.WebSocketOrderEvent
 import uz.mrx.aripro.presentation.navigation.NavigationHandler
 import uz.mrx.aripro.presentation.ui.dialog.OrderTimeDialog
+import uz.mrx.aripro.presentation.ui.dialog.ProgressDialogFragment
 import uz.mrx.aripro.presentation.ui.viewmodel.main.MainViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.main.MainViewModelImpl
 import uz.mrx.aripro.utils.CourierLocationService
@@ -49,20 +50,26 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var mySharedPreference: MySharedPreference
 
+    private var progressDialogFragment: ProgressDialogFragment? = null
+
+
     private val locationPermissionRequest = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
+
         val allGranted = permissions.all { it.value }
+
         if (allGranted) {
             startCourierLocationServiceIfNeeded()
         } else {
+
             Toast.makeText(this, "Permissionlar berilmadi!", Toast.LENGTH_SHORT).show()
+
         }
     }
 
     @Inject
     lateinit var webSocketClient: CourierWebSocketClient
-
 
     // ViewModel
     private val viewModel: MainViewModel by viewModels<MainViewModelImpl>()
@@ -104,8 +111,13 @@ class MainActivity : AppCompatActivity() {
         // Buyurtmalarni qabul qilish
         lifecycleScope.launch {
             webSocketClient.orderAssigned.collectLatest { newOrder ->
+
+                progressDialogFragment?.dismiss()
+                progressDialogFragment = null
+
                 val bundle = Bundle().apply { putInt("orderId", newOrder.orderId) }
                 navController.navigate(R.id.orderDeliveryScreen, bundle)
+
             }
         }
 
@@ -131,6 +143,7 @@ class MainActivity : AppCompatActivity() {
         handler.navigationStack.onEach {
             it.invoke(navController)
         }.launchIn(lifecycleScope)
+
     }
 
     private fun observeIncomingOrders() {
@@ -152,7 +165,15 @@ class MainActivity : AppCompatActivity() {
             orderPrice,
             onAcceptClickListener = {
                 viewModel.acceptOrder(newOrder.orderId)
+
+                progressDialogFragment = ProgressDialogFragment(100) {
+
+                }
+
+                progressDialogFragment?.show(supportFragmentManager, "progressDialog")
+
                 Toast.makeText(this, "Zakaz qabul qilindi", Toast.LENGTH_SHORT).show()
+
             },
             onSkipClickListener = {
                 viewModel.rejectOrder(newOrder.orderId)
@@ -161,6 +182,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         orderTimeDialog.show()
+
     }
 
     private fun checkAndPromptEnableGPS(onGpsEnabled: () -> Unit) {
@@ -230,7 +252,6 @@ class MainActivity : AppCompatActivity() {
         ContextCompat.startForegroundService(this, serviceIntent)
     }
 
-
     override fun onStart() {
         super.onStart()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -269,8 +290,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
 }
-
-

@@ -35,11 +35,14 @@ class OrderPage:Fragment(R.layout.page_order) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.historyResponse.collectLatest {
-                if (it != null){
-
-                    adapter.submitList(it)
-
+            viewModel.historyResponse.collectLatest { list ->
+                if (!list.isNullOrEmpty()) {
+                    adapter.submitList(list)
+                    binding.rv.visibility = View.VISIBLE
+                    binding.emptyContainer.visibility = View.GONE
+                } else {
+                    binding.rv.visibility = View.GONE
+                    binding.emptyContainer.visibility = View.VISIBLE
                 }
             }
         }

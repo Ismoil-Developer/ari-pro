@@ -20,6 +20,7 @@ import uz.mrx.aripro.databinding.ScreenLoginBinding
 import uz.mrx.aripro.presentation.ui.viewmodel.login.LoginScreenViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.login.impl.LoginScreenViewModelImpl
 import uz.mrx.aripro.utils.OnSwipeTouchListener
+import uz.mrx.aripro.utils.toast
 
 @AndroidEntryPoint
 class LoginScreen : Fragment(R.layout.screen_login) {
@@ -45,28 +46,30 @@ class LoginScreen : Fragment(R.layout.screen_login) {
         })
 
 
-
         binding.btnContinue.setSafeOnClickListener {
             val phoneNumber = binding.phoneNumberEditText.text.toString().trim()
 
-            if (phoneNumber.isEmpty()) {
+            val phoneNumber_ = "+998$phoneNumber"
+
+
+            if (phoneNumber_.isEmpty()) {
                 Toast.makeText(requireContext(), "Iltimos, telefon raqamingizni kiriting", Toast.LENGTH_SHORT).show()
                 return@setSafeOnClickListener
             }
 
-            if (!phoneNumber.startsWith("+998") || phoneNumber.length != 13) {
+            if (!phoneNumber_.startsWith("+998") || phoneNumber_.length != 13) {
                 Toast.makeText(requireContext(), "Raqam formati xato. Namuna: +998991234567", Toast.LENGTH_SHORT).show()
                 return@setSafeOnClickListener
             }
 
             // Hamma shartlar to'g'ri bo'lsa:
-            viewModel.postRegister(RegisterRequest(phoneNumber))
+            viewModel.postRegister(RegisterRequest(phoneNumber_))
 
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.registerResponse.collectLatest { message ->
                         if (message.detail == "Kod yuborildi.") {
-                            viewModel.openConfirmScreen(phoneNumber, "")
+                            viewModel.openConfirmScreen(phoneNumber_, "")
                         } else {
                             Toast.makeText(requireContext(), "Xatolik yuz berdi", Toast.LENGTH_SHORT).show()
                         }
@@ -96,7 +99,7 @@ class LoginScreen : Fragment(R.layout.screen_login) {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.toastMessage.collectLatest { message ->
-
+                    toast(message)
                 }
             }
         }

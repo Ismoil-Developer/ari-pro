@@ -85,12 +85,6 @@ class CourierLocationService : Service() {
                 val location = result.lastLocation ?: return
                 sendLocationOverWebSocket(location)
 
-                // Lokatsiyani Toast orqali chiqarish
-                Toast.makeText(
-                    this@CourierLocationService,
-                    "📍 Lat: ${location.latitude}, Lon: ${location.longitude}",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         }
 

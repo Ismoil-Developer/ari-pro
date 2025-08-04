@@ -1,7 +1,6 @@
 package uz.mrx.aripro.presentation.ui.screen.fragment.order
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
@@ -20,14 +19,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.yandex.mapkit.Animation
@@ -37,7 +33,6 @@ import com.yandex.mapkit.map.CameraPosition
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import uz.mrx.aripro.R
 import uz.mrx.aripro.data.local.shp.MySharedPreference
 import uz.mrx.aripro.data.remote.request.register.DirectionRequest
@@ -426,7 +421,9 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     private fun observeErrors() {
 
         viewLifecycleOwner.lifecycleScope.launch {
+
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                 viewModel.activeErrorResponse.collectLatest {
 
                     val isNoActiveOrder = it.contains("No active order", ignoreCase = true)
