@@ -28,6 +28,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.yandex.mapkit.Animation
 import com.yandex.mapkit.MapKitFactory
+import com.yandex.mapkit.geometry.BoundingBox
 import com.yandex.mapkit.geometry.Point
 import com.yandex.mapkit.map.CameraPosition
 import dagger.hilt.android.AndroidEntryPoint
@@ -94,12 +95,12 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         super.onViewCreated(view, savedInstanceState)
 
         courierWebSocketClient.connect(
-            "ws://ari-delivery.uz/ws/pro/connect/",
+            "wss://ari-delivery.uz/ws/pro/connect/",
             sharedPref.token
         )
 
         viewModel.connectWebSocket(
-            "ws://ari-delivery.uz/ws/pro/connect/",
+            "wss://ari-delivery.uz/ws/pro/connect/",
             sharedPref.token
         )
 
@@ -188,37 +189,42 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-
         binding.btnContinue.setOnClickListener {
             val order = this.order
             if (order == null) {
-                Toast.makeText(
-                    requireContext(),
-                    "Buyurtma maʼlumotlari mavjud emas",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "Buyurtma maʼlumotlari mavjud emas", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
-                    openMapWithDirections(
-                        location.latitude,
-                        location.longitude,
-                        order.shopLocation.latitude,
-                        order.shopLocation.longitude,
-                        order.customerLocation.latitude,
+                    val fromLat = location.latitude
+                    val fromLng = location.longitude
+
+                    // Maqsad manziling – bu yerda do'kon va mijoz lokatsiyasi o'rtasida tanlaymiz
+                    val toLat = if (order.direction == "en_route_to_store") {
+                        order.shopLocation.latitude
+                    } else {
+                        order.customerLocation.latitude
+                    }
+
+                    val toLng = if (order.direction == "en_route_to_store") {
+                        order.shopLocation.longitude
+                    } else {
                         order.customerLocation.longitude
-                    )
+                    }
+
+                    openMapChooser(fromLat, fromLng, toLat, toLng)
+
                 } else {
-                    Toast.makeText(requireContext(), "Joylashuv olinmadi", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(), "Joylashuv olinmadi", Toast.LENGTH_SHORT).show()
                 }
             }.addOnFailureListener {
-                Toast.makeText(requireContext(), "Joylashuv olishda xatolik", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), "Joylashuv olishda xatolik", Toast.LENGTH_SHORT).show()
             }
         }
+
+
 
 
         binding.swipeView.setOnSwipeListener {
@@ -290,45 +296,30 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         }
     }
 
-
-    private fun openMapWithDirections(
-        courierLat: Double,
-        courierLng: Double,
-        shopLat: Double,
-        shopLng: Double,
-        customerLat: Double,
-        customerLng: Double
+    private fun openMapChooser(
+        fromLat: Double,
+        fromLng: Double,
+        toLat: Double,
+        toLng: Double
     ) {
-        val googleUri = Uri.parse(
-            "https://www.google.com/maps/dir/?api=1" +
-                    "&origin=$courierLat,$courierLng" +
-                    "&waypoints=$shopLat,$shopLng" +
-                    "&destination=$customerLat,$customerLng" +
-                    "&travelmode=driving"
-        )
+        val context = requireContext()
 
-        val googleIntent = Intent(Intent.ACTION_VIEW, googleUri).apply {
-            setPackage("com.google.android.apps.maps")
+        // Universal geo URI
+        val uri = Uri.parse("geo:0,0?q=$toLat,$toLng")
+
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+
+        // Chooser orqali xarita ilovasini tanlash
+        val chooser = Intent.createChooser(intent, "Xarita ilovasini tanlang")
+        if (intent.resolveActivity(context.packageManager) != null) {
+            startActivity(chooser)
+        } else {
+            Toast.makeText(context, "Xarita ilovasi topilmadi", Toast.LENGTH_SHORT).show()
         }
-
-        val yandexUri =
-            Uri.parse("yandexmaps://maps.yandex.com/?rtext=$courierLat,$courierLng~$shopLat,$shopLng~$customerLat,$customerLng&rtt=auto")
-
-        val yandexIntent = Intent(Intent.ACTION_VIEW, yandexUri).apply {
-            setPackage("ru.yandex.yandexmaps")
-        }
-
-        val chooserIntent = Intent.createChooser(googleIntent, "Xaritani tanlang")
-        val additionalIntents = mutableListOf<Intent>()
-
-        if (yandexIntent.resolveActivity(requireContext().packageManager) != null) {
-            additionalIntents.add(yandexIntent)
-        }
-
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, additionalIntents.toTypedArray())
-        startActivity(chooserIntent)
-
     }
+
+
+
 
     private fun updateOrderUI(order: OrderActiveResponse) {
 
@@ -347,28 +338,67 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         updateDeliverySteps(order.direction)
 
+        val mapObjects = binding.mapView.mapWindow.map.mapObjects
+        mapObjects.clear() // Har safar yangidan chizamiz
+
+        val points = mutableListOf<Point>()
 
         order.courierLocation?.let {
-            val lat = it.latitude
-            val lon = it.longitude
-
+            val point = Point(it.latitude, it.longitude)
+            mapObjects.addPlacemark(point) // Courier marker
+            points.add(point)
         }
 
         order.customerLocation?.let {
-            val lat = it.latitude
-            val lon = it.longitude
-
+            val point = Point(it.latitude, it.longitude)
+            mapObjects.addPlacemark(point) // Customer marker
+            points.add(point)
         }
 
         order.shopLocation?.let {
-            val lat = it.latitude
-            val lon = it.longitude
+            val point = Point(it.latitude, it.longitude)
+            mapObjects.addPlacemark(point) // Shop marker
+            points.add(point)
+        }
+
+        // Barcha nuqtalarni ko‘rsatadigan bounding box yasash
+        if (points.isNotEmpty()) {
+            val southWest = Point(
+                points.minOf { it.latitude },
+                points.minOf { it.longitude }
+            )
+            val northEast = Point(
+                points.maxOf { it.latitude },
+                points.maxOf { it.longitude }
+            )
+
+            val boundingBox = BoundingBox(southWest, northEast)
+
+            // ❗️ Markazni qo'lda hisoblaymiz
+            val centerLat = (southWest.latitude + northEast.latitude) / 2
+            val centerLon = (southWest.longitude + northEast.longitude) / 2
+            val centerPoint = Point(centerLat, centerLon)
+
+            binding.mapView.mapWindow.map.move(
+                CameraPosition(
+                    centerPoint,                 // markaz
+                    15f,                         // zoom darajasi
+                    0.0f,                        // azimuth
+                    0.0f                         // tilt
+                ),
+                Animation(Animation.Type.SMOOTH, 1.5f),
+                null
+            )
         }
 
 
-        Glide.with(requireContext())
-            .load(order.deliverUser?.avatar)
-            .into(binding.prf)
+        order.deliverUser?.avatar.let {
+            Glide.with(requireContext())
+                .load(order.deliverUser?.avatar)
+                .into(binding.prf)
+        }
+
+
 
     }
 

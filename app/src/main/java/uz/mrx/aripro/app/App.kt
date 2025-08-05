@@ -32,7 +32,7 @@ class App : Application() {
 
         if (sharedPreference.token.isNotEmpty()){
             courierWebSocketClient.connect(
-                url = "ws://ari-delivery.uz/ws/pro/connect/",
+                url = "wss://ari-delivery.uz/ws/pro/connect/",
                 token = sharedPreference.token
             )
 

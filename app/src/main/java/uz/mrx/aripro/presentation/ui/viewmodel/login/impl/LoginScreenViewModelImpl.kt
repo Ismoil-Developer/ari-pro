@@ -40,6 +40,7 @@ class LoginScreenViewModelImpl @Inject constructor(
 
     override fun postRegister(request: RegisterRequest) {
         viewModelScope.launch {
+
             if (_isLoading.value) return@launch // ❗ Bosilgan bo‘lsa yana bosilmasin
 
             _isLoading.emit(true)

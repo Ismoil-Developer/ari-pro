@@ -103,23 +103,30 @@ class MainActivity : AppCompatActivity() {
 
         // WebSocket ulanishi
         if (mySharedPreference.token.isNotEmpty()) {
-            val wsUrl = "ws://ari-delivery.uz/ws/pro/connect/"
+            val wsUrl = "wss://ari-delivery.uz/ws/pro/connect/"
             webSocketClient.connect(url = wsUrl, token = mySharedPreference.token)
             viewModel.connectWebSocket(url = wsUrl, token = mySharedPreference.token)
         }
 
         // Buyurtmalarni qabul qilish
-        lifecycleScope.launch {
+        lifecycleScope.launchWhenStarted {
             webSocketClient.orderAssigned.collectLatest { newOrder ->
-
+                // Dismiss loading dialog if showing
                 progressDialogFragment?.dismiss()
                 progressDialogFragment = null
 
-                val bundle = Bundle().apply { putInt("orderId", newOrder.orderId) }
-                navController.navigate(R.id.orderDeliveryScreen, bundle)
+                // Navigate to order delivery screen
+                val bundle = Bundle().apply {
+                    putInt("orderId", newOrder.orderId)
+                }
 
+                // Prevent multiple navigations if already on target
+                if (navController.currentDestination?.id != R.id.orderDeliveryScreen) {
+                    navController.navigate(R.id.orderDeliveryScreen, bundle)
+                }
             }
         }
+
 
         // GPS yoqilganini tekshirish
         checkAndPromptEnableGPS {
@@ -172,7 +179,6 @@ class MainActivity : AppCompatActivity() {
 
                 progressDialogFragment?.show(supportFragmentManager, "progressDialog")
 
-                Toast.makeText(this, "Zakaz qabul qilindi", Toast.LENGTH_SHORT).show()
 
             },
             onSkipClickListener = {

@@ -34,6 +34,10 @@ class OrderTimeDialog(
         binding = DialogTimeBinding.inflate(LayoutInflater.from(context))
         builder.setView(binding.root)
         alertDialog = builder.create()
+
+        alertDialog.setCancelable(false)
+        alertDialog.setCanceledOnTouchOutside(false)
+
         alertDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val window = alertDialog.window
