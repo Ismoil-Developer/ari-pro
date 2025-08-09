@@ -57,6 +57,12 @@ class ProfilePageViewModelImpl @Inject constructor(private val useCase: ProfileU
         }
     }
 
+    override fun openLoginScreen() {
+        viewModelScope.launch {
+            direction.openLoginScreen()
+        }
+    }
+
 
 
 }

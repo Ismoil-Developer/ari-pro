@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -67,12 +68,19 @@ class LoginScreen : Fragment(R.layout.screen_login) {
 
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
                     viewModel.registerResponse.collectLatest { message ->
                         if (message.detail == "Kod yuborildi.") {
-                            viewModel.openConfirmScreen(phoneNumber_, "")
-                        } else {
+                            // Bir marta ishlashini ta'minlash uchun oldin tekshir
+                            if (findNavController().currentDestination?.id == R.id.loginScreen) {
+                                viewModel.openConfirmScreen(phoneNumber_, "")
+                            }
+                        }
+
+                        else {
                             Toast.makeText(requireContext(), "Xatolik yuz berdi", Toast.LENGTH_SHORT).show()
                         }
+
                     }
                 }
             }

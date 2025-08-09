@@ -7,7 +7,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import uz.mrx.aripro.databinding.DialogLogoutBinding
 
-class LogoutDialog : DialogFragment() {
+class LogoutDialog(
+    private val onLogoutConfirmed: () -> Unit
+) : DialogFragment() {
 
     private var _binding: DialogLogoutBinding? = null
     private val binding get() = _binding!!
@@ -22,7 +24,7 @@ class LogoutDialog : DialogFragment() {
         dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
 
         binding.yes.setOnClickListener {
-            // TODO: Logout logikasini shu yerda yozing
+            onLogoutConfirmed.invoke()
             dialog.dismiss()
         }
 
@@ -31,7 +33,6 @@ class LogoutDialog : DialogFragment() {
         }
 
         return dialog
-
     }
 
     override fun onDestroyView() {

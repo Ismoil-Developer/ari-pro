@@ -16,12 +16,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uz.mrx.aripro.R
+import uz.mrx.aripro.data.local.shp.MySharedPreference
 import uz.mrx.aripro.databinding.PageProfileBinding
 import uz.mrx.aripro.presentation.ui.dialog.ContactDialog
 import uz.mrx.aripro.presentation.ui.dialog.LanguageDialog
 import uz.mrx.aripro.presentation.ui.dialog.LogoutDialog
 import uz.mrx.aripro.presentation.ui.viewmodel.profile.ProfilePageViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.profile.impl.ProfilePageViewModelImpl
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfilePage : Fragment(R.layout.page_profile) {
@@ -29,6 +31,8 @@ class ProfilePage : Fragment(R.layout.page_profile) {
     private val binding: PageProfileBinding by viewBinding(PageProfileBinding::bind)
     private val viewModel: ProfilePageViewModel by viewModels<ProfilePageViewModelImpl>()
 
+    @Inject
+    lateinit var shp:MySharedPreference
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -39,8 +43,16 @@ class ProfilePage : Fragment(R.layout.page_profile) {
 
 
         binding.logOut.setOnClickListener {
-            val dialog = LogoutDialog()
+            val dialog = LogoutDialog {
+
+                shp.token = ""
+
+                viewModel.openLoginScreen()
+
+            }
+
             dialog.show(parentFragmentManager, "LogoutDialog")
+
         }
 
 

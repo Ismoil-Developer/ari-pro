@@ -14,6 +14,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import by.kirich1409.viewbindingdelegate.viewBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,33 +23,51 @@ import kotlinx.coroutines.launch
 import uz.mrx.aripro.R
 import uz.mrx.aripro.data.local.shp.MySharedPreference
 import uz.mrx.aripro.data.remote.request.register.ConfirmRequest
+import uz.mrx.aripro.data.remote.request.register.RegisterRequest
 import uz.mrx.aripro.databinding.ScreenConfirmBinding
 import uz.mrx.aripro.presentation.ui.viewmodel.confirm.ConfirmScreenViewModel
 import uz.mrx.aripro.presentation.ui.viewmodel.confirm.impl.ConfirmScreenViewModelImpl
 import uz.mrx.aripro.utils.toast
 import javax.inject.Inject
-
 @AndroidEntryPoint
 class ConfirmScreen : Fragment(R.layout.screen_confirm) {
 
     private val binding: ScreenConfirmBinding by viewBinding(ScreenConfirmBinding::bind)
     private val viewModel: ConfirmScreenViewModel by viewModels<ConfirmScreenViewModelImpl>()
     private var countDownTimer: CountDownTimer? = null
-    private val args:ConfirmScreenArgs by navArgs()
     private lateinit var editTexts: List<EditText>
+    private val args: ConfirmScreenArgs by navArgs()
 
     @Inject
     lateinit var shp: MySharedPreference
+
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.repeatBtn.isEnabled = false
+
+        binding.resend.setOnClickListener {
+            if (binding.resend.isEnabled) {
+                viewModel.postRegister(RegisterRequest(args.phoneNumber))
+                startCountdown()
+            }
+        }
+
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.confirmResponse.collectLatest {
-                shp.token = it.access
-                Log.d("AAA", "onViewCreated: ${shp.token}")
-                viewModel.openScreen()
+                if (it.access.isNotEmpty()) {
+                    shp.token = it.access
+                    Log.d("AAA", "onViewCreated: ${shp.token}")
+                    viewModel.openScreen()
+                }
+
             }
+        }
+
+        if (args.phoneNumber.isNotEmpty()){
+            binding.phoneNumber.text = "Tasdiqlash kodi ${args.phoneNumber} raqamiga yuborildi"
         }
 
 
@@ -59,11 +78,12 @@ class ConfirmScreen : Fragment(R.layout.screen_confirm) {
             }
         }
 
-        if (args.phoneNumber.isNotEmpty()){
-            binding.phoneNumber.text = "Tasdiqlash kodi ${args.phoneNumber} raqamiga yuborildi"
+        binding.changeNumber.setOnClickListener {
+            findNavController().popBackStack()
         }
 
         binding.resend.setOnClickListener {
+            viewModel.postRegister(RegisterRequest(args.phoneNumber))
             startCountdown()
         }
 
@@ -115,6 +135,7 @@ class ConfirmScreen : Fragment(R.layout.screen_confirm) {
         startCountdown()
     }
 
+
     private fun checkCode() {
         val enteredCode = editTexts.joinToString("") { it.text.toString() }
 
@@ -127,27 +148,6 @@ class ConfirmScreen : Fragment(R.layout.screen_confirm) {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun startCountdown() {
-        countDownTimer?.cancel() // Eski taymerni bekor qilish
-        countDownTimer = object : CountDownTimer(120000, 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                val secondsRemaining = millisUntilFinished / 1000
-                val minutes = secondsRemaining / 60
-                val seconds = secondsRemaining % 60
-                val timeString = String.format("%02d:%02d", minutes, seconds)
-                binding.imageRepeat.text = timeString
-
-            }
-
-            override fun onFinish() {
-                countDownTimer = null
-                Toast.makeText(requireContext(), "Vaqt tugadi", Toast.LENGTH_SHORT).show()
-            }
-
-        }.start()
-    }
 
     private fun updateEditTextBackgrounds() {
         editTexts.forEach {
@@ -158,6 +158,37 @@ class ConfirmScreen : Fragment(R.layout.screen_confirm) {
             }
         }
     }
+
+    private fun startCountdown() {
+        countDownTimer?.cancel()
+
+        // 🔒 Tugmani bosib bo‘lmasligi uchun `resend`ni disable qilamiz
+        binding.resend.isEnabled = false
+        binding.resend.isClickable = false
+        binding.repeatBtn.setCardBackgroundColor(resources.getColor(R.color.buttonBgColorFalse, null))
+
+        countDownTimer = object : CountDownTimer(60000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                val secondsRemaining = millisUntilFinished / 1000
+                val minutes = secondsRemaining / 60
+                val seconds = secondsRemaining % 60
+                val timeString = String.format("%02d:%02d", minutes, seconds)
+                binding.imageRepeat.text = timeString
+            }
+
+            override fun onFinish() {
+
+                countDownTimer = null
+
+                // ✅ Tugma yana bosilishi mumkin bo‘ladi
+                binding.resend.isEnabled = true
+                binding.resend.isClickable = true
+                binding.repeatBtn.setCardBackgroundColor(resources.getColor(R.color.buttonBgColor, null))
+                binding.imageRepeat.text = ""
+            }
+        }.start()
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -10,4 +10,6 @@ interface MainScreenDirection {
 
     suspend fun openHistoryDetailScreen(id: Int)
 
+    suspend fun openLoginScreen()
+
 }

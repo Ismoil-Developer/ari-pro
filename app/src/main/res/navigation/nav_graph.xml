@@ -55,6 +55,9 @@
         <action
             android:id="@+id/action_screenMain_to_historyDetailScreen"
             app:destination="@id/historyDetailScreen" />
+        <action
+            android:id="@+id/action_screenMain_to_loginScreen"
+            app:destination="@id/loginScreen" />
 
     </fragment>
 

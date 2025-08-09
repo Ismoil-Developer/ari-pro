@@ -12,4 +12,6 @@ interface ProfilePageViewModel {
 
     val getContact:Flow<ContactResponse>
 
+    fun openLoginScreen()
+
 }
