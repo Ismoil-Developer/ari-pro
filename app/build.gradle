@@ -9,6 +9,7 @@ plugins {
 }
 
 android {
+
     namespace 'uz.mrx.aripro'
     compileSdk 35
 
