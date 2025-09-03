@@ -83,13 +83,28 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private val directions = listOf(
+    // Asosiy do‘kon
+    private val directionsFirst = listOf(
         "en_route_to_store",
         "arrived_at_store",
         "picked_up",
         "en_route_to_customer",
         "arrived_to_customer"
     )
+
+    // Ikkinchi do‘kon yoqilganda
+    private val directionsSecond = listOf(
+        "en_route_to_store",     // 2-do‘kon (activate_additional orqali o‘tadi)
+        "arrived_at_store",      // 2-do‘kon
+        "picked_up",             // 2-do‘kon
+        "en_route_to_customer",
+        "arrived_to_customer"
+    )
+
+    private var useSecondShop = false
+    private var currentStep = 0
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -103,6 +118,15 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
             "wss://ari-delivery.uz/ws/pro/connect/",
             sharedPref.token
         )
+
+
+        binding.secondShop.setOnClickListener {
+            orderId?.let { id ->
+                viewModel.postDirection(id, DirectionRequest(activate_additional = true))
+                useSecondShop = true
+            }
+        }
+
 
 
         binding.icBack.setOnClickListener {
@@ -189,6 +213,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
         binding.btnContinue.setOnClickListener {
             val order = this.order
             if (order == null) {
@@ -226,30 +251,35 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
 
 
-
         binding.swipeView.setOnSwipeListener {
-            val next = getNextDirection(currentDirection ?: return@setOnSwipeListener)
+            val current = currentDirection ?: return@setOnSwipeListener
 
-            // Agar hozirgi direction "picked_up" bo‘lsa va endi "en_route_to_customer" ga o‘tayotgan bo‘lsa:
-            if (currentDirection == "picked_up") {
-                orderId?.let {
-                    viewModel.openPaymentConfirmScreen(it)
-                }
-            }
+            val activeDirections = if (useSecondShop) directionsSecond else directionsFirst
+            val next = getNextDirection(current, activeDirections)
 
             if (next != null) {
-                orderId?.let { viewModel.postDirection(it, DirectionRequest(next)) }
+                orderId?.let { id ->
+                    viewModel.postDirection(id, DirectionRequest(direction = next))
+                }
             } else {
-                Toast.makeText(requireContext(), "Buyurtma yakunlandi", Toast.LENGTH_SHORT).show()
                 orderId?.let { viewModel.openOrderCompletedScreen(it) }
+                Toast.makeText(requireContext(), "Buyurtma yakunlandi", Toast.LENGTH_SHORT).show()
             }
         }
+
+
+
 
         observeOrderState()
         observeDirectionUpdates()
         observeErrors()
 
     }
+
+    private fun getCurrentDirection(order: OrderActiveResponse): String {
+        return order.directionAdditional ?: order.direction
+    }
+
 
     private fun getLastKnownLocation(callback: (android.location.Location?) -> Unit) {
         val fusedLocationClient =
@@ -319,87 +349,69 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     }
 
 
-
-
     private fun updateOrderUI(order: OrderActiveResponse) {
-
         this.order = order
+
+        currentDirection = getCurrentDirection(order)
+        binding.swipeView.setText(getButtonText(currentDirection!!))
+        updateDeliverySteps(currentDirection!!)
 
         binding.emptyContainer.visibility = View.GONE
         binding.deliverContainer.visibility = View.VISIBLE
 
         orderId = order.id
-        currentDirection = order.direction
-        phone = order.deliverUser?.phoneNumber
+        currentDirection = if (useSecondShop) {
+            order.directionAdditional ?: order.direction
+        } else {
+            order.direction
+        }
+        phone = order.customerInfo?.phoneNumber
 
-        binding.courierName.text = order.deliverUser?.fullName
-        binding.courierRating.text = order.deliverUser?.rating.toString()
-        binding.swipeView.setText(getButtonText(order.direction))
+        binding.courierName.text = order.customerInfo?.fullName
+        binding.courierRating.text = order.customerInfo?.rating.toString()
 
-        updateDeliverySteps(order.direction)
+        binding.swipeView.setText(getButtonText(order.direction, order.directionAdditional))
 
+        updateDeliverySteps(currentDirection ?: "")
+
+        // xarita nuqtalarini chizish
         val mapObjects = binding.mapView.mapWindow.map.mapObjects
-        mapObjects.clear() // Har safar yangidan chizamiz
+        mapObjects.clear()
 
         val points = mutableListOf<Point>()
 
         order.courierLocation?.let {
             val point = Point(it.latitude, it.longitude)
-            mapObjects.addPlacemark(point) // Courier marker
+            mapObjects.addPlacemark(point)
             points.add(point)
         }
 
         order.customerLocation?.let {
             val point = Point(it.latitude, it.longitude)
-            mapObjects.addPlacemark(point) // Customer marker
+            mapObjects.addPlacemark(point)
             points.add(point)
         }
 
         order.shopLocation?.let {
             val point = Point(it.latitude, it.longitude)
-            mapObjects.addPlacemark(point) // Shop marker
+            mapObjects.addPlacemark(point)
             points.add(point)
         }
 
-        // Barcha nuqtalarni ko‘rsatadigan bounding box yasash
         if (points.isNotEmpty()) {
-            val southWest = Point(
-                points.minOf { it.latitude },
-                points.minOf { it.longitude }
-            )
-            val northEast = Point(
-                points.maxOf { it.latitude },
-                points.maxOf { it.longitude }
-            )
+            val southWest = Point(points.minOf { it.latitude }, points.minOf { it.longitude })
+            val northEast = Point(points.maxOf { it.latitude }, points.maxOf { it.longitude })
 
-            val boundingBox = BoundingBox(southWest, northEast)
-
-            // ❗️ Markazni qo'lda hisoblaymiz
             val centerLat = (southWest.latitude + northEast.latitude) / 2
             val centerLon = (southWest.longitude + northEast.longitude) / 2
             val centerPoint = Point(centerLat, centerLon)
 
             binding.mapView.mapWindow.map.move(
-                CameraPosition(
-                    centerPoint,                 // markaz
-                    15f,                         // zoom darajasi
-                    0.0f,                        // azimuth
-                    0.0f                         // tilt
-                ),
+                CameraPosition(centerPoint, 15f, 0.0f, 0.0f),
                 Animation(Animation.Type.SMOOTH, 1.5f),
                 null
             )
         }
-
-
-        order.deliverUser?.avatar.let {
-            Glide.with(requireContext())
-                .load(order.deliverUser?.avatar)
-                .into(binding.prf)
-        }
-
-
-
     }
 
     private fun checkAndRequestLocationPermission() {
@@ -439,14 +451,18 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     private fun observeDirectionUpdates() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.responseDirection.collectLatest {
-                currentDirection = it.direction
-                binding.swipeView.setText(getButtonText(it.direction))
+                currentDirection = if (useSecondShop) {
+                    it.direction_additional ?: it.direction
+                } else {
+                    it.direction
+                }
+                binding.swipeView.setText(getButtonText(currentDirection ?: ""))
                 binding.swipeView.reset()
-                updateDeliverySteps(it.direction)
-
+                updateDeliverySteps(currentDirection ?: "")
             }
         }
     }
+
 
     private fun observeErrors() {
 
@@ -480,20 +496,29 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     }
 
-    private fun getButtonText(direction: String): String {
-        return when (direction) {
-            "en_route_to_store" -> "Do‘konga yo‘lda"
-            "arrived_at_store" -> "Do‘konga yetib keldi"
-            "picked_up" -> "Buyurtma olindi"
-            "en_route_to_customer" -> "Mijoz tomon yo'lga chiqildi"
+    private fun getButtonText(direction: String?, directionAdditional: String? = null): String {
+        val key = directionAdditional ?: direction
+        return when (key) {
+            "en_route_to_store" -> "1-do‘konga yo‘lda"
+            "arrived_at_store" -> "1-do‘konga yetib keldi"
+            "picked_up" -> "1-do‘kondan buyurtma olindi"
+
+            "en_route_to_second_store" -> "2-do‘konga yo‘lda"
+            "arrived_at_second_store" -> "2-do‘konga yetib keldi"
+            "picked_up_second" -> "2-do‘kondan buyurtma olindi"
+
+            "en_route_to_customer" -> "Mijoz tomon yo‘lga chiqildi"
             "arrived_to_customer" -> "Mijozga yetib kelindi"
             else -> "Boshlash"
         }
     }
 
-    private fun getNextDirection(current: String): String? {
+
+    private fun getNextDirection(current: String, directions: List<String>): String? {
         val index = directions.indexOf(current)
-        return if (index != -1 && index < directions.size - 1) directions[index + 1] else null
+        return if (index != -1 && index < directions.size - 1) {
+            directions[index + 1]
+        } else null
     }
 
     private fun updateDeliverySteps(status: String) {
