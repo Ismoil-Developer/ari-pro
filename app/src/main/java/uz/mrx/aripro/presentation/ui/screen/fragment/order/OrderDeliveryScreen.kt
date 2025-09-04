@@ -259,14 +259,16 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
             if (next != null) {
                 orderId?.let { id ->
-                    viewModel.postDirection(id, DirectionRequest(direction = next))
+                    viewModel.postDirection(
+                        id,
+                        DirectionRequest(direction = next)
+                    )
                 }
             } else {
-                orderId?.let { viewModel.openOrderCompletedScreen(it) }
                 Toast.makeText(requireContext(), "Buyurtma yakunlandi", Toast.LENGTH_SHORT).show()
+                orderId?.let { viewModel.openOrderCompletedScreen(it) }
             }
         }
-
 
 
 
@@ -274,10 +276,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         observeDirectionUpdates()
         observeErrors()
 
-    }
-
-    private fun getCurrentDirection(order: OrderActiveResponse): String {
-        return order.directionAdditional ?: order.direction
     }
 
 
@@ -352,9 +350,15 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     private fun updateOrderUI(order: OrderActiveResponse) {
         this.order = order
 
-        currentDirection = getCurrentDirection(order)
-        binding.swipeView.setText(getButtonText(currentDirection!!))
-        updateDeliverySteps(currentDirection!!)
+
+        // Hozirgi direction ni aniqlash
+        currentDirection = getCurrentDirection(order.direction, order.directionAdditional)
+
+        // Tugma matnini direction va directionAdditional bo‘yicha chiqarish
+        binding.swipeView.setText(
+            getButtonText(order.direction, order.directionAdditional)
+        )
+        updateDeliverySteps(currentDirection ?: "")
 
         binding.emptyContainer.visibility = View.GONE
         binding.deliverContainer.visibility = View.VISIBLE
@@ -450,18 +454,20 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
     private fun observeDirectionUpdates() {
         viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.responseDirection.collectLatest {
-                currentDirection = if (useSecondShop) {
-                    it.direction_additional ?: it.direction
-                } else {
-                    it.direction
-                }
-                binding.swipeView.setText(getButtonText(currentDirection ?: ""))
+            viewModel.responseDirection.collectLatest { response ->
+
+                currentDirection = getCurrentDirection(response.direction, response.direction_additional)
+
+                binding.swipeView.setText(
+                    getButtonText(response.direction, response.direction_additional)
+                )
                 binding.swipeView.reset()
                 updateDeliverySteps(currentDirection ?: "")
             }
         }
     }
+
+
 
 
     private fun observeErrors() {
@@ -499,19 +505,25 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
     private fun getButtonText(direction: String?, directionAdditional: String? = null): String {
         val key = directionAdditional ?: direction
         return when (key) {
+            // 1-do‘kon
             "en_route_to_store" -> "1-do‘konga yo‘lda"
-            "arrived_at_store" -> "1-do‘konga yetib keldi"
-            "picked_up" -> "1-do‘kondan buyurtma olindi"
+            "arrived_at_store" -> if (directionAdditional == null) "1-do‘konga yetib keldi" else "2-do‘konga yetib keldi"
+            "picked_up" -> if (directionAdditional == null) "1-do‘kondan buyurtma olindi" else "2-do‘kondan buyurtma olindi"
 
-            "en_route_to_second_store" -> "2-do‘konga yo‘lda"
-            "arrived_at_second_store" -> "2-do‘konga yetib keldi"
-            "picked_up_second" -> "2-do‘kondan buyurtma olindi"
-
+            // mijoz
             "en_route_to_customer" -> "Mijoz tomon yo‘lga chiqildi"
             "arrived_to_customer" -> "Mijozga yetib kelindi"
+
             else -> "Boshlash"
         }
     }
+
+
+    private fun getCurrentDirection(direction: String?, directionAdditional: String?): String {
+        return directionAdditional ?: direction ?: ""
+    }
+
+
 
 
     private fun getNextDirection(current: String, directions: List<String>): String? {
