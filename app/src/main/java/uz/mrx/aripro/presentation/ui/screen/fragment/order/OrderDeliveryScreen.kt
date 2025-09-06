@@ -358,7 +358,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         binding.swipeView.setText(
             getButtonText(order.direction, order.directionAdditional)
         )
-        updateDeliverySteps(currentDirection ?: "")
+        updateDeliverySteps(currentDirection ?: "", useSecondShop)
 
         binding.emptyContainer.visibility = View.GONE
         binding.deliverContainer.visibility = View.VISIBLE
@@ -376,7 +376,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
 
         binding.swipeView.setText(getButtonText(order.direction, order.directionAdditional))
 
-        updateDeliverySteps(currentDirection ?: "")
+        updateDeliverySteps(currentDirection ?: "", useSecondShop)
 
         // xarita nuqtalarini chizish
         val mapObjects = binding.mapView.mapWindow.map.mapObjects
@@ -416,6 +416,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 null
             )
         }
+
     }
 
     private fun checkAndRequestLocationPermission() {
@@ -462,7 +463,7 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                     getButtonText(response.direction, response.direction_additional)
                 )
                 binding.swipeView.reset()
-                updateDeliverySteps(currentDirection ?: "")
+                updateDeliverySteps(currentDirection ?: "", useSecondShop)
             }
         }
     }
@@ -533,11 +534,11 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         } else null
     }
 
-    private fun updateDeliverySteps(status: String) {
+    private fun updateDeliverySteps(status: String, useSecondShop: Boolean = false) {
         val activeColor = ContextCompat.getColor(requireContext(), R.color.buttonBgColor)
         val inactiveColor = Color.parseColor("#DDDDDD")
 
-        // Barchasini default: inactive
+        // Default holat: inactive
         binding.arrivedAtStore.setColorFilter(inactiveColor)
         binding.pickedUp.setColorFilter(inactiveColor)
         binding.enRouteToCustomer.setColorFilter(inactiveColor)
@@ -547,17 +548,27 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
         binding.line2.setBackgroundColor(inactiveColor)
         binding.arrivedToCustomer.setBackgroundColor(inactiveColor)
 
-        // Holatga qarab aktivlashtiramiz
-        when (status) {
+        // "2" belgilarning default visibility
+        binding.arrivedAtStore2.visibility = View.GONE
+        binding.pickedUp2.visibility = View.GONE
 
+        when (status) {
             "arrived_at_store" -> {
                 binding.arrivedAtStore.setColorFilter(activeColor)
+
+                if (useSecondShop) {
+                    binding.arrivedAtStore2.visibility = View.VISIBLE // ✅ 2 chiqadi
+                }
             }
 
             "picked_up" -> {
                 binding.arrivedAtStore.setColorFilter(activeColor)
                 binding.line.setBackgroundColor(activeColor)
                 binding.pickedUp.setColorFilter(activeColor)
+
+                if (useSecondShop) {
+                    binding.pickedUp2.visibility = View.VISIBLE // ✅ 2 chiqadi
+                }
             }
 
             "en_route_to_customer" -> {
@@ -577,7 +588,6 @@ class OrderDeliveryScreen : Fragment(R.layout.screen_order_delivery) {
                 binding.arrivedToCustomer.setBackgroundColor(activeColor)
                 binding.handedOver.setColorFilter(activeColor)
             }
-
         }
     }
 
